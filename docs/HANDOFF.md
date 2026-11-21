@@ -30,9 +30,10 @@ Tài liệu để một phiên Claude Code mới (tài khoản khác) bắt kị
 
 ## 3. Trạng thái git — QUAN TRỌNG
 
-- Commit duy nhất: `c862a26 Import ClinicHIS từ Figma Make và sửa lỗi luồng Lễ tân`.
-- **Toàn bộ công việc sau đó (giai đoạn A → K, ~60 file) chưa commit.** Nếu chưa commit trước khi đổi
-  tài khoản thì thay đổi vẫn nằm nguyên trên đĩa (working tree) — không mất, chỉ là chưa có lịch sử.
+- `c862a26` Import ClinicHIS từ Figma Make và sửa lỗi luồng Lễ tân.
+- `de9516a` (21/11) Hoàn thiện ClinicHIS theo ảnh tham chiếu (giai đoạn A–K) và tài liệu bàn giao —
+  toàn bộ công việc đến lúc đổi tài khoản đã được commit, working tree sạch.
+- Git có cảnh báo LF → CRLF khi commit trên Windows: vô hại, không cần xử lý.
 - Ảnh tham chiếu `docs/reference/screenshots/` bị `.gitignore` (ảnh của bên thứ ba, có thể chứa dữ liệu
   người bệnh) — **không bao giờ commit**.
 
@@ -75,7 +76,6 @@ Tài liệu để một phiên Claude Code mới (tài khoản khác) bắt kị
 
 ## 7. Việc có thể làm tiếp (chưa ai yêu cầu — hỏi người dùng trước)
 
-- Commit toàn bộ thay đổi (người dùng chưa bảo commit từ sau c862a26).
 - Màn Lịch hẹn còn 2 thẻ "Lịch tư vấn", "Cuộc hội thoại" (thuộc tư vấn trực tuyến đã bỏ khỏi menu) —
   hỏi có bỏ luôn không. Lịch làm việc vẫn có loại "Lịch tư vấn trực tuyến".
 - Hai mục cùng tên "Báo cáo" trên Sidebar (CLS và Quản lý) — có thể đổi tên cho dễ phân biệt.
