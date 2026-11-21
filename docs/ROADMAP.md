@@ -3,6 +3,7 @@
 Mỗi task nhỏ, có ảnh tham chiếu (số trong `docs/reference/screenshots/`) và tiêu chí "xong".
 Quy ước: làm xong task nào thì typecheck + thử trên trình duyệt rồi mới đánh dấu `[x]`.
 Phạm vi loại trừ: Nhà thuốc (bán lẻ / bán theo toa / hoá đơn thuốc / liên thông nhà thuốc đối tác), Tin tức, Học CME.
+Cập nhật 21/11/2026: Cuộc gọi, Tin nhắn, Thông tin phòng khám, Phát triển thương hiệu đã **bỏ khỏi menu** (xem K7).
 Quyết định của người dùng (17/11/2026): làm một mạch tới xong hẳn. Các mục **chưa có ảnh giữ trang chờ**: Cuộc gọi, Tin nhắn, Phát triển thương hiệu, Đối soát thanh toán, Báo cáo khám mới, cài đặt Hoá đơn điện tử, tab Phân loại/Combo trong CLS › Thiết lập, và mục **"Kê đơn"** trên Sidebar (mục thêm ngoài ảnh – giữ trang chờ, không làm). Nguyên tắc: **không có trong ảnh thì không làm**; riêng J4–J6, I2 là việc kỹ thuật (dữ liệu mẫu, migration, test, tài liệu) để các màn trong ảnh chạy ổn định.
 
 ## Giai đoạn A — Thanh toán & phiếu thu (dùng chung Lễ tân / Khám bệnh)
@@ -88,3 +89,4 @@ Quyết định của người dùng (17/11/2026): làm một mạch tới xong 
 - [x] K4. Kỹ thuật viên CLS: chỉ định huỷ / NB không đến không còn bị tính tiền (trừ khi đã thu); huỷ lượt khám thì huỷ các chỉ định chưa làm; tiêu đề "Cập nhật kết quả" khi đã có kết quả.
 - [x] K5. Thu ngân: lượt 0đ là "Không thanh toán" (không sinh phiếu thu 0đ, nút "Miễn phí"); đơn vị dòng CLS theo danh mục; báo cáo không hiện "▲100%" khi kỳ trước trống.
 - [x] K6. Quản trị: phòng ở Cơ cấu tổ chức đồng bộ với danh mục phòng (migration v3→v4); giữ giá công khám đã chốt khi đổi bảng giá; dịch vụ mặc định an toàn; bệnh án lượt cũ mặc định "Đã đóng".
+- [x] K7. (21/11) Bỏ khỏi Sidebar theo yêu cầu: Cuộc gọi, Tin nhắn, Thông tin phòng khám, Phát triển thương hiệu (giữ Kê đơn). Route đã lưu cũ tự về Lễ tân; Tổng quan bỏ thẻ "Dịch vụ trực tuyến" và 2 mục kích hoạt tư vấn; "Thiết lập thông tin phòng khám" trỏ sang Hệ thống.

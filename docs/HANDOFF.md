@@ -27,6 +27,25 @@ Tài liệu để một phiên Claude Code mới (tài khoản khác) bắt kị
 - Kiểm tra: `npx tsc -b --noEmit` · `npx vitest run` (21 test) · `npx vite build` (bundle chính ~336 kB).
 - Dữ liệu demo nằm ở `localStorage` khoá `clinic-his:state` (STATE_VERSION = **4**). Xoá khoá rồi tải
   lại để về dữ liệu mẫu. Menu tài khoản (góc dưới Sidebar) có "Khôi phục dữ liệu mẫu".
+- `portfolio 1/CLAUDE.md` nằm **ngoài** git repo (repo chỉ là `clinic/`), chỉ có trên máy này.
+
+### Mẹo kiểm thử trên trình duyệt tích hợp (rút từ phiên trước)
+
+- Mở bằng `preview_start` với `name: "clinic-dev"`. Pane hẹp thì Sidebar tự thu gọn; muốn xem bố cục
+  desktop dùng `resize_window` 1280×800 hoặc 1440×900, xong nhớ trả về preset `desktop`.
+- Ảnh chụp màn hình đôi khi trả về khung cũ (trễ một nhịp, nhất là ngay sau khi chuyển màn lazy) —
+  chụp lại lần nữa trước khi kết luận là lỗi.
+- Điều khiển bằng `javascript_tool` nhanh hơn click toạ độ. Nút Sidebar: tìm theo `title`
+  (khi thu gọn) hoặc `textContent` đã bỏ số đếm ở cuối (vd. "Lễ tân8"). Input React cần gán qua
+  native setter + `dispatchEvent(new Event('input', { bubbles: true }))`.
+- Lỗi console kiểu `useClinicState phải nằm trong <ClinicProvider>` xuất hiện sau khi sửa file store là
+  do HMR, không phải lỗi thật — tải lại trang rồi kiểm tra lại.
+
+### Lịch sử hội thoại đầy đủ (nếu cần tra chi tiết)
+
+Transcript phiên trước nằm trên máy này:
+`C:\Users\ndn231\.claude\projects\D--IDE-DB-Claude-DB-portfolio-1\f69546cf-35a5-45ed-8ba1-b03be0841969.jsonl`
+(file lớn — chỉ grep khi cần, mọi quyết định quan trọng đã được tóm tắt ở file này).
 
 ## 3. Trạng thái git — QUAN TRỌNG
 
@@ -34,7 +53,7 @@ Tài liệu để một phiên Claude Code mới (tài khoản khác) bắt kị
 - `de9516a` (21/11) Hoàn thiện ClinicHIS theo ảnh tham chiếu (giai đoạn A–K) và tài liệu bàn giao —
   toàn bộ công việc đến lúc đổi tài khoản đã được commit, working tree sạch.
 - Git có cảnh báo LF → CRLF khi commit trên Windows: vô hại, không cần xử lý.
-- Ảnh tham chiếu `docs/reference/screenshots/` bị `.gitignore` (ảnh của bên thứ ba, có thể chứa dữ liệu
+- Ảnh tham chiếu `docs/reference/screenshots/` (176 ảnh, 15 thư mục module, đọc theo số thứ tự) bị `.gitignore` (ảnh của bên thứ ba, có thể chứa dữ liệu
   người bệnh) — **không bao giờ commit**.
 
 ## 4. Ràng buộc phạm vi & kỹ thuật (đã chốt với người dùng)
@@ -79,7 +98,7 @@ Tài liệu để một phiên Claude Code mới (tài khoản khác) bắt kị
 - Màn Lịch hẹn còn 2 thẻ "Lịch tư vấn", "Cuộc hội thoại" (thuộc tư vấn trực tuyến đã bỏ khỏi menu) —
   hỏi có bỏ luôn không. Lịch làm việc vẫn có loại "Lịch tư vấn trực tuyến".
 - Hai mục cùng tên "Báo cáo" trên Sidebar (CLS và Quản lý) — có thể đổi tên cho dễ phân biệt.
-- Ô giá trong Bảng giá chưa định dạng nghìn; nơi thực hiện CĐHA vẫn ghi "Lab nội bộ".
+- Nơi thực hiện CĐHA (X-quang, siêu âm) vẫn ghi "Lab nội bộ" — tên nhà cung cấp nội bộ dùng chung.
 - Chưa có test E2E tự động; luồng chính được kiểm tra thủ công trên trình duyệt tích hợp.
 - Nếu người dùng gửi thêm ảnh cho các trang chờ: phân loại vào `docs/reference/screenshots/<NN-module>/`,
   cập nhật INDEX, thêm giai đoạn mới vào ROADMAP rồi làm.

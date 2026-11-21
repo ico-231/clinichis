@@ -26,7 +26,7 @@ Những gì không có ảnh giữ trang chờ — xem mục "Còn thiếu ảnh
 | `06-cls-thiet-lap` | Cận lâm sàng › Thiết lập | 10 | ✅ |
 | `07-lich-hen` | Lịch hẹn | 1 | ✅ |
 | `08-lich-lam-viec` | Lịch làm việc | 12 | ✅ |
-| `09-thong-tin-phong-kham` | Thông tin phòng khám (hồ sơ bác sĩ) | 2 | ✅ |
+| `09-thong-tin-phong-kham` | Thông tin phòng khám (hồ sơ bác sĩ) | 2 | ✅ → ⛔ bỏ khỏi menu 21/11 |
 | `10-benh-an-dien-tu` | Bệnh án điện tử | 15 | ✅ |
 | `11-nguoi-benh` | Người bệnh | 14 | ✅ |
 | `12-bao-cao` | Quản lý › Báo cáo | 21 | ✅ |
@@ -116,9 +116,13 @@ Những gì không có ảnh giữ trang chờ — xem mục "Còn thiếu ảnh
 - 072–073 — Nhà thuốc › Thiết lập: **không làm** (đã loại trừ Nhà thuốc).
 - Các mục Sidebar Nhà thuốc, Học CME, Tin tức xuất hiện trong ảnh cũng **không làm**.
 
-## Còn thiếu ảnh
-- Tư vấn trực tuyến: Cuộc gọi, Tin nhắn.
-- Đặt khám thông minh: Phát triển thương hiệu.
+## Bỏ khỏi menu (21/11/2026, theo yêu cầu)
+- Tư vấn trực tuyến: Cuộc gọi, Tin nhắn. Đặt khám thông minh: Phát triển thương hiệu.
+- Thông tin phòng khám (09 – hồ sơ bác sĩ công khai): đã làm nhưng bỏ khỏi menu; code còn trong
+  `src/features/clinic-info/`. Thông tin đơn vị vẫn chỉnh ở Hệ thống › Thông tin phòng khám.
+
+## Còn thiếu ảnh (trang chờ)
+- Kê đơn (mục riêng trên Sidebar – giữ lại theo yêu cầu; kê đơn thật nằm trong màn Khám bệnh).
 - Báo cáo: Đối soát thanh toán, Báo cáo khám mới.
 - Hệ thống: Hoá đơn điện tử.
 - CLS Thiết lập: tab Phân loại, Combo.

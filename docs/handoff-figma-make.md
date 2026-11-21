@@ -561,7 +561,8 @@ trong trình duyệt. Khi sửa phải kiểm chứng và giữ phạm vi ngư�
 
 - Backend, database, API, auth/roles, đồng bộ nhiều máy/người dùng. *(vẫn chưa — app là demo localStorage)*
 - **[ĐÃ LÀM]** Giao diện thật cho các route ngoài Lễ tân, kể cả Tổng quan và Khám bệnh.
-  Route chưa có ảnh vẫn là trang chờ: Kê đơn, Cuộc gọi, Tin nhắn, Phát triển thương hiệu.
+  Route chưa có ảnh vẫn là trang chờ: Kê đơn. (21/11: Cuộc gọi, Tin nhắn, Phát triển thương hiệu,
+  Thông tin phòng khám đã bỏ khỏi menu – xem `docs/HANDOFF.md`.)
 - **[ĐÃ LÀM]** Kê đơn trong màn khám, kết quả xét nghiệm/CĐHA, lịch hẹn/lịch làm việc.
 - **[ĐÃ LÀM]** In phiếu: phiếu tiếp nhận nhiệt (F8), đơn thuốc, phiếu chỉ định, phiếu thu,
   phiếu kết quả, bệnh án — qua hộp xem trước và hộp in của trình duyệt.
