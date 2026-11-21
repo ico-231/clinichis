@@ -2,14 +2,14 @@ import { useMemo } from 'react'
 import { ArrowRight, Database, ImagePlus } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/Button'
-import { findNav } from '@/navigation'
+import { findNav, PlaceholderIcon } from '@/navigation'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
 import { todayISO } from '@/lib/date'
 import type { RouteKey } from '@/store/types'
 
 /** Trang chờ cho các màn hình chưa có ảnh thiết kế – vẫn đọc dữ liệu từ store dùng chung */
 export function PlaceholderPage({ route }: { route: RouteKey }) {
-  const nav = findNav(route)
+  const nav = findNav(route) ?? { label: 'Màn hình', section: undefined, icon: PlaceholderIcon, color: 'text-slate-500', description: '' }
   const Icon = nav.icon
   const { patients, visits } = useClinicState()
   const { navigate } = useClinicActions()

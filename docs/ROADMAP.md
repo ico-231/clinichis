@@ -1,0 +1,90 @@
+# Lộ trình hoàn thiện theo ảnh tham chiếu
+
+Mỗi task nhỏ, có ảnh tham chiếu (số trong `docs/reference/screenshots/`) và tiêu chí "xong".
+Quy ước: làm xong task nào thì typecheck + thử trên trình duyệt rồi mới đánh dấu `[x]`.
+Phạm vi loại trừ: Nhà thuốc (bán lẻ / bán theo toa / hoá đơn thuốc / liên thông nhà thuốc đối tác), Tin tức, Học CME.
+Quyết định của người dùng (17/11/2026): làm một mạch tới xong hẳn. Các mục **chưa có ảnh giữ trang chờ**: Cuộc gọi, Tin nhắn, Phát triển thương hiệu, Đối soát thanh toán, Báo cáo khám mới, cài đặt Hoá đơn điện tử, tab Phân loại/Combo trong CLS › Thiết lập, và mục **"Kê đơn"** trên Sidebar (mục thêm ngoài ảnh – giữ trang chờ, không làm). Nguyên tắc: **không có trong ảnh thì không làm**; riêng J4–J6, I2 là việc kỹ thuật (dữ liệu mẫu, migration, test, tài liệu) để các màn trong ảnh chạy ổn định.
+
+## Giai đoạn A — Thanh toán & phiếu thu (dùng chung Lễ tân / Khám bệnh)
+
+- [x] A1. Model phiếu thu: dòng thu theo từng dịch vụ (công khám, từng CLS), giảm giá dòng + giảm giá tổng, tiền khách đưa, mã phiếu, người thu, thông tin hoá đơn. Tương thích dữ liệu cũ. *(Xong: tsc qua, dữ liệu cũ vẫn tính đúng đã thu / còn lại.)*
+- [x] A2. Modal **Thu tiền** đầy đủ (031, 041): bảng dịch vụ có checkbox theo nhóm Công khám / Cận lâm sàng, giảm giá VNĐ/% từng dòng, tổng, giảm giá dịch vụ, khách cần trả, khách thanh toán, tiền thừa, phương thức; Đóng ESC / Thanh toán F9. *(Xong: thu một phần dịch vụ → dòng đó "Đã thanh toán", dòng còn lại vẫn chờ thu.)*
+- [x] A3. Thông tin **hoá đơn điện tử** Cá nhân / Doanh nghiệp (032, 033) + công tắc "Phát hành hoá đơn cho dịch vụ". *(Xong: lưu kèm phiếu thu, kiểm tra trường bắt buộc.)*
+- [x] A4. Modal **Phiếu thu / Hoá đơn** sau thanh toán (042, 064): tab Dịch vụ / Thuốc, thông tin thanh toán, Phát hành hoá đơn (mô phỏng), In phiếu bán hàng F8. *(Xong: mở tự động sau khi thanh toán.)*
+- [x] A5. Bản in **Phiếu bán hàng** (043). *(Xong: xem trước đúng dòng, giảm giá, tổng.)*
+- [x] A6. Trạng thái thanh toán **từng chỉ định CLS** ở màn khám dựa theo dòng đã thu (039, 044). *(Xong: thu CK riêng thì CLS vẫn "Chưa thanh toán".)*
+
+## Giai đoạn B — Lễ tân còn thiếu
+
+- [x] B1. In **phiếu tiếp nhận** F8 (030): STT, mã vạch giả lập, bác sĩ, phòng, người bệnh, người thân. Nút F8 ở form tiếp nhận và trong ngăn chi tiết.
+- [x] B2. Dropdown trạng thái trên dòng chỉ hiện bước hợp lệ: Đã đăng ký → "Tiếp nhận" / "Huỷ lịch" (019).
+- [x] B3. Tìm kiếm nâng cao theo ảnh (006–008): Phân loại (Đặt trước / Tại phòng khám / Chỉ định), Nguồn (Tại phòng khám / Bên ngoài). Giữ các trường đang có nếu không mâu thuẫn.
+
+## Giai đoạn C — Ngăn chi tiết lượt khám (dùng ở Khám bệnh, Người bệnh)
+
+- [x] C1. Ngăn chi tiết 4 tab **Thông tin lượt khám / Toa thuốc / Cận lâm sàng / Phiếu thu** (028, 029, 109–113).
+- [x] C2. Tab Toa thuốc hiển thị bản xem trước đơn thuốc; tab Phiếu thu liệt kê phiếu, bấm mở modal phiếu thu (A4).
+
+## Giai đoạn D — Cận lâm sàng: Chẩn đoán hình ảnh & Xét nghiệm
+
+- [x] D1. Model trạng thái thực hiện (Chờ thực hiện / Đang thực hiện / Hoàn thành / Đã huỷ / NB không đến) + trạng thái trả kết quả + nội dung kết quả.
+- [x] D2. Danh sách phiếu chỉ định CĐHA (045–051): bộ lọc ngày nhanh, phòng CLS, trạng thái thực hiện, trạng thái trả KQ, nâng cao, cột hiển thị; dòng mở rộng 3 tab.
+- [x] D3. Trả kết quả CĐHA (052–056): Mô tả / Kết luận / Đề nghị, ảnh (tải ảnh lên; chụp webcam nếu trình duyệt cho phép), Lưu kết quả F9, Lưu & in.
+- [x] D4. Danh sách Xét nghiệm (057) + trả kết quả bằng tệp PDF/ảnh tối đa 5 tệp (058–062).
+- [x] D5. Xem kết quả từ màn khám (065–067): tab Kết quả, nút "Xem kết quả".
+
+## Giai đoạn E — Người bệnh & Bệnh án điện tử
+
+- [x] E1. Danh sách Người bệnh (102, 105) + Thêm người bệnh dạng ngăn phải (106–107).
+- [x] E2. Hồ sơ người bệnh (108, 114–117): thông tin trái, tab Lịch sử khám / Ghi chú, Chỉnh sửa, Xoá (xác nhận).
+- [x] E3. Danh sách Bệnh án điện tử (089–090, 103–104).
+- [x] E4. Chi tiết bệnh án 3 tab Bệnh án / Phiếu điều trị / Tổng kết (091–097), đóng bệnh án, ký số (mô phỏng).
+- [x] E5. Bản in Bệnh án ngoại trú (098–101).
+
+## Giai đoạn F — Tổng quan & Báo cáo
+
+- [x] F1. Tổng quan (001) với số liệu thật từ store.
+- [x] F2. Báo cáo tổng quan (133–136): thẻ, biểu đồ lượt khám, tỉ lệ mới/cũ, giới tính, độ tuổi, CLS phổ biến, thuốc phổ biến.
+- [x] F3. Doanh thu bán hàng (135, 137–140) — bỏ phạm vi Nhà thuốc.
+- [x] F4. Chẩn đoán ICD (141), Dịch vụ chưa thu (142).
+- [x] F5. Hoá đơn phòng khám (143–148).
+- [x] F6. Báo cáo khám bệnh (149–150), Sổ khám bệnh (151–152), Lịch sử tải về + xuất CSV/Excel (153).
+- [x] F7. CLS › Báo cáo doanh thu cận lâm sàng (118–122, 154).
+
+## Giai đoạn G — Lịch & thông tin phòng khám
+
+- [x] G1. Lịch làm việc: Lịch cố định (075, 078–081).
+- [x] G2. Lịch nghỉ (076, 082–084), Lịch linh hoạt (077, 085–086).
+- [x] G3. Lịch hẹn (074).
+- [x] G4. Thông tin phòng khám – hồ sơ bác sĩ + xem trước (087–088).
+
+## Giai đoạn H — Hệ thống & Thiết lập CLS
+
+- [x] H1. Thông tin phòng khám, Tài khoản cá nhân, Giao diện (155–158).
+- [x] H2. Cài đặt chung (159).
+- [x] H3. Cơ cấu tổ chức 6 tab (160–167), Tiền công khám (168–170).
+- [x] H4. Nhật ký truy cập bệnh án (171–174), Nhân viên (175–176).
+- [x] H5. CLS › Thiết lập: danh mục, thêm/sửa, nhập file, mẫu kết quả (123–132).
+
+## Giai đoạn J — Bổ sung theo yêu cầu
+
+- [x] J1. Nút Thêm bệnh cũ F1 / Thêm bệnh mới F2 trên danh sách Lịch khám (020, 034); nút "+" ở cột trái màn khám (021).
+- [x] J2. Giao diện Sáng / Tối / Theo hệ thống hoạt động thật cho toàn app (158).
+- [x] J3. Tổng quan khi chưa có dữ liệu: checklist kích hoạt + khung thông báo (001).
+- [x] J4. Dữ liệu mẫu đủ cho mọi màn: CLS có kết quả, lịch làm việc, nhân viên, phiếu thu có dòng…
+- [x] J5. Migration localStorage khi đổi cấu trúc dữ liệu, không xoá dữ liệu cũ.
+- [x] J6. Test tự động (Vitest) cho tính tiền, bộ lọc, mã KB/STT.
+
+## Giai đoạn I — Hoàn thiện
+
+- [x] I1. Kiểm tra toàn bộ luồng Lễ tân → Khám → CLS → Thu tiền → Báo cáo trên trình duyệt (17/11: tiếp nhận F9 → khám, sinh hiệu/BMI → 2 chỉ định CLS gửi F2 → thu tiền có mã phiếu → phòng XN trả kết quả → màn khám "Có kết quả", xem tệp → chẩn đoán ICD → Hoàn thành → Lễ tân/Tổng quan cập nhật; 18 mục menu mở không lỗi console. Sửa kèm: ô chọn có tìm kiếm nhận ↑/↓/Enter; ô chẩn đoán đóng gợi ý khi Tab).
+- [x] I2. README, cập nhật INDEX.md và tài liệu bàn giao (17/11).
+
+## Giai đoạn K — Rà soát theo vai (17/11/2026)
+
+- [x] K1. Designer: nhãn trạng thái bị cắt, % biểu đồ tròn bị cắt, dòng Bảng giá vỡ bố cục, nút Lưu & in phiếu đè chữ, tab mục màn khám xuống dòng, menu trái xuống dòng khi đổi độ rộng, tooltip cho địa chỉ / ô lịch bị cắt, tương phản màu (nút xanh lá, avatar, logo, STT, link ở chế độ tối), nút ẩn hiện khi dùng bàn phím.
+- [x] K2. Lễ tân: tìm người bệnh không bị giới hạn bởi khoảng ngày; Lễ tân không còn "Hoàn tất khám" thay bác sĩ (thay bằng "Mở màn khám").
+- [x] K3. Bác sĩ: điền sẵn dị ứng từ hồ sơ + cảnh báo ở đơn thuốc; hỏi xác nhận khi hoàn thành chưa có chẩn đoán; chỉ định gửi lúc hoàn thành có trạng thái "chờ kết quả".
+- [x] K4. Kỹ thuật viên CLS: chỉ định huỷ / NB không đến không còn bị tính tiền (trừ khi đã thu); huỷ lượt khám thì huỷ các chỉ định chưa làm; tiêu đề "Cập nhật kết quả" khi đã có kết quả.
+- [x] K5. Thu ngân: lượt 0đ là "Không thanh toán" (không sinh phiếu thu 0đ, nút "Miễn phí"); đơn vị dòng CLS theo danh mục; báo cáo không hiện "▲100%" khi kỳ trước trống.
+- [x] K6. Quản trị: phòng ở Cơ cấu tổ chức đồng bộ với danh mục phòng (migration v3→v4); giữ giá công khám đã chốt khi đổi bảng giá; dịch vụ mặc định an toàn; bệnh án lượt cũ mặc định "Đã đóng".

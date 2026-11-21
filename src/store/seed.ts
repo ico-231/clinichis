@@ -1,8 +1,13 @@
 import { SERVICES, DOCTORS } from './catalog'
 import { INITIAL_COMBOS } from './paraclinicalCatalog'
+import { INITIAL_PRESCRIPTION_TEMPLATES } from './drugCatalog'
+import { ICD10 } from './icd10'
+import { enrichVisits, INTERNAL_CLS_SEED, seedSchedules } from './seedExtras'
+import { defaultSystem } from './systemDefaults'
 import { addDays, addMinutesToTime, pad, todayISO } from '@/lib/date'
 import type {
   ClinicState,
+  ExamRecord,
   GuardianRelation,
   Patient,
   PaymentMethod,
@@ -16,7 +21,8 @@ import type {
   VisitStatus,
 } from './types'
 
-export const STATE_VERSION = 2
+/** v3: thêm danh mục CLS nội bộ, lịch làm việc, cấu hình hệ thống, phiếu thu có dòng (xem migrations.ts) */
+export const STATE_VERSION = 4
 
 export const DEFAULT_COLUMNS: ReceptionColumnKey[] = [
   'stt',
@@ -188,6 +194,46 @@ export function formatVisitCode(date: string, seq: number) {
   return `YMD${date.replace(/-/g, '')}${String(seq).padStart(7, '0')}`
 }
 
+/** Bệnh án mẫu cho lượt đã khám (dùng bộ sinh số riêng để không đổi dữ liệu lượt khám) */
+function makeSeedExam(seq: number, serviceId: string, date: string): ExamRecord {
+  const rand = mulberry32(seq * 7919 + 17)
+  const icd = (code: string) => ICD10.find((d) => d.code === code)!
+  const tpl = (id: string) => INITIAL_PRESCRIPTION_TEMPLATES.find((t) => t.id === id)!
+  let plan: { codes: string[]; tplId?: string; history: string }
+  if (serviceId === 's7') plan = { codes: ['Z23.8'], history: 'Đến tiêm chủng theo lịch, không sốt, ăn bú tốt.' }
+  else if (serviceId === 's5') plan = { codes: [pick(rand, ['E44.0', 'Z71.3', 'D50.9'])], history: 'Biếng ăn, chậm tăng cân 2 tháng gần đây.' }
+  else if (serviceId === 's4') plan = pick(rand, [
+    { codes: ['J20.9'], tplId: 'tpl_pharyngitis', history: 'Ho đờm 4 ngày, sốt nhẹ, không khó thở.' },
+    { codes: ['J21.9'], tplId: 'tpl_fever', history: 'Ho, khò khè 3 ngày, bú kém hơn.' },
+    { codes: ['J45.9'], history: 'Khò khè tái phát khi thay đổi thời tiết.' },
+  ])
+  else plan = pick(rand, [
+    { codes: ['J00'], tplId: 'tpl_fever', history: 'Sốt 1–2 ngày, sổ mũi, ho ít.' },
+    { codes: ['J02.9'], tplId: 'tpl_pharyngitis', history: 'Sốt, đau họng, nuốt vướng 2 ngày.' },
+    { codes: ['A09'], tplId: 'tpl_diarrhea', history: 'Đi ngoài phân lỏng 4–5 lần/ngày, không máu.' },
+    { codes: ['B08.4'], tplId: 'tpl_fever', history: 'Sốt, nổi bóng nước ở lòng bàn tay, bàn chân, loét miệng.' },
+    { codes: ['L20.9'], history: 'Ngứa, nổi mẩn đỏ vùng má và khuỷu tay tái đi tái lại.' },
+  ])
+  const t = plan.tplId ? tpl(plan.tplId) : undefined
+  const followUp = rand() < 0.55
+  const followUpDays = pick(rand, [3, 5, 7])
+  return {
+    medicalHistory: plan.history,
+    allergy: false,
+    allergyNote: '',
+    otherRisk: false,
+    otherRiskNote: '',
+    labNote: '',
+    diagnoses: plan.codes.map(icd),
+    prescription: (t?.items ?? []).map((it, i) => ({ ...it, id: `rx${seq}_${i}` })),
+    advice: t?.advice ?? '',
+    followUpEnabled: followUp,
+    followUpDays,
+    followUpDate: followUp ? addDays(date, followUpDays) : '',
+    notes: [],
+  }
+}
+
 export function createSeedState(): ClinicState {
   const rand = mulberry32(20261113)
   const today = todayISO()
@@ -312,7 +358,7 @@ export function createSeedState(): ClinicState {
       const fee = service.price
       let paymentStatus: PaymentStatus
       const pr = rand()
-      if (fee === 0) paymentStatus = status === 'cancelled' ? 'cancelled' : status === 'done' ? 'paid' : 'unpaid'
+      if (fee === 0) paymentStatus = status === 'cancelled' ? 'cancelled' : 'none'
       else if (status === 'done') paymentStatus = pr < 0.86 ? 'paid' : pr < 0.95 ? 'partial' : 'unpaid'
       else if (status === 'in_progress') paymentStatus = pr < 0.5 ? 'paid' : 'unpaid'
       else if (status === 'waiting') paymentStatus = pr < 0.4 ? 'paid' : 'unpaid'
@@ -361,6 +407,7 @@ export function createSeedState(): ClinicState {
         source,
         reason: pick(rand, REASONS_BY_SERVICE[serviceId] ?? REASONS_BY_SERVICE.s1),
         note: patient.allergies && rand() < 0.5 ? `Dị ứng ${patient.allergies}` : pick(rand, NOTES),
+        exam: status === 'done' ? makeSeedExam(visitSeq, serviceId, date) : undefined,
         cancelReason: status === 'cancelled' ? pick(rand, ['Người nhà báo bận', 'Bé đã hết sốt', 'Đổi sang ngày khác', 'Không liên lạc được']) : undefined,
         createdAt: isoAt(category === 'booked' ? addDays(date, -1) : date, time, -10),
         checkedInAt: ['waiting', 'in_progress', 'done'].includes(status) ? isoAt(date, time, -5) : undefined,
@@ -371,11 +418,16 @@ export function createSeedState(): ClinicState {
     }
   }
 
+  const nameOf = new Map(patients.map((p) => [p.id, p.fullName]))
   return {
     version: STATE_VERSION,
     patients,
-    visits,
+    visits: enrichVisits(visits, (id) => nameOf.get(id) ?? '', today),
+    clsServices: INTERNAL_CLS_SEED,
+    schedules: seedSchedules(),
+    system: defaultSystem(),
     paraclinicalCombos: INITIAL_COMBOS,
+    prescriptionTemplates: INITIAL_PRESCRIPTION_TEMPLATES,
     defaultProviderId: 'lab_internal',
     ui: {
       activeRoute: 'reception',

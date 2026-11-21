@@ -46,7 +46,9 @@ export const SERVICES: Service[] = [
 ]
 
 export const doctorById = (id: string) => DOCTORS.find((d) => d.id === id)
-export const roomById = (id: string) => ROOMS.find((r) => r.id === id)
+/** Phòng gốc – vẫn tra được tên cho lượt khám cũ khi phòng đã bị xoá ở Cơ cấu tổ chức */
+const ROOM_ARCHIVE: Room[] = [...ROOMS]
+export const roomById = (id: string) => ROOMS.find((r) => r.id === id) ?? ROOM_ARCHIVE.find((r) => r.id === id)
 export const serviceById = (id: string) => SERVICES.find((s) => s.id === id)
 export const doctorLabel = (id: string) => {
   const d = doctorById(id)

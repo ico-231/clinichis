@@ -72,3 +72,9 @@ export function ageInYears(dob: string, refIso: string = todayISO()) {
 }
 
 export const WEEKDAYS_VN = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
+
+/** ISO (UTC) => "YYYY-MM-DDTHH:mm" theo giờ địa phương (dùng cho input datetime-local) */
+export function toLocalDateTimeInput(iso: string) {
+  const d = new Date(iso)
+  return `${toISODate(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}

@@ -1,7 +1,6 @@
 import {
   Activity,
   BarChart3,
-  Building2,
   CalendarCheck2,
   CalendarClock,
   ClipboardPlus,
@@ -9,12 +8,9 @@ import {
   FlaskConical,
   LayoutDashboard,
   LayoutGrid,
-  MessageSquareText,
   NotebookPen,
-  PhoneCall,
   ScanLine,
   Settings2,
-  Sparkles,
   Stethoscope,
   UserRoundCheck,
   UsersRound,
@@ -49,20 +45,12 @@ export const NAV_SECTIONS: NavSection[] = [
       { key: 'prescriptions', label: 'Kê đơn', icon: NotebookPen, color: 'text-sky-600', description: 'Kê đơn thuốc điện tử, mẫu đơn và lịch sử đơn của người bệnh.' },
     ],
   },
-  {
-    title: 'Tư vấn trực tuyến',
-    items: [
-      { key: 'calls', label: 'Cuộc gọi', icon: PhoneCall, color: 'text-green-600', description: 'Lịch sử và hàng đợi cuộc gọi tư vấn video/thoại.' },
-      { key: 'messages', label: 'Tin nhắn', icon: MessageSquareText, color: 'text-lime-600', description: 'Hộp thư tư vấn với người bệnh và người nhà.' },
-    ],
-  },
+  // Đã bỏ khỏi menu theo yêu cầu: Tư vấn trực tuyến (Cuộc gọi, Tin nhắn), Thông tin phòng khám, Phát triển thương hiệu
   {
     title: 'Đặt khám thông minh',
     items: [
       { key: 'appointments', label: 'Lịch hẹn', icon: CalendarClock, color: 'text-amber-500', description: 'Lịch hẹn đặt trước qua website, ứng dụng, Zalo và tổng đài.' },
       { key: 'schedule', label: 'Lịch làm việc', icon: CalendarCheck2, color: 'text-blue-600', description: 'Ca làm việc của bác sĩ theo phòng khám và khung giờ.' },
-      { key: 'clinic-info', label: 'Thông tin phòng khám', icon: Building2, color: 'text-emerald-600', description: 'Hồ sơ phòng khám, chuyên khoa, dịch vụ và bảng giá.' },
-      { key: 'branding', label: 'Phát triển thương hiệu', icon: Sparkles, color: 'text-orange-500', description: 'Trang đặt khám, đánh giá và chiến dịch chăm sóc khách hàng.' },
     ],
   },
   {
@@ -92,6 +80,9 @@ export const NAV_SECTIONS: NavSection[] = [
 
 export const NAV_ITEMS = NAV_SECTIONS.flatMap((s) => s.items.map((item) => ({ ...item, section: s.title })))
 
-export const findNav = (key: RouteKey) => NAV_ITEMS.find((i) => i.key === key)!
+export const findNav = (key: RouteKey) => NAV_ITEMS.find((i) => i.key === key)
+
+/** Route còn trên menu – route đã bỏ (vd. lưu từ phiên cũ) được đưa về Lễ tân khi tải dữ liệu */
+export const isNavRoute = (key: unknown): key is RouteKey => NAV_ITEMS.some((i) => i.key === key)
 
 export const PlaceholderIcon = ClipboardPlus

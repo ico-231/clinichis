@@ -13,13 +13,14 @@ import { ExistingPatientSpotlightModal } from './ExistingPatientSpotlightModal'
 import { ReceptionIntakeView, type IntakeInit } from './ReceptionIntakeView'
 import { CancelVisitModal, PaymentModal } from './PaymentModals'
 import { VisitDetailDrawer } from './VisitDetailDrawer'
+import { CheckInTicket } from '@/components/clinic/CheckInTicket'
 import { filtersRevealingVisit, useReceptionData } from './useReceptionData'
 import type { ReceptionColumnKey, Visit, VisitStatus } from '@/store/types'
 import type { VisitRow } from '@/store/selectors'
 
 export function ReceptionPage() {
-  const { ui } = useClinicState()
-  const { setReceptionView, setVisitStatus, setUI } = useClinicActions()
+  const { ui, system } = useClinicState()
+  const { setReceptionView, setVisitStatus, setUI, openExam } = useClinicActions()
   const toast = useToast()
   const view = ui.reception
   const data = useReceptionData()
@@ -30,6 +31,7 @@ export function ReceptionPage() {
   const [payId, setPayId] = useState<string | null>(null)
   const [cancelId, setCancelId] = useState<string | null>(null)
   const [highlightId, setHighlightId] = useState<string | null>(null)
+  const [ticketId, setTicketId] = useState<string | null>(null)
   const prevSidebarCollapsedRef = useRef<boolean | null>(null)
 
   const openIntake = useCallback(
@@ -53,6 +55,14 @@ export function ReceptionPage() {
       prevSidebarCollapsedRef.current = null
     }
   }, [setUI])
+
+  // Được chuyển tới từ màn khác với yêu cầu Thêm bệnh cũ / mới
+  useEffect(() => {
+    if (!ui.receptionAction) return
+    if (ui.receptionAction === 'existing') setSpotlightOpen(true)
+    else openIntake({ mode: 'new' })
+    setUI({ receptionAction: null })
+  }, [ui.receptionAction, openIntake, setUI])
 
   // Phím tắt F1 / F2 như hệ thống gốc
   useEffect(() => {
@@ -118,7 +128,16 @@ export function ReceptionPage() {
         key={`${intake.mode}-${intake.patientId ?? 'new'}-${intake.prefillQuery ?? ''}`}
         init={intake}
         onCancel={closeIntake}
-        onSaved={(visit) => onCreated(visit)}
+        onSaved={(visit, status, opts) => {
+          // F9 "Khám bệnh": chuyển thẳng sang màn khám của lượt vừa tạo
+          if (status === 'in_progress') {
+            closeIntake()
+            openExam(visit.id)
+          } else {
+            onCreated(visit)
+            if (opts?.print || (status === 'registered' && system?.general.printTicketOnCheckIn)) setTicketId(visit.id)
+          }
+        }}
       />
     )
   }
@@ -179,6 +198,7 @@ export function ReceptionPage() {
       <VisitDetailDrawer visitId={detailId} onClose={() => setDetailId(null)} onOpenVisit={setDetailId} onPay={setPayId} onCancel={setCancelId} />
       <PaymentModal visitId={payId} onClose={() => setPayId(null)} />
       <CancelVisitModal visitId={cancelId} onClose={() => setCancelId(null)} />
+      <CheckInTicket visitId={ticketId} onClose={() => setTicketId(null)} />
     </div>
   )
 }

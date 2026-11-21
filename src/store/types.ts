@@ -52,8 +52,11 @@ export interface Patient {
   guardianRelation?: GuardianRelation
   insuranceNumber?: string
   allergies?: string
+  /** Ghi chú về người bệnh (ảnh 114) */
+  notes?: VisitNote[]
   /** ISO datetime */
   createdAt: string
+  updatedAt?: string
 }
 
 export interface VitalSigns {
@@ -83,6 +86,13 @@ export interface ParaclinicalServiceItem {
   groupLabel: string
   category: 'imaging' | 'lab'
   price: number
+  /** Thiết lập danh mục CLS nội bộ (ảnh 123–131) */
+  unit?: string
+  classification?: string
+  room?: string
+  returnsResult?: boolean
+  printLayout?: 'portrait' | 'landscape'
+  paused?: boolean
 }
 
 export interface ParaclinicalOrderItem {
@@ -97,6 +107,309 @@ export interface ParaclinicalOrderItem {
   unitPrice: number
   quantity: number
   instruction: string
+  /** Thời điểm bác sĩ "Gửi chỉ định" tới nơi thực hiện */
+  sentAt?: string
+  /** Trạng thái trả kết quả (module CLS sẽ cập nhật) */
+  resultStatus?: 'waiting' | 'has_result'
+  /** Trạng thái thực hiện tại phòng CLS (ảnh 047) */
+  performStatus?: PerformStatus
+  result?: ParaclinicalResult
+}
+
+/** Mẫu kết quả CLS (ảnh 132): nội dung soạn sẵn chèn vào phiếu kết quả */
+export interface ResultTemplate {
+  id: string
+  name: string
+  /** Gắn với một dịch vụ CLS (rỗng = dùng chung) */
+  serviceId?: string
+  printTitle?: string
+  description: string
+  conclusion: string
+  recommendation?: string
+}
+
+export type PerformStatus = 'pending' | 'in_progress' | 'done' | 'cancelled' | 'no_show'
+
+export interface ResultFile {
+  id: string
+  name: string
+  /** MIME: application/pdf, image/jpeg... */
+  type: string
+  size: number
+  /** data: URL (lưu cục bộ trong trình duyệt – bản demo) */
+  dataUrl: string
+  at: string
+}
+
+/** Kết quả cận lâm sàng: dạng soạn thảo (CĐHA) hoặc tệp đính kèm (Xét nghiệm) */
+export interface ParaclinicalResult {
+  description: string
+  conclusion: string
+  recommendation: string
+  /** Ảnh chụp / tải lên kèm phiếu kết quả */
+  images: ResultFile[]
+  files: ResultFile[]
+  updatedAt: string
+  by: string
+}
+
+/** Chẩn đoán theo ICD-10 (code rỗng = chẩn đoán tự do) */
+export interface Diagnosis {
+  code: string
+  name: string
+}
+
+/** Danh mục thuốc dùng để kê đơn (không bán thuốc) */
+export interface Drug {
+  id: string
+  name: string
+  activeIngredient: string
+  strength: string
+  form: string
+  route: string
+  /** Đơn vị liều / cấp phát: Viên, Gói, ml... */
+  unit: string
+  manufacturer: string
+}
+
+export interface PrescriptionItem {
+  id: string
+  drugId: string
+  name: string
+  activeIngredient: string
+  strength: string
+  days: number
+  /** Đơn vị liều dùng mỗi lần */
+  doseUnit: string
+  morning: number
+  noon: number
+  afternoon: number
+  evening: number
+  /** Tổng số lượng = số ngày × tổng liều/ngày (cho phép sửa tay) */
+  quantity: number
+  quantityUnit: string
+  usage: string
+}
+
+export interface PrescriptionTemplate {
+  id: string
+  name: string
+  items: Omit<PrescriptionItem, 'id'>[]
+  advice: string
+}
+
+export interface VisitNote {
+  id: string
+  text: string
+  /** ISO datetime */
+  at: string
+}
+
+export type SignStatus = 'unsigned' | 'pending' | 'signed'
+
+/** Bệnh án ngoại trú điện tử của một lượt khám (ảnh 091–101) */
+export interface EmrRecord {
+  type: 'outpatient_general'
+  specialty: string
+  /** ISO datetime tạo bệnh án */
+  createdAt: string
+  subject: '' | 'insurance' | 'fee' | 'free' | 'other'
+  insuranceExpiry: string
+  referralDiagnosis: Diagnosis[]
+  admissionReason: string
+  personalHistory: string
+  familyHistory: string
+  generalExam: string
+  organExam: string
+  clsSummary: string
+  initialDiagnosis: Diagnosis[]
+  treatmentGiven: string
+  dischargeDiagnosis: Diagnosis[]
+  treatFrom: string
+  treatTo: string
+  summary: {
+    course: string
+    clsValue: string
+    mainDisease: Diagnosis[]
+    comorbid: Diagnosis[]
+    method: string
+    dischargeState: string
+    plan: string
+    films: { xray: string; ct: string; ultrasound: string; lab: string; total: string }
+  }
+  closed: boolean
+  signStatus: SignStatus
+  signedAt?: string
+  savedAt?: string
+}
+
+export type ScheduleKind = 'exam' | 'online'
+
+/** Khung giờ của lịch cố định theo thứ (ảnh 079, 081) – weekday: 0 = Thứ 2 ... 6 = Chủ nhật */
+export interface FixedSlot {
+  id: string
+  weekday: number
+  kind: ScheduleKind
+  start: string
+  end: string
+  perSlot: number
+  slotMinutes: number
+  minDaysAhead?: number
+  maxDaysAhead?: number
+  fee?: number
+  discount?: number
+  enabled: boolean
+}
+
+/** Lịch nghỉ (ảnh 082–084) */
+export interface LeaveSlot {
+  id: string
+  date: string
+  start: string
+  end: string
+  enabled: boolean
+}
+
+/** Lịch làm việc linh hoạt cho một ngày cụ thể (ảnh 085–086) */
+export interface FlexSlot extends Omit<FixedSlot, 'weekday'> {
+  date: string
+}
+
+export interface Schedules {
+  fixed: FixedSlot[]
+  leaves: LeaveSlot[]
+  flexible: FlexSlot[]
+}
+
+/** Hồ sơ phòng khám / bác sĩ hiển thị công khai (ảnh 087–088, 155) */
+export interface ClinicProfile {
+  clinicName: string
+  phone: string
+  email: string
+  logo?: string
+  doctorName: string
+  avatar?: string
+  practiceSince: string
+  specialty: string
+  examSpecialty: string
+  workplace: string
+  position: string
+  degree: string
+  province: string
+  ward: string
+  address: string
+  qualifications: string[]
+  prices: { name: string; price: number }[]
+  workingHours: { days: string; hours: string }[]
+  training: { url: string; name: string }[]
+  introduction: string
+  experience: string
+  awards: string
+  certificate?: string
+  images: string[]
+  status: 'draft' | 'pending'
+  submittedAt?: string
+}
+
+export interface OrgItem {
+  id: string
+  name: string
+  description: string
+  updatedAt: string
+}
+
+export interface StaffMember {
+  id: string
+  lastName: string
+  firstName: string
+  email: string
+  phone: string
+  gender: Gender
+  dob: string
+  avatar?: string
+  role: 'member' | 'admin'
+  signProvider: string
+  signUsername: string
+  status: 'active' | 'locked'
+  createdAt: string
+}
+
+/** Cấu hình hệ thống (ảnh 155–176) */
+export interface SystemSettings {
+  account: {
+    email: string
+    lastName: string
+    firstName: string
+    avatar?: string
+    signProvider: string
+    signUsername: string
+    alwaysSignExam: boolean
+    requireSignRx: boolean
+  }
+  general: {
+    accountPrefix: string
+    printTicketOnCheckIn: boolean
+    defaultLabId: string
+    rxInsuranceCode: string
+    rxFacilityCode: string
+    codePrefix: string
+    codeMinLength: number
+  }
+  org: {
+    specialties: OrgItem[]
+    areas: OrgItem[]
+    rooms: OrgItem[]
+    visitTypes: OrgItem[]
+    subjects: OrgItem[]
+  }
+  staff: StaffMember[]
+}
+
+/** Lịch sử tải báo cáo (ảnh 153) */
+export interface ReportDownload {
+  id: string
+  name: string
+  report: string
+  rangeLabel: string
+  fileType: 'CSV'
+  at: string
+  status: 'success'
+  /** Nội dung để "Tải lại" (giới hạn dung lượng) */
+  content?: string
+}
+
+/** Nhật ký truy cập bệnh án (ảnh 171–174) */
+export interface EmrAccessLog {
+  id: string
+  at: string
+  user: string
+  action: 'view' | 'edit' | 'delete'
+  visitId: string
+  emrCode: string
+  signStatus: SignStatus
+  state: 'draft' | 'created' | 'closed'
+}
+
+/** Dữ liệu khám bệnh của bác sĩ cho một lượt khám */
+export interface ExamRecord {
+  /** Hỏi bệnh: quá trình bệnh lý */
+  medicalHistory: string
+  allergy: boolean
+  allergyNote: string
+  otherRisk: boolean
+  otherRiskNote: string
+  /** Ghi chú gửi phòng lab */
+  labNote: string
+  diagnoses: Diagnosis[]
+  prescription: PrescriptionItem[]
+  /** Lời dặn của bác sĩ */
+  advice: string
+  prescriptionSentAt?: string
+  followUpEnabled: boolean
+  followUpDays: number
+  /** YYYY-MM-DD */
+  followUpDate: string
+  notes: VisitNote[]
 }
 
 export interface ParaclinicalCombo {
@@ -106,14 +419,51 @@ export interface ParaclinicalCombo {
   items: { serviceId: string; quantity: number; instruction?: string }[]
 }
 
+/** Một dòng trên phiếu thu: công khám hoặc một chỉ định CLS */
+export interface ReceiptLine {
+  kind: 'consultation' | 'paraclinical'
+  /** 'ck' cho công khám, id chỉ định cho CLS */
+  refId: string
+  name: string
+  unit: string
+  quantity: number
+  unitPrice: number
+  /** Giảm giá của dòng (VNĐ, đã quy đổi nếu nhập %) */
+  discount: number
+}
+
+export interface InvoiceInfo {
+  type: 'personal' | 'company'
+  /** Họ tên (cá nhân) hoặc tên công ty */
+  name: string
+  taxCode: string
+  email: string
+  phone: string
+  address: string
+  status: 'not_issued' | 'issued'
+  issuedAt?: string
+}
+
 export interface PaymentRecord {
   id: string
   kind: 'payment' | 'refund'
+  /** Số tiền thực thu / thực hoàn (sau giảm giá) */
   amount: number
   method: PaymentMethod
   /** ISO datetime */
   at: string
   note?: string
+  /** Mã phiếu thu, ví dụ YMD20261116000003 (dữ liệu cũ có thể không có) */
+  code?: string
+  /** Các dòng được thu trong phiếu (dữ liệu cũ không có => phân bổ theo thứ tự) */
+  lines?: ReceiptLine[]
+  /** Giảm giá dịch vụ trên toàn phiếu (VNĐ) */
+  discount?: number
+  /** Tiền khách đưa (để tính tiền thừa) */
+  customerPaid?: number
+  cashier?: string
+  /** Yêu cầu xuất hoá đơn điện tử */
+  invoice?: InvoiceInfo
 }
 
 /** Một lượt khám (encounter) */
@@ -153,6 +503,10 @@ export interface Visit {
   symptoms?: string
   note: string
   vitals?: VitalSigns
+  /** Phần khám của bác sĩ (màn Khám bệnh) */
+  exam?: ExamRecord
+  /** Bệnh án điện tử (tạo khi lưu lần đầu ở trang Bệnh án điện tử) */
+  emr?: EmrRecord
   cancelReason?: string
   createdAt: string
   checkedInAt?: string
@@ -225,7 +579,8 @@ export interface ReceptionFilters {
   status: VisitStatus | 'all'
   payment: PaymentStatus | 'all'
   category: VisitCategory | 'all'
-  source: VisitSource | 'all'
+  /** Nguồn theo ảnh 008: Tại phòng khám (trực tiếp) / Bên ngoài (đặt online, giới thiệu...) */
+  source: 'all' | 'onsite' | 'external'
   doctorId: string | 'all'
   roomId: string | 'all'
   patientType: PatientType | 'all'
@@ -248,6 +603,16 @@ export interface UIState {
   sidebarCollapsed: boolean
   upgradeCardDismissed: boolean
   reception: ReceptionViewState
+  /** Lượt khám đang mở trong màn Khám bệnh (null = danh sách) */
+  examVisitId?: string | null
+  /** Hồ sơ người bệnh đang mở ở trang Người bệnh */
+  patientId?: string | null
+  /** Bệnh án đang mở ở trang Bệnh án điện tử */
+  emrVisitId?: string | null
+  /** Giao diện: theo hệ thống / sáng / tối */
+  theme?: 'system' | 'light' | 'dark'
+  /** Yêu cầu mở Thêm bệnh cũ (F1) / mới (F2) khi chuyển sang Lễ tân từ màn khác */
+  receptionAction?: 'existing' | 'new' | null
 }
 
 export interface ClinicState {
@@ -256,6 +621,19 @@ export interface ClinicState {
   visits: Visit[]
   paraclinicalCombos: ParaclinicalCombo[]
   defaultProviderId: string
+  /** Đơn thuốc mẫu (có thể thiếu ở dữ liệu lưu từ phiên bản cũ) */
+  prescriptionTemplates?: PrescriptionTemplate[]
+  /** Mẫu kết quả CLS do người dùng tạo */
+  resultTemplates?: ResultTemplate[]
+  emrLogs?: EmrAccessLog[]
+  reportDownloads?: ReportDownload[]
+  schedules?: Schedules
+  clinicProfile?: ClinicProfile
+  system?: SystemSettings
+  /** Danh mục công khám (Tiền công khám – ảnh 168) */
+  services?: Service[]
+  /** Danh mục CLS của lab nội bộ (ảnh 123) */
+  clsServices?: ParaclinicalServiceItem[]
   ui: UIState
 }
 

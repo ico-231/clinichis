@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type InputHTMLAttributes, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type InputHTMLAttributes, type KeyboardEvent, type ReactNode } from 'react'
 import { CalendarDays, Check, ChevronDown, ChevronsUpDown, Search, X } from 'lucide-react'
 import { Popover } from '@/components/ui/Popover'
 import { cn } from '@/lib/cn'
@@ -162,7 +162,9 @@ export function UnderlineSelect<T extends string>({
 }) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
+  const [active, setActive] = useState(0)
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
   const selected = options.find((o) => o.value === value)
 
   const filtered = useMemo(() => {
@@ -173,6 +175,26 @@ export function UnderlineSelect<T extends string>({
 
   const Icon = iconType === 'updown' ? ChevronsUpDown : ChevronDown
 
+  const pick = (val: T) => {
+    onChange(val)
+    setOpen(false)
+    triggerRef.current?.focus()
+  }
+
+  /** ↑/↓ chọn dòng, Enter xác nhận – gõ tìm rồi Enter là chọn ngay kết quả đầu */
+  const onSearchKey = (e: KeyboardEvent) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      const next = Math.max(0, Math.min(filtered.length - 1, active + (e.key === 'ArrowDown' ? 1 : -1)))
+      setActive(next)
+      listRef.current?.children[next]?.scrollIntoView({ block: 'nearest' })
+    } else if (e.key === 'Enter') {
+      e.preventDefault()
+      const opt = filtered[active]
+      if (opt) pick(opt.value)
+    }
+  }
+
   return (
     <div className={className}>
       <FieldLabel label={label} required={required} />
@@ -182,6 +204,7 @@ export function UnderlineSelect<T extends string>({
         disabled={disabled}
         onClick={() => {
           setQuery('')
+          setActive(Math.max(0, options.findIndex((o) => o.value === value)))
           setOpen((o) => !o)
         }}
         className={cn(
@@ -211,7 +234,11 @@ export function UnderlineSelect<T extends string>({
             <input
               autoFocus
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value)
+                setActive(0)
+              }}
+              onKeyDown={onSearchKey}
               placeholder="Tìm nhanh..."
               className="w-full bg-transparent text-[12.5px] text-slate-900 outline-none placeholder:text-slate-400"
             />
@@ -222,19 +249,18 @@ export function UnderlineSelect<T extends string>({
             )}
           </div>
         )}
-        <div className="thin-scroll max-h-60 overflow-y-auto">
-          {filtered.map((opt) => {
+        <div ref={listRef} className="thin-scroll max-h-60 overflow-y-auto">
+          {filtered.map((opt, i) => {
             const isSel = opt.value === value
             return (
               <button
                 key={opt.value}
                 type="button"
-                onClick={() => {
-                  onChange(opt.value)
-                  setOpen(false)
-                }}
+                onClick={() => pick(opt.value)}
+                onMouseEnter={() => searchable && setActive(i)}
                 className={cn(
                   'flex w-full items-center justify-between gap-2 px-3 py-1.5 text-left text-[13px] transition hover:bg-slate-100',
+                  searchable && i === active && 'bg-slate-100',
                   isSel ? 'bg-blue-50/60 font-medium text-blue-700' : 'text-slate-800',
                 )}
               >

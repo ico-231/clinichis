@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { ChevronRight, ChevronsUpDown, Crown, LogOut, RotateCcw, UserRound, X } from 'lucide-react'
 import { NAV_SECTIONS } from '@/navigation'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
+import { initials } from '@/lib/format'
 import { CLINIC } from '@/store/catalog'
 import { DropdownMenu, MenuItem, MenuSeparator } from '@/components/ui/DropdownMenu'
 import { useToast } from '@/components/ui/Toast'
@@ -10,7 +11,9 @@ import { todayISO } from '@/lib/date'
 import type { RouteKey } from '@/store/types'
 
 export function Sidebar() {
-  const { ui, visits } = useClinicState()
+  const { ui, visits, system } = useClinicState()
+  const account = system?.account
+  const userName = account ? `${account.lastName} ${account.firstName}` : 'Nguyễn Đắc Nghĩa'
   const { navigate, setUI, resetDemoData } = useClinicActions()
   const toast = useToast()
   const collapsed = ui.sidebarCollapsed
@@ -26,10 +29,10 @@ export function Sidebar() {
   }, [visits])
 
   return (
-    <aside className={cn('flex h-full shrink-0 flex-col border-r border-slate-200 bg-white transition-[width] duration-200', collapsed ? 'w-[64px]' : 'w-[230px]')}>
+    <aside className={cn('flex h-full shrink-0 flex-col overflow-hidden whitespace-nowrap border-r border-slate-200 bg-white transition-[width] duration-200', collapsed ? 'w-[64px]' : 'w-[230px]')}>
       {/* Thương hiệu */}
       <div className={cn('flex h-[52px] shrink-0 items-center gap-2.5', collapsed ? 'justify-center px-2' : 'px-3')}>
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-rose-500 text-sm font-bold text-white shadow-sm">{CLINIC.shortName}</div>
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-rose-600 text-sm font-bold text-white shadow-sm">{CLINIC.shortName}</div>
         {!collapsed && <span className="truncate text-[14px] font-medium text-slate-900">{CLINIC.name}</span>}
       </div>
 
@@ -96,11 +99,15 @@ export function Sidebar() {
           className="w-56"
           renderTrigger={({ ref, toggle }) => (
             <button ref={ref} type="button" onClick={toggle} className={cn('flex w-full items-center gap-2.5 rounded-md p-1.5 text-left hover:bg-slate-50', collapsed && 'justify-center')}>
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-400 text-xs font-semibold text-white">NN</span>
+              {account?.avatar ? (
+                <img src={account.avatar} alt="" className="h-8 w-8 shrink-0 rounded-full object-cover" />
+              ) : (
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-700 text-xs font-semibold text-white">{initials(userName)}</span>
+              )}
               {!collapsed && (
                 <>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[13px] font-semibold text-slate-900">Nguyễn Đắc Nghĩa</span>
+                    <span className="block truncate text-[13px] font-semibold text-slate-900">{userName}</span>
                     <span className="block truncate text-[11.5px] text-slate-500">Quản trị viên</span>
                   </span>
                   <ChevronsUpDown className="h-4 w-4 text-slate-500" />
@@ -124,7 +131,7 @@ export function Sidebar() {
             Đăng xuất
           </MenuItem>
         </DropdownMenu>
-        {!collapsed && <p className="mt-1 px-1.5 text-[10.5px] text-slate-400">ClinicHIS 0.1.0 · Bản demo</p>}
+        {!collapsed && <p className="mt-1 px-1.5 text-[10.5px] text-slate-500">ClinicHIS 0.1.0 · Bản demo</p>}
       </div>
     </aside>
   )

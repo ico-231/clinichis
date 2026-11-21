@@ -19,3 +19,6 @@ logs/
 # beside it.
 /.plugins/
 /.opencode-skills/
+
+# Ảnh chụp hệ thống tham chiếu (bên thứ ba, có thể chứa dữ liệu người bệnh) — không đưa lên git
+/docs/reference/screenshots/

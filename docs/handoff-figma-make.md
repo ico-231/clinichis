@@ -1,4 +1,8 @@
 > Tài liệu bàn giao ngữ cảnh từ Figma Make (tham khảo, không phải file hướng dẫn CLAUDE.md chuẩn). Bản AGENTS gốc: [agents-figma-make.md](agents-figma-make.md).
+>
+> **Cập nhật 17/11/2026:** phần lịch sử bên dưới mô tả trạng thái *lúc bàn giao* (chỉ có Lễ tân).
+> Hiện trạng mới nhất xem [README](../README.md) (kiến trúc, tính năng, phím tắt, phạm vi) và
+> [ROADMAP](ROADMAP.md) (từng giai đoạn A–J, I đã hoàn tất). Mục 11–12 đã được ghi chú lại theo hiện trạng.
 
 # ClinicHIS — Bàn giao dự án từ Figma Make sang Claude Code
 
@@ -552,19 +556,25 @@ trong trình duyệt. Khi sửa phải kiểm chứng và giữ phạm vi ngư�
 
 ### Chưa triển khai
 
-- Backend, database, API, auth/roles, đồng bộ nhiều máy/người dùng.
-- Giao diện thật cho các route ngoài Lễ tân, kể cả Tổng quan và Khám bệnh.
-- Kê đơn thực tế, kết quả xét nghiệm/CĐHA, lịch hẹn/lịch bác sĩ đầy đủ.
-- In phiếu thật: F8 trên intake disabled; nút In trong drawer chỉ hiện toast,
-  không thực sự gửi lệnh tới máy in.
+> Cập nhật 17/11/2026: các màn có ảnh tham chiếu đều đã có giao diện và luồng (xem README).
+> Gạch đầu dòng nào đã xử lý được ghi chú **[ĐÃ LÀM]**.
+
+- Backend, database, API, auth/roles, đồng bộ nhiều máy/người dùng. *(vẫn chưa — app là demo localStorage)*
+- **[ĐÃ LÀM]** Giao diện thật cho các route ngoài Lễ tân, kể cả Tổng quan và Khám bệnh.
+  Route chưa có ảnh vẫn là trang chờ: Kê đơn, Cuộc gọi, Tin nhắn, Phát triển thương hiệu.
+- **[ĐÃ LÀM]** Kê đơn trong màn khám, kết quả xét nghiệm/CĐHA, lịch hẹn/lịch làm việc.
+- **[ĐÃ LÀM]** In phiếu: phiếu tiếp nhận nhiệt (F8), đơn thuốc, phiếu chỉ định, phiếu thu,
+  phiếu kết quả, bệnh án — qua hộp xem trước và hộp in của trình duyệt.
 - Thanh toán hiện chỉ là ghi nhận số liệu demo, không tích hợp ngân hàng/cổng thanh toán.
-- Một số mục tài khoản/nâng cấp trên Sidebar còn là control chưa có luồng thật.
-- Bộ danh mục hành chính/lab là dữ liệu mẫu giới hạn, không phải danh mục sản phẩm đầy đủ.
-- Chưa có unit/integration/E2E test suite.
+  Hoá đơn điện tử chỉ ghi nhận thông tin, không phát hành thật.
+- Nút "Nâng cấp ngay" trên Sidebar vẫn là control trang trí.
+- Bộ danh mục hành chính/lab/thuốc/ICD-10 là dữ liệu mẫu giới hạn.
+- **[ĐÃ LÀM một phần]** Có unit test Vitest (billing, migration, bộ lọc, tính liều/BMI, mã);
+  chưa có integration/E2E tự động — luồng chính được kiểm tra thủ công trên trình duyệt.
 
 ### Rủi ro và điểm nên kiểm tra tiếp
 
-1. **Version localStorage chưa có migration:** `loadPersisted()` trả null khi
+1. **[ĐÃ SỬA — `store/migrations.ts`: v2→v3 giữ dữ liệu; phiên bản lạ được sao lưu vào `clinic-his:backup-v<n>` trước khi dùng seed]** **Version localStorage chưa có migration:** `loadPersisted()` trả null khi
    version không khớp, rồi dùng seed mới. Tăng `STATE_VERSION` có thể làm dữ
    liệu cũ không còn xuất hiện. Sao lưu và viết migration nếu muốn giữ dữ liệu.
 2. **Dữ liệu trình duyệt không đi theo source code:** chuyển origin/domain
@@ -589,7 +599,7 @@ trong trình duyệt. Khi sửa phải kiểm chứng và giữ phạm vi ngư�
 10. **Validation:** form intake và form legacy có luật khác nhau; intake
     chưa kiểm tra đầy đủ CCCD, email, BHYT, sinh hiệu và giới hạn giờ.
     Date input có thể revert về giá trị cũ khi gõ sai; cần kiểm thử.
-11. **Khả năng sử dụng:** kiểm tra focus trap, label liên kết input, thao tác
+11. **[CẢI THIỆN — phím tắt chữ bị chặn khi đang gõ, ngăn xếp lớp phủ cho Esc/phím F, ô chọn có ↑/↓/Enter]** **Khả năng sử dụng:** kiểm tra focus trap, label liên kết input, thao tác
     bàn phím, Escape với nhiều lớp phủ, shortcut khi confirmation đang mở,
     bố cục tablet/mobile. Chưa có bằng chứng kiểm thử đầy đủ.
 12. **Bảo toàn dữ liệu y tế:** đây là demo localStorage, không phù hợp lưu hồ
@@ -612,6 +622,10 @@ pnpm build
   dụng nếu chưa thực sự chạy lệnh.
 - Những lời báo “hoàn thiện trọn bộ”, “khớp 100%”, “SSR an toàn” trước đây
   không phải chứng nhận; dùng mã nguồn, ảnh và kiểm thử làm căn cứ thực tế.
+
+**Cập nhật 17/11/2026:** `tsc -b` sạch, `vitest run` 19/19 đạt, `vite build` thành công
+(các màn tải theo nhu cầu, bundle chính ~336 kB / 97 kB gzip). Luồng Lễ tân → Khám → CLS →
+Thu tiền → Kết quả → Hoàn thành → Báo cáo đã chạy thủ công trên trình duyệt (ROADMAP I1).
 
 ## 13. Lộ trình chuyển sang Claude Code / Next.js
 

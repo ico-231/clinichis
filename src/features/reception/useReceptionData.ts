@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useClinicState, paidAmount } from '@/store/ClinicStore'
+import { useClinicState, paidAmount, remainingAmount } from '@/store/ClinicStore'
 import { useVisitRows, type VisitRow } from '@/store/selectors'
 import { normalizeText } from '@/lib/format'
 import { RECEPTION_COLUMNS } from './columns'
@@ -11,7 +11,7 @@ function matches(row: VisitRow, f: ReceptionFilters, ignoreStatus = false) {
   if (!ignoreStatus && f.status !== 'all' && v.status !== f.status) return false
   if (f.payment !== 'all' && v.paymentStatus !== f.payment) return false
   if (f.category !== 'all' && v.category !== f.category) return false
-  if (f.source !== 'all' && v.source !== f.source) return false
+  if (f.source !== 'all' && (v.source === 'direct' ? 'onsite' : 'external') !== f.source) return false
   if (f.doctorId !== 'all' && v.doctorId !== f.doctorId) return false
   if (f.roomId !== 'all' && v.roomId !== f.roomId) return false
   if (f.patientType !== 'all' && v.patientType !== f.patientType) return false
@@ -38,7 +38,7 @@ export function filtersRevealingVisit(f: ReceptionFilters, v: Visit): ReceptionF
     status: f.status !== 'all' && f.status !== v.status ? 'all' : f.status,
     payment: f.payment !== 'all' && f.payment !== v.paymentStatus ? 'all' : f.payment,
     category: f.category !== 'all' && f.category !== v.category ? 'all' : f.category,
-    source: f.source !== 'all' && f.source !== v.source ? 'all' : f.source,
+    source: f.source !== 'all' && f.source !== (v.source === 'direct' ? 'onsite' : 'external') ? 'all' : f.source,
     doctorId: f.doctorId !== 'all' && f.doctorId !== v.doctorId ? 'all' : f.doctorId,
     roomId: f.roomId !== 'all' && f.roomId !== v.roomId ? 'all' : f.roomId,
     patientType: f.patientType !== 'all' && f.patientType !== v.patientType ? 'all' : f.patientType,
@@ -84,7 +84,7 @@ export function useReceptionData() {
 
     const active = filtered.filter((r) => r.visit.status !== 'cancelled')
     const collected = filtered.reduce((s, r) => s + paidAmount(r.visit), 0)
-    const outstanding = active.reduce((s, r) => s + Math.max(r.visit.fee - paidAmount(r.visit), 0), 0)
+    const outstanding = active.reduce((s, r) => s + remainingAmount(r.visit), 0)
 
     return { scopedTotal: scoped.length, sorted, pageRows, page, pageCount, statusCounts, collected, outstanding }
   }, [rows, filters, sort, pageSize, view.page])

@@ -3,6 +3,8 @@
 
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Bản in (đơn thuốc, phiếu, bệnh án): font có đủ dấu tiếng Việt */
+  --font-doc: 'Times New Roman', Times, 'Noto Serif', serif;
 
   --animate-fade-in: fade-in 140ms ease-out;
   --animate-pop-in: pop-in 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -58,4 +60,135 @@
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 transparent;
   }
+}
+
+/* In: chỉ in vùng .print-area (đơn thuốc, phiếu chỉ định) */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+  .print-area {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    max-width: none;
+    box-shadow: none;
+  }
+}
+
+/* Nội dung soạn thảo có định dạng (kết quả CĐHA, mẫu kết quả) */
+@layer components {
+  .rich-content ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .rich-content ol {
+    list-style: decimal;
+    padding-left: 1.25rem;
+  }
+  .rich-editor:empty::before {
+    content: attr(data-placeholder);
+    color: #94a3b8;
+    pointer-events: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Giao diện tối (ảnh 158): ánh xạ lại thang màu slate + nền nhạt       */
+/* Bật bằng class .dark trên <html> (xem src/lib/theme.ts)             */
+/* ------------------------------------------------------------------ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+  color-scheme: dark;
+  --color-slate-50: #0d1526;
+  --color-slate-100: #18233a;
+  --color-slate-200: #263349;
+  --color-slate-300: #3a4a63;
+  --color-slate-400: #64748b;
+  --color-slate-500: #94a3b8;
+  --color-slate-600: #b4c0cf;
+  --color-slate-700: #cbd5e1;
+  --color-slate-800: #e2e8f0;
+  --color-slate-900: #f1f5f9;
+  --color-slate-950: #f8fafc;
+  --color-blue-50: #14234a;
+  --color-blue-100: #1b2f63;
+  --color-emerald-50: #0b2b26;
+  --color-emerald-100: #0f3b33;
+  --color-green-50: #0b2a17;
+  --color-orange-50: #3a1d0c;
+  --color-orange-100: #4a2610;
+  --color-amber-50: #33270a;
+  --color-red-50: #3a1214;
+  --color-violet-50: #241a47;
+  --color-sky-50: #0b2638;
+  --color-yellow-50: #2f2a0a;
+  --color-rose-50: #3a1220;
+  --color-pink-50: #3a1230;
+}
+.dark body {
+  background-color: #0b1220;
+}
+.dark .bg-white {
+  background-color: #111a2c;
+}
+.dark :is(.bg-white\/90, .bg-white\/70) {
+  background-color: rgb(17 26 44 / 0.9);
+}
+/* Lớp phủ, tooltip: luôn tối */
+.dark [class*='bg-slate-900/'] {
+  background-color: rgb(2 6 23 / 0.7);
+}
+.dark .bg-slate-900 {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+/* Chữ màu đậm trên nền nhạt => sáng hơn ở nền tối */
+/* text-blue-600 (link, mã khám) chỉ đạt 3.3:1 trên nền tối */
+.dark .text-blue-600 {
+  color: #60a5fa;
+}
+.dark .text-blue-700,
+.dark .text-blue-800 {
+  color: #93c5fd;
+}
+.dark .text-emerald-700,
+.dark .text-emerald-800 {
+  color: #6ee7b7;
+}
+.dark :is(.text-orange-700, .text-orange-800, .text-amber-700, .text-amber-800, .text-yellow-800) {
+  color: #fdba74;
+}
+.dark :is(.text-red-700, .text-red-800, .text-rose-700) {
+  color: #fca5a5;
+}
+.dark .text-violet-700 {
+  color: #c4b5fd;
+}
+.dark .text-sky-700 {
+  color: #7dd3fc;
+}
+/* Bản in luôn giữ giao diện sáng */
+.dark .print-area {
+  color-scheme: light;
+  --color-slate-50: oklch(98.4% 0.003 247.858);
+  --color-slate-100: oklch(96.8% 0.007 247.896);
+  --color-slate-200: oklch(92.9% 0.013 255.508);
+  --color-slate-300: oklch(86.9% 0.022 252.894);
+  --color-slate-400: oklch(70.4% 0.04 256.788);
+  --color-slate-500: oklch(55.4% 0.046 257.417);
+  --color-slate-600: oklch(44.6% 0.043 257.281);
+  --color-slate-700: oklch(37.2% 0.044 257.287);
+  --color-slate-800: oklch(27.9% 0.041 260.031);
+  --color-slate-900: oklch(20.8% 0.042 265.755);
+  background-color: #fff;
+  color: #000;
+}
+.dark .print-area .bg-white {
+  background-color: #fff;
 }

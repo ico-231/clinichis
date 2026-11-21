@@ -1,10 +1,11 @@
-import { ArrowDown, ArrowUp, Check, ChevronDown, ChevronsUpDown } from 'lucide-react'
+import { ArrowDown, ArrowUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
 import { DropdownMenu, MenuItem } from '@/components/ui/DropdownMenu'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { VisitStatusIcon } from '@/components/clinic/StatusBadges'
 import { VISIT_STATUS_FILTER } from '@/store/catalog'
 import { cn } from '@/lib/cn'
 import { RECEPTION_COLUMNS, type ReceptionColumn } from './columns'
+import { STATUS_ACTIONS } from './visitFlow'
 import type { VisitRow } from '@/store/selectors'
 import type { ReceptionColumnKey, ReceptionViewState, VisitStatus } from '@/store/types'
 
@@ -21,7 +22,7 @@ interface ReceptionTableProps {
 }
 
 const FIXED_LEFT = [
-  { key: 'status', label: 'Trạng thái', width: 170 },
+  { key: 'status', label: 'Trạng thái', width: 192 },
   { key: 'code', label: 'Mã KB', width: 176 },
 ]
 
@@ -78,42 +79,38 @@ export function ReceptionTable({
               <tr key={visit.id} onClick={() => onOpen(visit.id)} className={cn('group cursor-pointer', visit.status === 'cancelled' && 'text-slate-400')}>
                 {/* Cột Trạng thái: pill dropdown đổi trạng thái trực tiếp */}
                 <td className={td} onClick={(e) => e.stopPropagation()}>
-                  <DropdownMenu
-                    align="start"
-                    className="w-48"
-                    renderTrigger={({ ref, toggle, open }) => (
-                      <button
-                        ref={ref}
-                        type="button"
-                        onClick={toggle}
-                        className={cn(
-                          'inline-flex h-7 max-w-full items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/90 px-2.5 text-[12px] font-medium whitespace-nowrap text-slate-800 transition hover:border-slate-300 hover:bg-slate-100',
-                          open && 'border-blue-400 ring-2 ring-blue-500/15',
-                        )}
-                      >
-                        <VisitStatusIcon status={visit.status} className="h-3.5 w-3.5 shrink-0" />
-                        <span className="truncate">{currentStatusLabel}</span>
-                        <ChevronDown className="h-3 w-3 shrink-0 text-slate-400" />
-                      </button>
-                    )}
-                  >
-                    {VISIT_STATUS_FILTER.map((opt) => {
-                      const isCur = opt.value === visit.status
-                      return (
-                        <MenuItem
-                          key={opt.value}
-                          icon={<VisitStatusIcon status={opt.value} />}
-                          danger={opt.value === 'cancelled'}
-                          shortcut={isCur ? <Check className="h-3.5 w-3.5 text-blue-600" /> : undefined}
-                          onSelect={() => {
-                            if (opt.value !== visit.status) onChangeStatus(row, opt.value)
-                          }}
+                  {STATUS_ACTIONS[visit.status].length === 0 ? (
+                    <span className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/90 px-2.5 text-[12px] font-medium whitespace-nowrap text-slate-800">
+                      <VisitStatusIcon status={visit.status} className="h-3.5 w-3.5 shrink-0" />
+                      <span className="truncate">{currentStatusLabel}</span>
+                    </span>
+                  ) : (
+                    <DropdownMenu
+                      align="start"
+                      className="w-44"
+                      renderTrigger={({ ref, toggle, open }) => (
+                        <button
+                          ref={ref}
+                          type="button"
+                          onClick={toggle}
+                          className={cn(
+                            'inline-flex h-7 max-w-full items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/90 px-2.5 text-[12px] font-medium whitespace-nowrap text-slate-800 transition hover:border-slate-300 hover:bg-slate-100',
+                            open && 'border-blue-400 ring-2 ring-blue-500/15',
+                          )}
                         >
-                          {opt.label}
+                          <VisitStatusIcon status={visit.status} className="h-3.5 w-3.5 shrink-0" />
+                          <span className="truncate">{currentStatusLabel}</span>
+                          <ChevronDown className="h-3 w-3 shrink-0 text-slate-400" />
+                        </button>
+                      )}
+                    >
+                      {STATUS_ACTIONS[visit.status].map((act) => (
+                        <MenuItem key={act.to} icon={<VisitStatusIcon status={act.to} />} danger={act.to === 'cancelled'} onSelect={() => onChangeStatus(row, act.to)}>
+                          {act.label}
                         </MenuItem>
-                      )
-                    })}
-                  </DropdownMenu>
+                      ))}
+                    </DropdownMenu>
+                  )}
                 </td>
 
                 {/* Cột Mã KB */}

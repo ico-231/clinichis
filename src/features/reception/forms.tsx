@@ -180,11 +180,14 @@ function roundedNow() {
   return `${pad(Math.floor(total / 60) % 24)}:${pad(total % 60)}`
 }
 
+/** Dịch vụ mặc định: "Khám nhi tổng quát" nếu còn trong bảng giá, không thì dịch vụ đầu tiên (Hệ thống › Tiền công khám có thể xoá/đổi) */
+const defaultService = () => serviceById('s1') ?? SERVICES[0]
+
 export const createVisitDraft = (patch: Partial<VisitInput> = {}): VisitInput => ({
   date: todayISO(),
   time: roundedNow(),
-  serviceId: 's1',
-  fee: serviceById('s1')!.price,
+  serviceId: defaultService()?.id ?? '',
+  fee: defaultService()?.price ?? 0,
   doctorId: 'd1',
   roomId: 'r1',
   category: 'walk_in',

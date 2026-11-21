@@ -8,12 +8,8 @@ import { Drawer } from '@/components/ui/Modal'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
 import {
   CATEGORY_LABEL,
-  DOCTORS,
-  PATIENT_TYPE_LABEL,
   PAYMENT_STATUS,
   PAYMENT_STATUS_ORDER,
-  ROOMS,
-  SOURCE_LABEL,
   VISIT_STATUS_FILTER,
   toOptions,
 } from '@/store/catalog'
@@ -34,7 +30,7 @@ export function ReceptionToolbar() {
   const setFilters = (patch: Partial<ReceptionFilters>) => setReceptionView({ filters: { ...filters, ...patch }, page: 1 })
   const applySearch = () => setFilters({ search: view.searchInput })
 
-  const advancedCount = (['category', 'source', 'doctorId', 'roomId', 'patientType'] as const).filter((k) => filters[k] !== 'all').length
+  const advancedCount = (['category', 'source'] as const).filter((k) => filters[k] !== 'all').length
 
   return (
     <>
@@ -139,8 +135,8 @@ export function ReceptionToolbar() {
   )
 }
 
-type AdvancedKeys = Pick<ReceptionFilters, 'category' | 'source' | 'doctorId' | 'roomId' | 'patientType'>
-const EMPTY_ADVANCED: AdvancedKeys = { category: 'all', source: 'all', doctorId: 'all', roomId: 'all', patientType: 'all' }
+type AdvancedKeys = Pick<ReceptionFilters, 'category' | 'source'>
+const EMPTY_ADVANCED: AdvancedKeys = { category: 'all', source: 'all' }
 
 function AdvancedSearchDrawer({
   open,
@@ -161,9 +157,6 @@ function AdvancedSearchForm({ onClose, filters, onApply }: { onClose: () => void
   const [draft, setDraft] = useState<AdvancedKeys>({
     category: filters.category,
     source: filters.source,
-    doctorId: filters.doctorId,
-    roomId: filters.roomId,
-    patientType: filters.patientType,
   })
   const set = (patch: Partial<AdvancedKeys>) => setDraft((d) => ({ ...d, ...patch }))
 
@@ -171,15 +164,12 @@ function AdvancedSearchForm({ onClose, filters, onApply }: { onClose: () => void
     <Drawer open onClose={onClose} title="Tìm kiếm nâng cao">
       <div className="space-y-5 px-4 pt-3 pb-4">
         <Select label="Phân loại" value={draft.category} options={[ALL, ...toOptions(CATEGORY_LABEL)]} onChange={(category) => set({ category })} />
-        <Select label="Nguồn" value={draft.source} options={[ALL, ...toOptions(SOURCE_LABEL)]} onChange={(source) => set({ source })} />
         <Select
-          label="Bác sĩ"
-          value={draft.doctorId}
-          options={[ALL, ...DOCTORS.map((d) => ({ value: d.id, label: `${d.title} ${d.name}` }))]}
-          onChange={(doctorId) => set({ doctorId })}
+          label="Nguồn"
+          value={draft.source}
+          options={[ALL, { value: 'onsite', label: 'Tại phòng khám' }, { value: 'external', label: 'Bên ngoài' }]}
+          onChange={(source) => set({ source })}
         />
-        <Select label="Phòng khám" value={draft.roomId} options={[ALL, ...ROOMS.map((r) => ({ value: r.id, label: r.name }))]} onChange={(roomId) => set({ roomId })} />
-        <Select label="Loại khách" value={draft.patientType} options={[ALL, ...toOptions(PATIENT_TYPE_LABEL)]} onChange={(patientType) => set({ patientType })} />
         <div className="grid grid-cols-2 gap-3 pt-1">
           <Button
             onClick={() => {

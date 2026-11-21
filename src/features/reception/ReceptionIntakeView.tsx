@@ -70,7 +70,8 @@ export interface IntakeInit {
 interface ReceptionIntakeViewProps {
   init: IntakeInit
   onCancel: () => void
-  onSaved: (visit: Visit, status: VisitStatus) => void
+  /** print = true khi lưu bằng F8 (Đăng ký + in phiếu tiếp nhận) */
+  onSaved: (visit: Visit, status: VisitStatus, opts?: { print?: boolean }) => void
 }
 
 interface PatientFormState {
@@ -349,7 +350,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
   }, [submitted, pForm, vForm, validateAll])
 
   const handleSubmit = useCallback(
-    (targetStatus: VisitStatus) => {
+    (targetStatus: VisitStatus, opts?: { print?: boolean }) => {
       setSubmitted(true)
       const errs = validateAll(pForm, vForm)
       setErrors(errs)
@@ -438,7 +439,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
         description: `${createdVisit.code} · STT ${createdVisit.queueNumber} · ${formatDateVN(createdVisit.date)} ${createdVisit.time}`,
         tone: 'success',
       })
-      onSaved(createdVisit, targetStatus)
+      onSaved(createdVisit, targetStatus, opts)
     },
     [
       validateAll,
@@ -469,6 +470,9 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
       if (e.key === 'F3') {
         e.preventDefault()
         setPayModalOpen(true)
+      } else if (e.key === 'F8') {
+        e.preventDefault()
+        handleSubmit('registered', { print: true })
       } else if (e.key === 'F9') {
         e.preventDefault()
         handleSubmit('in_progress')
@@ -1126,13 +1130,13 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
-            disabled
-            title="Lưu đăng ký khám trước khi in phiếu tiếp nhận"
-            className="inline-flex h-9 cursor-not-allowed items-center gap-2 rounded-lg bg-slate-100 px-3.5 text-[13px] font-semibold text-slate-400"
+            onClick={() => handleSubmit('registered', { print: true })}
+            title="Đăng ký khám và in phiếu tiếp nhận"
+            className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 text-[13px] font-semibold text-slate-700 hover:bg-slate-50"
           >
             <Printer className="h-3.5 w-3.5" />
             <span>In phiếu tiếp nhận</span>
-            <kbd className="rounded bg-slate-200/90 px-1.5 py-0.5 font-sans text-[11px] text-slate-400">
+            <kbd className="rounded bg-slate-100 px-1.5 py-0.5 font-sans text-[11px] text-slate-500">
               F8
             </kbd>
           </button>

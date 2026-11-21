@@ -278,7 +278,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm }: Paracli
             </div>
 
             {/* Body 2 cột */}
-            <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[1.35fr_1fr]">
+            <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
               {/* CỘT TRÁI: Danh mục chỉ định */}
               <div className="flex min-h-0 flex-col border-slate-200 lg:border-r">
                 {/* Chọn nơi thực hiện */}

@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { Ban, Check, Pencil, Phone, Printer, ShieldAlert, Wallet } from 'lucide-react'
+import { Ban, Check, Pencil, Phone, Printer, ShieldAlert, Stethoscope, Wallet } from 'lucide-react'
 import { Drawer } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
 import { Tabs } from '@/components/ui/Tabs'
@@ -14,6 +14,7 @@ import { formatMoney, formatPhone } from '@/lib/format'
 import { cn } from '@/lib/cn'
 import { draftToPatientInput, PatientFields, patientToDraft, validatePatient, type Errors, type PatientDraft } from './forms'
 import { NEXT_STEP, STEP_LABEL } from './visitFlow'
+import { CheckInTicket } from '@/components/clinic/CheckInTicket'
 import type { Visit } from '@/store/types'
 
 type Tab = 'visit' | 'patient' | 'payment' | 'history'
@@ -33,9 +34,10 @@ export function VisitDetailDrawer(props: Props) {
 
 function DetailContent({ visitId, onClose, onOpenVisit, onPay, onCancel }: Props & { visitId: string }) {
   const { visits, patients } = useClinicState()
-  const { setVisitStatus } = useClinicActions()
+  const { setVisitStatus, openExam } = useClinicActions()
   const toast = useToast()
   const [tab, setTab] = useState<Tab>('visit')
+  const [ticketOpen, setTicketOpen] = useState(false)
   const visit = visits.find((v) => v.id === visitId)
   const patient = visit ? patients.find((p) => p.id === visit.patientId) : undefined
   const history = usePatientVisits(patient?.id)
@@ -43,7 +45,7 @@ function DetailContent({ visitId, onClose, onOpenVisit, onPay, onCancel }: Props
 
   const step = NEXT_STEP[visit.status]
   const remaining = remainingAmount(visit)
-  const canPay = visit.status !== 'cancelled' && (remaining > 0 || (visit.fee === 0 && visit.paymentStatus === 'unpaid'))
+  const canPay = visit.status !== 'cancelled' && remaining > 0
   const canCancel = visit.status !== 'done' && visit.status !== 'cancelled'
 
   return (
@@ -105,13 +107,18 @@ function DetailContent({ visitId, onClose, onOpenVisit, onPay, onCancel }: Props
               {step.label}
             </Button>
           )}
+          {visit.status === 'in_progress' && (
+            <Button size="sm" leftIcon={<Stethoscope className="h-3.5 w-3.5" />} onClick={() => openExam(visit.id)}>
+              Mở màn khám
+            </Button>
+          )}
           {canPay && (
             <Button size="sm" variant="success" leftIcon={<Wallet className="h-3.5 w-3.5" />} onClick={() => onPay(visit.id)}>
               Thu tiền · {formatMoney(remaining)}
             </Button>
           )}
-          <Button size="sm" variant="outline" leftIcon={<Printer className="h-3.5 w-3.5" />} onClick={() => toast({ title: 'Đã gửi lệnh in phiếu khám', description: `${visit.code} · STT ${visit.queueNumber}`, tone: 'info' })}>
-            In phiếu
+          <Button size="sm" variant="outline" leftIcon={<Printer className="h-3.5 w-3.5" />} onClick={() => setTicketOpen(true)}>
+            In phiếu tiếp nhận
           </Button>
           {canCancel && (
             <Button size="sm" variant="ghost" className="text-red-600 hover:bg-red-50 hover:text-red-700" leftIcon={<Ban className="h-3.5 w-3.5" />} onClick={() => onCancel(visit.id)}>
@@ -160,6 +167,7 @@ function DetailContent({ visitId, onClose, onOpenVisit, onPay, onCancel }: Props
           )}
         </div>
       </div>
+      {ticketOpen && <CheckInTicket visitId={visit.id} onClose={() => setTicketOpen(false)} />}
     </Drawer>
   )
 }

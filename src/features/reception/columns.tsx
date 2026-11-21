@@ -32,7 +32,7 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     width: 68,
     sortable: true,
     align: 'center',
-    render: (r) => <span className="font-medium text-orange-600 tabular-nums">{r.visit.queueNumber}</span>,
+    render: (r) => <span className="font-medium text-orange-700 tabular-nums">{r.visit.queueNumber}</span>,
     sortValue: (r) => r.visit.queueNumber,
   },
   {
