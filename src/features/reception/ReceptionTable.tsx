@@ -124,7 +124,7 @@ export function ReceptionTable({
                   <td
                     key={c.key}
                     onClick={
-                      c.key === 'payment' && (visit.paymentStatus === 'unpaid' || visit.paymentStatus === 'partial')
+                      c.key === 'payment' && visit.status !== 'cancelled' && (visit.paymentStatus === 'unpaid' || visit.paymentStatus === 'partial')
                         ? (e) => {
                             e.stopPropagation()
                             onPay(visit.id)
@@ -132,7 +132,7 @@ export function ReceptionTable({
                         : undefined
                     }
                     title={
-                      c.key === 'payment' && (visit.paymentStatus === 'unpaid' || visit.paymentStatus === 'partial')
+                      c.key === 'payment' && visit.status !== 'cancelled' && (visit.paymentStatus === 'unpaid' || visit.paymentStatus === 'partial')
                         ? 'Bấm để thu tiền'
                         : undefined
                     }

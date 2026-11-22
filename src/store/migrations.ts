@@ -5,6 +5,24 @@ import { defaultSystem } from './systemDefaults'
 import { ROOMS } from './catalog'
 import type { ClinicState, SystemSettings } from './types'
 
+/** v5 → v6: địa chỉ / số điện thoại phòng khám mẫu trùng cơ sở y tế thật => đổi sang địa chỉ minh hoạ */
+const CLINIC_RENAMES: [string, string][] = [
+  ['215 Hồng Bàng, P. 11, Q. 5, TP. Hồ Chí Minh', '18 Đường số 3, Khu phố 5, TP. Hồ Chí Minh'],
+  ['245 Hồng Bàng, P. 11, Q. 5, TP.HCM', '27 Đường số 8, Khu phố 2, TP.HCM'],
+  ['1900 6868', '0123 456 789'],
+  ['19006868', '0123456789'],
+]
+
+/** Thay chuỗi trong toàn bộ dữ liệu đã lưu (JSON) */
+function replaceInState(s: AnyState, pairs: [string, string][], exact: (from: string) => boolean = () => false): AnyState {
+  let json = JSON.stringify(s)
+  for (const [from, to] of pairs) {
+    const [a, b] = exact(from) ? [JSON.stringify(from), JSON.stringify(to)] : [JSON.stringify(from).slice(1, -1), JSON.stringify(to).slice(1, -1)]
+    json = json.split(a).join(b)
+  }
+  return JSON.parse(json) as AnyState
+}
+
 /** v4 → v5: đơn vị CLS bên ngoài đổi sang tên giả (mã, tên, địa chỉ) */
 const PROVIDER_RENAMES: [string, string][] = [
   ['lab_medlatec_qn', 'lab_an_binh'],
@@ -47,15 +65,10 @@ const STEPS: Record<number, (s: AnyState) => AnyState> = {
     return { ...s, version: 4, system: { ...system, org: { ...system.org, rooms } } }
   },
   // v4 → v5: thay mã / tên / địa chỉ đơn vị CLS thật bằng tên giả ở mọi chỗ đã lưu (chỉ định, combo, cài đặt)
-  4: (s) => {
-    let json = JSON.stringify(s)
-    for (const [from, to] of PROVIDER_RENAMES) {
-      // Mã đơn vị (lab_…) chỉ thay khi khớp nguyên giá trị; tên / địa chỉ thay cả khi nằm trong chuỗi ghép (vd. mô tả phiếu)
-      const [a, b] = from.startsWith('lab_') ? [JSON.stringify(from), JSON.stringify(to)] : [JSON.stringify(from).slice(1, -1), JSON.stringify(to).slice(1, -1)]
-      json = json.split(a).join(b)
-    }
-    return { ...(JSON.parse(json) as AnyState), version: 5 }
-  },
+  // Mã đơn vị (lab_…) chỉ thay khi khớp nguyên giá trị; tên / địa chỉ thay cả khi nằm trong chuỗi ghép (vd. mô tả phiếu)
+  4: (s) => ({ ...replaceInState(s, PROVIDER_RENAMES, (from) => from.startsWith('lab_')), version: 5 }),
+  // v5 → v6: địa chỉ / số điện thoại phòng khám mẫu
+  5: (s) => ({ ...replaceInState(s, CLINIC_RENAMES), version: 6 }),
 }
 
 export const BACKUP_PREFIX = 'clinic-his:backup-v'

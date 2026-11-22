@@ -39,7 +39,8 @@ function Checkout({ visitId, onClose }: { visitId: string; onClose: () => void }
   const visit = visits.find((v) => v.id === visitId)
   const patient = visit ? patients.find((p) => p.id === visit.patientId) : undefined
 
-  const [lines, setLines] = useState<Draftline[]>(() => (visit ? unpaidLines(visit).map((l) => ({ ...l, selected: true, mode: 'vnd', input: 0 })) : []))
+  // Lượt đã huỷ không thu thêm (chỉ hoàn tiền khi huỷ)
+  const [lines, setLines] = useState<Draftline[]>(() => (visit && visit.status !== 'cancelled' ? unpaidLines(visit).map((l) => ({ ...l, selected: true, mode: 'vnd', input: 0 })) : []))
   const [discountMode, setDiscountMode] = useState<DiscountMode>('vnd')
   const [discountInput, setDiscountInput] = useState(0)
   const [method, setMethod] = useState<PaymentMethod>('cash')
@@ -55,7 +56,8 @@ function Checkout({ visitId, onClose }: { visitId: string; onClose: () => void }
   const overallDiscount = toVnd(serviceTotal, discountMode, discountInput)
   const due = serviceTotal - overallDiscount
   const [customerPaid, setCustomerPaid] = useState<number | null>(null)
-  const paidInput = customerPaid ?? due
+  // Chỉ tiền mặt mới có tiền thừa; chuyển khoản / thẻ / ví thu đúng số khách cần trả
+  const paidInput = method === 'cash' ? (customerPaid ?? due) : due
   const change = paidInput - due
 
   const error = !chosen.length ? 'Chọn ít nhất một dịch vụ để thu' : paidInput < due ? 'Khách thanh toán chưa đủ số tiền cần trả' : issueInvoice && !invoice ? 'Nhập thông tin hoá đơn trước khi thanh toán' : null
@@ -126,8 +128,8 @@ function Checkout({ visitId, onClose }: { visitId: string; onClose: () => void }
       >
         {lines.length === 0 ? (
           <div className="space-y-3">
-            <p className="rounded-md bg-emerald-50 px-3 py-2 text-[13px] text-emerald-700">
-              Lượt khám đã thanh toán đủ. Không còn dịch vụ nào cần thu.
+            <p className={cn('rounded-md px-3 py-2 text-[13px]', visit.status === 'cancelled' ? 'bg-slate-100 text-slate-700' : 'bg-emerald-50 text-emerald-700')}>
+              {visit.status === 'cancelled' ? 'Lượt khám đã huỷ – không thu thêm tiền.' : 'Lượt khám đã thanh toán đủ. Không còn dịch vụ nào cần thu.'}
             </p>
             {receipts.length > 0 && (
               <ul className="divide-y divide-slate-100 rounded-lg border border-slate-200 text-[13px]">
@@ -227,7 +229,9 @@ function Checkout({ visitId, onClose }: { visitId: string; onClose: () => void }
                       inputMode="numeric"
                       onChange={(e) => setCustomerPaid(Number(e.target.value.replace(/\D/g, '')) || 0)}
                       onFocus={(e) => e.target.select()}
-                      className="h-9 w-[130px] rounded-md border border-slate-200 px-2.5 text-right tabular-nums outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
+                      disabled={method !== 'cash'}
+                      title={method !== 'cash' ? 'Thanh toán không dùng tiền mặt: thu đúng số khách cần trả' : undefined}
+                      className="h-9 w-[130px] rounded-md border border-slate-200 px-2.5 text-right tabular-nums outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 disabled:bg-slate-50 disabled:text-slate-600"
                       aria-label="Khách thanh toán"
                     />
                   }

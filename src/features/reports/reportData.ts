@@ -55,6 +55,21 @@ export interface RevenueEntry {
 export function revenueEntries(visits: Visit[]): RevenueEntry[] {
   const out: RevenueEntry[] = []
   for (const v of visits) {
+    // Tỉ lệ công khám / CLS đã thu của lượt, dùng để chia khoản hoàn tiền cho đúng từng phần
+    let paidCk = 0
+    let paidCls = 0
+    for (const p of v.payments) {
+      if (p.kind !== 'payment') continue
+      const ls = p.lines ?? []
+      if (!ls.length) {
+        paidCk += p.amount
+        continue
+      }
+      const ck = Math.max(ls.filter((l) => l.kind === 'consultation').reduce((s, l) => s + lineNet(l), 0) - (p.discount ?? 0), 0)
+      paidCk += ck
+      paidCls += p.amount - ck
+    }
+    const ckShare = paidCk + paidCls > 0 ? paidCk / (paidCk + paidCls) : 1
     for (const p of v.payments) {
       const lines = p.lines ?? []
       const ck = lines.filter((l) => l.kind === 'consultation').reduce((s, l) => s + lineNet(l), 0)
@@ -68,8 +83,8 @@ export function revenueEntries(visits: Visit[]): RevenueEntry[] {
         at: p.at,
         kind: p.kind,
         amount: p.amount,
-        consultation: p.kind === 'refund' ? -p.amount : consultation,
-        paraclinical: p.kind === 'refund' ? 0 : lines.length ? p.amount - consultation : 0,
+        consultation: p.kind === 'refund' ? -Math.round(p.amount * ckShare) : consultation,
+        paraclinical: p.kind === 'refund' ? -(p.amount - Math.round(p.amount * ckShare)) : lines.length ? p.amount - consultation : 0,
         discount,
         method: p.method,
         code: p.code,

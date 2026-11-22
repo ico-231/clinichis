@@ -14,8 +14,9 @@ import type {
 export const CLINIC = {
   name: 'Phòng khám Nhi Khoa',
   shortName: 'PK',
-  address: '215 Hồng Bàng, P. 11, Q. 5, TP. Hồ Chí Minh',
-  hotline: '1900 6868',
+  // Địa chỉ, số điện thoại minh hoạ (đầu số 0123 đã ngừng dùng ở Việt Nam) – không trùng cơ sở y tế thật
+  address: '18 Đường số 3, Khu phố 5, TP. Hồ Chí Minh',
+  hotline: '0123 456 789',
 }
 
 export const ROOMS: Room[] = [

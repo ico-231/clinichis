@@ -22,7 +22,7 @@ import type {
 } from './types'
 
 /** v3: thêm danh mục CLS nội bộ, lịch làm việc, cấu hình hệ thống, phiếu thu có dòng (xem migrations.ts) */
-export const STATE_VERSION = 5
+export const STATE_VERSION = 6
 
 export const DEFAULT_COLUMNS: ReceptionColumnKey[] = [
   'stt',
@@ -131,7 +131,7 @@ const GRAND_NAMES = ['Nguyễn Thị Lựu', 'Trần Văn Sáu', 'Lê Thị Hai'
 const ADDRESSES = [
   '12 Nguyễn Trãi, P. Bến Thành, Q. 1, TP.HCM',
   '88/5 Lê Văn Sỹ, P. 14, Q. 3, TP.HCM',
-  '245 Hồng Bàng, P. 11, Q. 5, TP.HCM',
+  '27 Đường số 8, Khu phố 2, TP.HCM',
   '19 Trần Hưng Đạo, P. 6, Q. 5, TP.HCM',
   '402 Nguyễn Thị Minh Khai, P. 5, Q. 3, TP.HCM',
   '57 Lý Thường Kiệt, P. 7, Q. 10, TP.HCM',
