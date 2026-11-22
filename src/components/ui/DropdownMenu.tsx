@@ -56,7 +56,7 @@ export function MenuItem({ icon, children, onSelect, danger, disabled, shortcut,
     >
       {icon && <span className={cn('flex h-4 w-4 items-center justify-center', danger ? 'text-red-500' : 'text-slate-500')}>{icon}</span>}
       <span className="flex-1">{children}</span>
-      {shortcut && <span className="text-[11px] text-slate-400">{shortcut}</span>}
+      {shortcut && <span className="text-[11px] text-slate-500">{shortcut}</span>}
     </button>
   )
 }
@@ -77,7 +77,7 @@ export function MenuCheckItem({ checked, onToggle, children }: { checked: boolea
 }
 
 export function MenuLabel({ children }: { children: ReactNode }) {
-  return <div className="px-3 pt-2 pb-1 text-[11px] font-semibold tracking-wide text-slate-400 uppercase">{children}</div>
+  return <div className="px-3 pt-2 pb-1 text-[11px] font-semibold tracking-wide text-slate-500 uppercase">{children}</div>
 }
 
 export function MenuSeparator() {

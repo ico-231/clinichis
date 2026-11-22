@@ -222,7 +222,7 @@ export function PatientFormDrawer({ patient, onClose, onSaved }: { patient?: Pat
             <div className="rounded-lg border border-slate-200">
               <div className="flex items-center justify-between px-3 py-2">
                 <span className="text-[12px] font-bold tracking-wide text-slate-800 uppercase">Thông tin người thân</span>
-                <button type="button" onClick={() => set({ hasRelative: !f.hasRelative })} className="flex items-center gap-1 text-[12px] font-semibold text-emerald-600 uppercase">
+                <button type="button" onClick={() => set({ hasRelative: !f.hasRelative })} className="flex items-center gap-1 text-[12px] font-semibold text-emerald-700 uppercase">
                   {f.hasRelative ? <Minus className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
                   {f.hasRelative ? 'Bỏ' : 'Thêm'}
                 </button>
@@ -258,7 +258,7 @@ function Field({ label, required, error, children }: { label: string; required?:
     <div>
       <span className="mb-1.5 block text-[12.5px] font-medium text-slate-600">
         {label}
-        {required && <span className="ml-0.5 text-red-500">*</span>}
+        {required && <span className="ml-0.5 text-red-600">*</span>}
       </span>
       {children}
       {error && <span className="mt-1 block text-xs text-red-600">{error}</span>}

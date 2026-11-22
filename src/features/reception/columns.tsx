@@ -74,7 +74,7 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
         </span>
       ) : (
         <span className="inline-flex items-center gap-1 whitespace-nowrap text-slate-800">
-          <span className="text-[13.5px] font-semibold text-pink-500">♀</span> Nữ
+          <span className="text-[13.5px] font-semibold text-pink-600">♀</span> Nữ
         </span>
       ),
   },

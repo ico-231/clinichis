@@ -40,7 +40,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     title: 'Phòng khám',
     items: [
-      { key: 'reception', label: 'Lễ tân', icon: UserRoundCheck, color: 'text-emerald-600', description: 'Tiếp nhận, xếp hàng đợi và thu phí người bệnh.' },
+      { key: 'reception', label: 'Lễ tân', icon: UserRoundCheck, color: 'text-emerald-700', description: 'Tiếp nhận, xếp hàng đợi và thu phí người bệnh.' },
       { key: 'examination', label: 'Khám bệnh', icon: Stethoscope, color: 'text-blue-600', description: 'Danh sách chờ khám của bác sĩ, ghi nhận sinh hiệu, chẩn đoán ICD-10.' },
       { key: 'prescriptions', label: 'Kê đơn', icon: NotebookPen, color: 'text-sky-600', description: 'Kê đơn thuốc điện tử, mẫu đơn và lịch sử đơn của người bệnh.' },
     ],
@@ -56,7 +56,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     title: 'Hồ sơ',
     items: [
-      { key: 'emr', label: 'Bệnh án điện tử', icon: FileHeart, color: 'text-emerald-600', description: 'Bệnh án điện tử theo từng lượt khám của người bệnh.' },
+      { key: 'emr', label: 'Bệnh án điện tử', icon: FileHeart, color: 'text-emerald-700', description: 'Bệnh án điện tử theo từng lượt khám của người bệnh.' },
       { key: 'patients', label: 'Người bệnh', icon: UsersRound, color: 'text-indigo-500', description: 'Danh bạ người bệnh, thông tin hành chính và người giám hộ.' },
     ],
   },
@@ -65,14 +65,14 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { key: 'imaging', label: 'Chẩn đoán hình ảnh', icon: ScanLine, color: 'text-blue-700', description: 'Chỉ định và trả kết quả siêu âm, X-quang.' },
       { key: 'lab', label: 'Xét nghiệm', icon: FlaskConical, color: 'text-red-500', description: 'Chỉ định, lấy mẫu và trả kết quả xét nghiệm.' },
-      { key: 'paraclinical-reports', label: 'Báo cáo CLS', icon: Activity, color: 'text-green-600', description: 'Thống kê chỉ định và doanh thu cận lâm sàng.' },
+      { key: 'paraclinical-reports', label: 'Báo cáo CLS', icon: Activity, color: 'text-green-700', description: 'Thống kê chỉ định và doanh thu cận lâm sàng.' },
       { key: 'paraclinical-settings', label: 'Thiết lập', icon: Settings2, color: 'text-slate-600', description: 'Danh mục dịch vụ cận lâm sàng, chỉ số và mẫu kết quả.' },
     ],
   },
   {
     title: 'Quản lý',
     items: [
-      { key: 'reports', label: 'Báo cáo', icon: BarChart3, color: 'text-green-600', description: 'Báo cáo doanh thu, lượt khám và hiệu suất bác sĩ.' },
+      { key: 'reports', label: 'Báo cáo', icon: BarChart3, color: 'text-green-700', description: 'Báo cáo doanh thu, lượt khám và hiệu suất bác sĩ.' },
       { key: 'system', label: 'Hệ thống', icon: LayoutGrid, color: 'text-slate-700', description: 'Người dùng, phân quyền, danh mục và cấu hình hệ thống.' },
     ],
   },

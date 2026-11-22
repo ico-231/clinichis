@@ -84,7 +84,7 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
       title="Đơn thuốc"
       right={
         <>
-          {sentAt && <span className="text-xs text-emerald-600">Đã gửi {formatDateTimeVN(sentAt)}</span>}
+          {sentAt && <span className="text-xs text-emerald-700">Đã gửi {formatDateTimeVN(sentAt)}</span>}
           <DropdownMenu
             align="end"
             renderTrigger={({ ref, toggle }) => (

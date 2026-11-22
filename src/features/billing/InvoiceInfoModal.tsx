@@ -42,7 +42,7 @@ export function InvoiceInfoModal({ initial, onClose, onSave }: { initial: Invoic
     <label className="block">
       <span className="mb-1 block text-[13px] font-medium text-slate-800">
         {label}
-        {required && <span className="ml-0.5 text-red-500">*</span>}
+        {required && <span className="ml-0.5 text-red-600">*</span>}
       </span>
       <input value={String(inv[key] ?? '')} placeholder={placeholder} onChange={(e) => set({ [key]: e.target.value })} className={cn(input, touched && errors[key] && 'border-red-400')} />
       {touched && errors[key] ? <span className="mt-1 block text-xs text-red-600">{errors[key]}</span> : hint && <span className="mt-1 block text-xs text-slate-500">{hint}</span>}

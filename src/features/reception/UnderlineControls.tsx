@@ -34,7 +34,7 @@ export function FieldLabel({ label, required }: { label: string; required?: bool
   return (
     <label className="block text-[12.5px] font-semibold text-slate-800">
       {label}
-      {required && <span className="ml-0.5 text-red-500">*</span>}
+      {required && <span className="ml-0.5 text-red-600">*</span>}
     </label>
   )
 }
@@ -79,7 +79,7 @@ export function UnderlineInput({
       {error ? (
         <p className="mt-1 text-[11px] text-red-500">{error}</p>
       ) : helper ? (
-        <p className="mt-1 text-[11px] text-slate-400">{helper}</p>
+        <p className="mt-1 text-[11px] text-slate-500">{helper}</p>
       ) : null}
     </div>
   )
@@ -243,7 +243,7 @@ export function UnderlineSelect<T extends string>({
               className="w-full bg-transparent text-[12.5px] text-slate-900 outline-none placeholder:text-slate-400"
             />
             {query && (
-              <button type="button" onClick={() => setQuery('')} className="text-slate-400 hover:text-slate-600">
+              <button type="button" onClick={() => setQuery('')} className="text-slate-400 hover:text-slate-600" aria-label="Xoá từ khoá">
                 <X className="h-3 w-3" />
               </button>
             )}
@@ -270,7 +270,7 @@ export function UnderlineSelect<T extends string>({
             )
           })}
           {filtered.length === 0 && (
-            <p className="px-3 py-3 text-center text-xs text-slate-400">Không có kết quả</p>
+            <p className="px-3 py-3 text-center text-xs text-slate-500">Không có kết quả</p>
           )}
         </div>
       </Popover>
@@ -545,7 +545,7 @@ export function VitalUnderlineInput({
             readOnly && 'text-slate-700',
           )}
         />
-        {value && <span className="shrink-0 text-[11.5px] text-slate-400">{unit}</span>}
+        {value && <span className="shrink-0 text-[11.5px] text-slate-500">{unit}</span>}
       </div>
     </div>
   )

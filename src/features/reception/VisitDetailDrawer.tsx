@@ -153,7 +153,7 @@ function DetailContent({ visitId, onClose, onOpenVisit, onPay, onCancel }: Props
                   >
                     <span className="w-[84px] shrink-0 text-slate-700 tabular-nums">
                       {formatDateVN(h.date)}
-                      <span className="block text-[11px] text-slate-400">{h.time}</span>
+                      <span className="block text-[11px] text-slate-500">{h.time}</span>
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate font-medium text-slate-800">{serviceById(h.serviceId)?.name}</span>
@@ -193,7 +193,7 @@ function Stepper({ visit }: { visit: Visit }) {
               {reached && <Check className="h-3 w-3" />}
               {s.label}
             </p>
-            <p className="truncate text-[10.5px] text-slate-400">{s.at ? formatDateTimeVN(s.at).slice(0, 5) : '—'}</p>
+            <p className="truncate text-[10.5px] text-slate-500">{s.at ? formatDateTimeVN(s.at).slice(0, 5) : '—'}</p>
           </li>
         )
       })}
@@ -276,7 +276,7 @@ function VisitTab({ visit }: { visit: Visit }) {
                   <p className="text-[11.5px] text-slate-500">{o.providerName}</p>
                   {o.instruction && <p className="text-[11.5px] text-blue-600">HD: {o.instruction}</p>}
                 </div>
-                <span className="font-semibold text-emerald-600 tabular-nums">
+                <span className="font-semibold text-emerald-700 tabular-nums">
                   {formatMoney(o.unitPrice * o.quantity)}
                 </span>
               </li>
@@ -387,8 +387,8 @@ function PaymentTab({ visit }: { visit: Visit }) {
       <div className="grid grid-cols-3 gap-2">
         {[
           { label: 'Phí khám', value: visit.fee, cls: 'text-slate-900' },
-          { label: 'Đã thu (thuần)', value: paid, cls: 'text-emerald-600' },
-          { label: 'Còn lại', value: visit.status === 'cancelled' ? 0 : remainingAmount(visit), cls: 'text-orange-600' },
+          { label: 'Đã thu (thuần)', value: paid, cls: 'text-emerald-700' },
+          { label: 'Còn lại', value: visit.status === 'cancelled' ? 0 : remainingAmount(visit), cls: 'text-orange-700' },
         ].map((s) => (
           <div key={s.label} className="rounded-lg border border-slate-200 px-3 py-2.5">
             <p className="text-[11.5px] text-slate-500">{s.label}</p>
@@ -414,7 +414,7 @@ function PaymentTab({ visit }: { visit: Visit }) {
                 <td className="py-2 text-slate-700 tabular-nums">{formatDateTimeVN(p.at)}</td>
                 <td className="py-2">
                   <span className={p.kind === 'payment' ? 'text-emerald-700' : 'text-violet-700'}>{p.kind === 'payment' ? 'Thu tiền' : 'Hoàn tiền'}</span>
-                  {p.note && <span className="block text-[11px] text-slate-400">{p.note}</span>}
+                  {p.note && <span className="block text-[11px] text-slate-500">{p.note}</span>}
                 </td>
                 <td className="py-2 text-slate-700">{PAYMENT_METHOD_LABEL[p.method]}</td>
                 <td className={cn('py-2 text-right font-medium tabular-nums', p.kind === 'refund' ? 'text-violet-700' : 'text-slate-900')}>

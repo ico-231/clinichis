@@ -23,7 +23,7 @@ export function FieldShell({ label, required, error, hint, className, children }
       {label && (
         <span className="pointer-events-none absolute -top-[7px] left-2 z-[1] bg-white px-1 text-[11px] leading-[14px] text-slate-600">
           {label}
-          {required && <span className="text-red-500"> *</span>}
+          {required && <span className="text-red-600"> *</span>}
         </span>
       )}
       {children}

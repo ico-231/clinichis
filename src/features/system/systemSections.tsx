@@ -39,7 +39,7 @@ function Field({ label, required, hint, error, children }: { label: string; requ
     <div>
       <span className="mb-1 block text-[12.5px] font-medium text-slate-700">
         {label}
-        {required && <span className="text-red-500">*</span>}
+        {required && <span className="text-red-600">*</span>}
       </span>
       {children}
       {error ? <span className="mt-1 block text-xs text-red-600">{error}</span> : hint && <span className="mt-1 block text-[11.5px] text-slate-500">{hint}</span>}

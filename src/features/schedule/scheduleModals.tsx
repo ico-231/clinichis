@@ -20,7 +20,7 @@ export function Field({ label, required, hint, children }: { label: string; requ
     <label className="block">
       <span className="mb-1 flex items-center gap-1 text-[12.5px] font-medium text-slate-700">
         {label}
-        {required && <span className="text-red-500">*</span>}
+        {required && <span className="text-red-600">*</span>}
         {hint && <AlertCircle className="h-3 w-3 text-slate-400" aria-label={hint} />}
       </span>
       {children}

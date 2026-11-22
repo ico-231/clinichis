@@ -96,7 +96,7 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
         <ul className="divide-y divide-slate-100 rounded-md border border-slate-200">
           {results.map((o) => (
             <li key={o.id} className="flex items-center gap-3 px-3 py-2">
-              <span className={cn('flex h-8 w-8 items-center justify-center rounded-lg', o.category === 'imaging' ? 'bg-violet-50 text-violet-600' : 'bg-orange-50 text-orange-600')}>
+              <span className={cn('flex h-8 w-8 items-center justify-center rounded-lg', o.category === 'imaging' ? 'bg-violet-50 text-violet-600' : 'bg-orange-50 text-orange-700')}>
                 {o.category === 'imaging' ? <ScanLine className="h-4 w-4" /> : <FlaskConical className="h-4 w-4" />}
               </span>
               <span className="min-w-0 flex-1">
@@ -168,7 +168,7 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
                           <span
                             className={cn(
                               'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-                              o.category === 'imaging' ? 'bg-violet-50 text-violet-600' : 'bg-orange-50 text-orange-600',
+                              o.category === 'imaging' ? 'bg-violet-50 text-violet-600' : 'bg-orange-50 text-orange-700',
                             )}
                           >
                             {o.category === 'imaging' ? <ScanLine className="h-4 w-4" /> : <FlaskConical className="h-4 w-4" />}
@@ -178,7 +178,7 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
                               {o.name}
                               {o.quantity > 1 && <span className="ml-1 text-slate-500">×{o.quantity}</span>}
                             </p>
-                            <p className="text-[12.5px] text-emerald-600">{formatMoney(o.unitPrice * o.quantity)}</p>
+                            <p className="text-[12.5px] text-emerald-700">{formatMoney(o.unitPrice * o.quantity)}</p>
                             {o.instruction && <p className="truncate text-xs text-slate-500">HD: {o.instruction}</p>}
                           </div>
                         </div>

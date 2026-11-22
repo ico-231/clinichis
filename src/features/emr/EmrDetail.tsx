@@ -88,7 +88,7 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
             <span className="text-slate-800">Chi tiết bệnh án</span>
           </nav>
         </div>
-        {dirty && <span className="ml-auto text-xs text-amber-600">● Chưa lưu</span>}
+        {dirty && <span className="ml-auto text-xs text-amber-700">● Chưa lưu</span>}
       </header>
 
       <div className="flex min-h-0 flex-1">
@@ -204,7 +204,7 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
                       onClick={() => setPreview({ kind: 'rx' })}
                       className={cn('flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left', preview?.kind === 'rx' ? 'border-blue-400 bg-blue-50' : 'border-slate-200 hover:bg-slate-50')}
                     >
-                      <FileText className="h-4 w-4 text-emerald-600" />
+                      <FileText className="h-4 w-4 text-emerald-700" />
                       <span className="flex-1">
                         <span className="block font-medium">Toa thuốc</span>
                         <span className="text-xs text-slate-500">{formatDateTimeVN(visit.finishedAt ?? visit.createdAt)}</span>
@@ -224,7 +224,7 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
                         onClick={() => setPreview({ kind: 'cls', orderId: o.id })}
                         className={cn('mb-1.5 flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left', preview?.kind === 'cls' && preview.orderId === o.id ? 'border-blue-400 bg-blue-50' : 'border-slate-200 hover:bg-slate-50')}
                       >
-                        <FlaskConical className="h-4 w-4 text-orange-500" />
+                        <FlaskConical className="h-4 w-4 text-orange-700" />
                         <span className="flex-1 font-medium">{o.name}</span>
                         <ChevronRight className="h-4 w-4 text-slate-400" />
                       </button>
@@ -279,7 +279,7 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
                     onChange={(on) => set({ signStatus: on ? (emr.signStatus === 'signed' ? 'signed' : 'pending') : 'unsigned', signedAt: on ? emr.signedAt : undefined })}
                   />
                 </div>
-                {emr.signStatus === 'pending' && <p className="text-xs text-amber-600">Bệnh án sẽ được ký số (mô phỏng) khi bấm “Lưu bệnh án”.</p>}
+                {emr.signStatus === 'pending' && <p className="text-xs text-amber-700">Bệnh án sẽ được ký số (mô phỏng) khi bấm “Lưu bệnh án”.</p>}
               </>
             )}
           </div>

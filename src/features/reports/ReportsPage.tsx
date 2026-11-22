@@ -203,9 +203,9 @@ function OverviewReport() {
 
   const change = (cur: number, prev: number) => {
     // Kỳ trước không có số liệu thì không so sánh được (tránh "▲ 100%" gây hiểu nhầm)
-    if (!prev) return <span className="text-[11.5px] text-slate-400">Kỳ trước chưa có số liệu</span>
+    if (!prev) return <span className="text-[11.5px] text-slate-500">Kỳ trước chưa có số liệu</span>
     const p = pctChange(cur, prev)
-    return <span className={cn('text-[11.5px]', p >= 0 ? 'text-emerald-600' : 'text-red-600')}>{p >= 0 ? '▲' : '▼'} {Math.abs(p)}% so với cùng kỳ</span>
+    return <span className={cn('text-[11.5px]', p >= 0 ? 'text-emerald-700' : 'text-red-600')}>{p >= 0 ? '▲' : '▼'} {Math.abs(p)}% so với cùng kỳ</span>
   }
 
   return (
@@ -351,8 +351,8 @@ function SalesReport() {
       <div className="mb-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="Tổng số đơn bán" value={formatNumber(sum('count'))} hint="Số phiếu thu trong kỳ" />
         <Stat label="Doanh thu gốc" value={`${formatNumber(sum('gross'))}đ`} hint="Trước giảm giá" />
-        <Stat label="Giảm giá" value={`${formatNumber(sum('discount'))}đ`} accent="text-orange-600" />
-        <Stat label="Doanh thu thuần" value={`${formatNumber(sum('net'))}đ`} accent="text-emerald-600" hint="Sau giảm giá và hoàn tiền" />
+        <Stat label="Giảm giá" value={`${formatNumber(sum('discount'))}đ`} accent="text-orange-700" />
+        <Stat label="Doanh thu thuần" value={`${formatNumber(sum('net'))}đ`} accent="text-emerald-700" hint="Sau giảm giá và hoàn tiền" />
       </div>
       <Card title="Doanh thu theo ngày">
         <Table head={['', 'Thời gian', 'Số đơn bán', 'Phòng khám', 'Doanh thu gốc', 'Giảm giá', 'Hoàn tiền', 'Doanh thu thuần']}>
@@ -371,9 +371,9 @@ function SalesReport() {
                 <td className={tdR}>{r.count}</td>
                 <td className={tdR}>{formatNumber(r.gross)}</td>
                 <td className={tdR}>{formatNumber(r.gross)}</td>
-                <td className={cn(tdR, 'text-orange-600')}>{formatNumber(r.discount)}</td>
+                <td className={cn(tdR, 'text-orange-700')}>{formatNumber(r.discount)}</td>
                 <td className={tdR}>{formatNumber(r.refund)}</td>
-                <td className={cn(tdR, 'text-emerald-600')}>{formatNumber(r.net)}</td>
+                <td className={cn(tdR, 'text-emerald-700')}>{formatNumber(r.net)}</td>
               </tr>
               {open === r.date &&
                 r.list.map((e, i) => (
@@ -399,9 +399,9 @@ function SalesReport() {
               <td className={tdR}>{sum('count')}</td>
               <td className={tdR}>{formatNumber(sum('gross'))}</td>
               <td className={tdR}>{formatNumber(sum('gross'))}</td>
-              <td className={cn(tdR, 'text-orange-600')}>{formatNumber(sum('discount'))}</td>
+              <td className={cn(tdR, 'text-orange-700')}>{formatNumber(sum('discount'))}</td>
               <td className={tdR}>{formatNumber(rows.reduce((s, r) => s + r.refund, 0))}</td>
-              <td className={cn(tdR, 'text-emerald-600')}>{formatNumber(sum('net'))}</td>
+              <td className={cn(tdR, 'text-emerald-700')}>{formatNumber(sum('net'))}</td>
             </tr>
           )}
         </Table>
@@ -893,7 +893,7 @@ function ExamBook() {
           }
         />
       </Toolbar>
-      <Table head={head.map((h, i) => <span key={h}>{h}<span className="block text-[10.5px] font-normal text-slate-400">({i + 1})</span></span>)} minWidth={1600}>
+      <Table head={head.map((h, i) => <span key={h}>{h}<span className="block text-[10.5px] font-normal text-slate-500">({i + 1})</span></span>)} minWidth={1600}>
         {days.length === 0 && (
           <tr>
             <td colSpan={head.length}>

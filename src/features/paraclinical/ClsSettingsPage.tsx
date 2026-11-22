@@ -303,7 +303,7 @@ function ImportModal({ onClose, onImport }: { onClose: () => void; onImport: (it
       }
     >
       <div className="mb-3 flex items-center gap-3 rounded-lg border border-slate-200 p-3 text-[12.5px]">
-        <FileSpreadsheet className="h-6 w-6 shrink-0 text-emerald-600" />
+        <FileSpreadsheet className="h-6 w-6 shrink-0 text-emerald-700" />
         <p className="flex-1 text-slate-600">
           <b className="block text-slate-900">File mẫu</b>Tải file mẫu, điền đầy đủ thông tin dịch vụ rồi tải lên tại ô bên dưới.
         </p>
@@ -497,7 +497,7 @@ function TemplateModal({ service, onClose }: { service: ParaclinicalServiceItem;
           <div className="grid grid-cols-[1fr_160px_120px] gap-2">
             <label className="block">
               <span className="mb-1 block text-[12.5px] font-medium">
-                Tên mẫu<span className="text-red-500">*</span>
+                Tên mẫu<span className="text-red-600">*</span>
               </span>
               <input value={cur.name} onChange={(e) => setCur((x) => ({ ...x, name: e.target.value }))} placeholder="Nhập tên gợi nhớ của mẫu." className={cn(input, touched && !cur.name.trim() && 'border-red-400')} />
             </label>
@@ -518,7 +518,7 @@ function TemplateModal({ service, onClose }: { service: ParaclinicalServiceItem;
           </div>
           <label className="block">
             <span className="mb-1 block text-[12.5px] font-medium">
-              Tên hiển thị trên phiếu in<span className="text-red-500">*</span>
+              Tên hiển thị trên phiếu in<span className="text-red-600">*</span>
             </span>
             <input value={cur.printTitle ?? ''} onChange={(e) => setCur((x) => ({ ...x, printTitle: e.target.value }))} className={input} />
           </label>
@@ -535,7 +535,7 @@ function ReqField({ label, error, children }: { label: string; error?: string; c
     <div>
       <span className="mb-1 block text-[12.5px] font-medium text-slate-700">
         {label}
-        <span className="text-red-500">*</span>
+        <span className="text-red-600">*</span>
       </span>
       {children}
       {error && <span className="mt-1 block text-xs text-red-600">{error}</span>}

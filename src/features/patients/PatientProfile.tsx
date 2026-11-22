@@ -187,7 +187,7 @@ export function PatientProfile({ patient, onBack }: { patient: Patient; onBack: 
                       <button
                         type="button"
                         onClick={() => updatePatient(patient.id, { notes: (patient.notes ?? []).filter((x) => x.id !== n.id) })}
-                        className="text-xs text-slate-400 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-red-600"
+                        className="text-xs text-slate-500 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-red-600"
                       >
                         Xoá
                       </button>

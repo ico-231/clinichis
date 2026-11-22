@@ -556,7 +556,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                   matchWidth
                   className="py-1"
                 >
-                  <p className="px-3 py-1 text-[11px] font-medium text-slate-400">
+                  <p className="px-3 py-1 text-[11px] font-medium text-slate-500">
                     Hồ sơ người bệnh đã tồn tại — chọn để tự động điền:
                   </p>
                   {matchingPatients.map((p) => (
@@ -919,7 +919,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                       className="w-9 bg-transparent text-slate-900 outline-none"
                     />
                   </div>
-                  <span className="shrink-0 text-[11.5px] text-slate-400">mmHg / mmHg</span>
+                  <span className="shrink-0 text-[11.5px] text-slate-500">mmHg / mmHg</span>
                 </div>
               </div>
 
@@ -1009,7 +1009,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                               'flex h-7 w-7 shrink-0 items-center justify-center rounded-md',
                               item.category === 'imaging'
                                 ? 'bg-sky-50 text-sky-600'
-                                : 'bg-orange-50 text-orange-500',
+                                : 'bg-orange-50 text-orange-700',
                             )}
                           >
                             {item.category === 'imaging' ? (
@@ -1043,6 +1043,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                             type="button"
                             disabled={item.quantity <= 1}
                             onClick={() => updateOrderQty(item.id, -1)}
+                            aria-label="Giảm số lượng"
                             className="flex h-full w-6 items-center justify-center text-slate-500 hover:text-slate-900 disabled:opacity-35"
                           >
                             <Minus className="h-3 w-3" />
@@ -1053,13 +1054,14 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                           <button
                             type="button"
                             onClick={() => updateOrderQty(item.id, 1)}
+                            aria-label="Tăng số lượng"
                             className="flex h-full w-6 items-center justify-center text-slate-500 hover:text-slate-900"
                           >
                             <Plus className="h-3 w-3" />
                           </button>
                         </div>
                       </td>
-                      <td className="px-3 py-2.5 text-right font-semibold text-emerald-600 tabular-nums">
+                      <td className="px-3 py-2.5 text-right font-semibold text-emerald-700 tabular-nums">
                         {formatMoney(item.unitPrice * item.quantity)}
                       </td>
                       <td className="px-2 py-2.5 text-center">
@@ -1226,7 +1228,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
           </div>
           <div className="flex justify-between bg-slate-50 px-3 py-2.5">
             <dt className="font-semibold text-slate-800">Tổng phải thu (TT)</dt>
-            <dd className="text-[15px] font-bold text-emerald-600 tabular-nums">{formatMoney(grandTotal)}</dd>
+            <dd className="text-[15px] font-bold text-emerald-700 tabular-nums">{formatMoney(grandTotal)}</dd>
           </div>
         </dl>
 

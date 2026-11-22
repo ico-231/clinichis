@@ -294,7 +294,7 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
             <h1 className="min-w-0 flex-1 truncate text-[14px] font-semibold text-slate-900">{title}</h1>
             {visit.status === 'done' && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Đã khám</span>}
             {readOnly && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">Đã huỷ</span>}
-            {dirty && <span className="text-xs text-amber-600">● Chưa lưu</span>}
+            {dirty && <span className="text-xs text-amber-700">● Chưa lưu</span>}
             <DropdownMenu
               align="end"
               renderTrigger={({ ref, toggle }) => (
@@ -371,7 +371,7 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
               <span>CLS: {formatSummaryCounter(cls)}</span>
               <span>CK: {formatSummaryCounter(ck)}</span>
               <span>
-                TT: <span className="text-emerald-600">{formatSummaryCounter(tt)}</span>
+                TT: <span className="text-emerald-700">{formatSummaryCounter(tt)}</span>
               </span>
             </div>
             <button

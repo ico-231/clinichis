@@ -111,7 +111,7 @@ export function LabResultModal({ visitId, orderId, onClose }: { visitId: string;
             <dd>{formatDateVN(visit.date)}</dd>
           </dl>
           <p className="mb-1.5 text-[13px] font-medium text-slate-800">
-            Tải lên<span className="text-red-500">*</span> <span className="font-normal text-slate-500">({files.length}/{MAX_RESULT_FILES} tệp)</span>
+            Tải lên<span className="text-red-600">*</span> <span className="font-normal text-slate-500">({files.length}/{MAX_RESULT_FILES} tệp)</span>
           </p>
           {files.length < MAX_RESULT_FILES && files.length === 0 && (
             <button

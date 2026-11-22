@@ -18,11 +18,11 @@ export function VisitStatusIcon({ status, className = 'h-3.5 w-3.5' }: { status:
     case 'registered':
       return <Sparkles className={cn(className, 'text-amber-500')} />
     case 'waiting':
-      return <Clock3 className={cn(className, 'text-orange-500')} />
+      return <Clock3 className={cn(className, 'text-orange-700')} />
     case 'in_progress':
       return <Activity className={cn(className, 'text-blue-600')} />
     case 'done':
-      return <CheckCircle2 className={cn(className, 'text-emerald-600')} />
+      return <CheckCircle2 className={cn(className, 'text-emerald-700')} />
     case 'cancelled':
       return <Ban className={cn(className, 'text-slate-400')} />
   }

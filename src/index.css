@@ -166,8 +166,14 @@
 .dark :is(.text-orange-700, .text-orange-800, .text-amber-700, .text-amber-800, .text-yellow-800) {
   color: #fdba74;
 }
-.dark :is(.text-red-700, .text-red-800, .text-rose-700) {
+.dark :is(.text-red-600, .text-red-700, .text-red-800, .text-rose-700) {
   color: #fca5a5;
+}
+.dark .text-green-700 {
+  color: #86efac;
+}
+.dark .text-pink-600 {
+  color: #f9a8d4;
 }
 .dark .text-violet-700 {
   color: #c4b5fd;

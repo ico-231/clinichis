@@ -65,7 +65,7 @@ export function Label({ children, required }: { children: ReactNode; required?: 
   return (
     <span className="mb-1 block text-[13px] font-medium text-slate-800">
       {children}
-      {required && <span className="ml-0.5 text-red-500">*</span>}
+      {required && <span className="ml-0.5 text-red-600">*</span>}
     </span>
   )
 }
@@ -117,7 +117,7 @@ export function InfoSection({ draft, update, patient }: { draft: ExamDraft; upda
           <DatePicker label="Ngày khám" required value={draft.date} onChange={(date) => update({ date })} />
           <label className="block">
             <span className="mb-1.5 block text-[12.5px] font-medium text-slate-600">
-              Giờ khám<span className="ml-0.5 text-red-500">*</span>
+              Giờ khám<span className="ml-0.5 text-red-600">*</span>
             </span>
             <input type="time" value={draft.time} onChange={(e) => update({ time: e.target.value })} className={cn(boxInput, 'h-9')} />
           </label>
@@ -366,7 +366,7 @@ export function NotesSection({ draft, update }: { draft: ExamDraft; update: Draf
               <button
                 type="button"
                 onClick={() => update({ notes: draft.notes.filter((x) => x.id !== n.id) })}
-                className="shrink-0 text-xs text-slate-400 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-red-600"
+                className="shrink-0 text-xs text-slate-500 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-red-600"
               >
                 Xoá
               </button>

@@ -279,7 +279,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
     <div>
       <span className="mb-1 block text-[12.5px] font-medium text-slate-700">
         {label}
-        {required && <span className="text-red-500">*</span>}
+        {required && <span className="text-red-600">*</span>}
       </span>
       {children}
     </div>

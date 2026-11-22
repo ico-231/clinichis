@@ -111,7 +111,7 @@ function Viewer({ visitId, orderId, onClose }: { visitId: string; orderId: strin
                     </li>
                   ))}
                 </ul>
-                <p className="pt-2 text-center text-xs text-slate-400">{entries.length} file</p>
+                <p className="pt-2 text-center text-xs text-slate-500">{entries.length} file</p>
               </div>
             </div>
           )}

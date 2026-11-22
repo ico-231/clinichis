@@ -220,7 +220,7 @@ function Checkout({ visitId, onClose }: { visitId: string; onClose: () => void }
                   value={<DiscountInput mode={discountMode} value={discountInput} onMode={(m) => (setDiscountMode(m), setDiscountInput(0))} onValue={setDiscountInput} wide />}
                 />
                 <div className="border-t border-slate-100" />
-                <Row label={<b className="text-slate-900">Khách cần trả</b>} value={<b className="text-[15px] text-emerald-600">{formatNumber(due)}</b>} />
+                <Row label={<b className="text-slate-900">Khách cần trả</b>} value={<b className="text-[15px] text-emerald-700">{formatNumber(due)}</b>} />
                 <Row
                   label="Khách thanh toán"
                   value={

@@ -50,7 +50,7 @@ export function DatePicker({ label, required, value, onChange, min, max, error, 
             {y}
           </span>
         ) : (
-          <span className="text-slate-400">{placeholder}</span>
+          <span className="text-slate-500">{placeholder}</span>
         )}
         <CalendarDays className="h-4 w-4 shrink-0 text-slate-500" />
       </button>
@@ -164,7 +164,7 @@ function Calendar({ value, min, max, view, setView, cursor, setCursor, onSelect 
             <button type="button" className="text-xs font-medium text-blue-600 hover:underline disabled:text-slate-300" disabled={!!outOfRange(today)} onClick={() => onSelect(today)}>
               Hôm nay
             </button>
-            <span className="text-[11px] text-slate-400">Bấm tiêu đề để chọn tháng/năm</span>
+            <span className="text-[11px] text-slate-500">Bấm tiêu đề để chọn tháng/năm</span>
           </div>
         </>
       )}

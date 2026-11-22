@@ -342,7 +342,7 @@ function GroupDetail({
                     <span className="font-medium text-slate-900">{o.name}</span>
                     <span className="block text-xs text-slate-500">
                       Phòng thực hiện: {o.providerName}
-                      {showD('payment') && <span className={paid ? 'text-emerald-600' : 'text-orange-600'}> · {paid ? 'Đã thanh toán' : 'Chưa thanh toán'}</span>}
+                      {showD('payment') && <span className={paid ? 'text-emerald-700' : 'text-orange-700'}> · {paid ? 'Đã thanh toán' : 'Chưa thanh toán'}</span>}
                     </span>
                     {o.instruction && <span className="block text-xs text-slate-500 italic">HD: {o.instruction}</span>}
                   </td>

@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { Portal } from './Portal'
 import { useOverlayBehavior } from './Modal'
 
@@ -24,6 +25,8 @@ export function ConfirmDiscardModal({
   onConfirm,
   danger,
 }: ConfirmDiscardModalProps) {
+  const titleId = useId()
+  const descId = useId()
   useOverlayBehavior(open, onCancel)
   if (!open) return null
 
@@ -33,9 +36,9 @@ export function ConfirmDiscardModal({
         className="fixed inset-0 z-[75] flex animate-fade-in items-center justify-center bg-slate-900/50 p-4"
         onMouseDown={(e) => e.target === e.currentTarget && onCancel()}
       >
-        <div role="alertdialog" aria-modal="true" className="w-full max-w-[380px] animate-pop-in rounded-2xl bg-white p-5 shadow-2xl">
-          <h3 className="text-[15.5px] font-semibold text-slate-900">{title}</h3>
-          <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">{description}</p>
+        <div role="alertdialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={descId} className="w-full max-w-[380px] animate-pop-in rounded-2xl bg-white p-5 shadow-2xl">
+          <h3 id={titleId} className="text-[15.5px] font-semibold text-slate-900">{title}</h3>
+          <p id={descId} className="mt-1.5 text-[13px] leading-relaxed text-slate-600">{description}</p>
           <div className="mt-5 flex items-center justify-end gap-2">
             <button
               type="button"

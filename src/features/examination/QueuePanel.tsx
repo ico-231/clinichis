@@ -111,7 +111,7 @@ export function QueuePanel({ visit, onSelect, onBack, onOpenDetail, onCopyPrescr
           <span className="border-l border-slate-200 px-2 py-1.5">Người bệnh</span>
         </div>
         <ul className="thin-scroll flex-1 overflow-y-auto">
-          {list.length === 0 && <li className="px-3 py-6 text-center text-[12.5px] text-slate-400">Không có người bệnh</li>}
+          {list.length === 0 && <li className="px-3 py-6 text-center text-[12.5px] text-slate-500">Không có người bệnh</li>}
           {list.map(({ visit: v, patient: p }) => {
             const active = v.id === visit.id
             return (
@@ -122,7 +122,7 @@ export function QueuePanel({ visit, onSelect, onBack, onOpenDetail, onCopyPrescr
                   className={cn('grid w-full grid-cols-[40px_1fr] border-b border-slate-100 text-left text-[12.5px] hover:bg-slate-50', active && 'bg-blue-50/70 hover:bg-blue-50/70')}
                 >
                   <span className="flex items-center justify-center gap-0.5 font-semibold text-slate-800">
-                    {active && <span className="text-emerald-500">▸</span>}
+                    {active && <span className="text-emerald-700">▸</span>}
                     {v.queueNumber}
                   </span>
                   <span className="border-l border-slate-100 px-2 py-1.5 leading-[18px]">
@@ -142,7 +142,7 @@ export function QueuePanel({ visit, onSelect, onBack, onOpenDetail, onCopyPrescr
       <div className="flex h-[42%] min-h-[180px] flex-col px-3 pt-3 pb-2">
         <p className="mb-1.5 text-[12px] font-bold tracking-wide text-slate-700 uppercase">Lịch sử bệnh</p>
         <ul className="thin-scroll flex-1 space-y-1.5 overflow-y-auto pr-1">
-          {history.length === 0 && <li className="rounded-md border border-dashed border-slate-200 px-3 py-4 text-center text-[12.5px] text-slate-400">Chưa có lượt khám trước</li>}
+          {history.length === 0 && <li className="rounded-md border border-dashed border-slate-200 px-3 py-4 text-center text-[12.5px] text-slate-500">Chưa có lượt khám trước</li>}
           {history.map((h, i) => (
             <li key={h.id} className="rounded-md border border-slate-200 px-2.5 py-2 text-[12.5px]">
               <button type="button" onClick={() => onOpenDetail(h.id)} className="font-medium text-blue-700 hover:underline">

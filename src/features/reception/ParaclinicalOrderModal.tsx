@@ -379,7 +379,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                         )
                       })}
                       {filteredProviders.length === 0 && (
-                        <p className="py-4 text-center text-xs text-slate-400">Không tìm thấy đơn vị phù hợp.</p>
+                        <p className="py-4 text-center text-xs text-slate-500">Không tìm thấy đơn vị phù hợp.</p>
                       )}
                     </div>
                   </Popover>
@@ -398,6 +398,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                     {serviceQuery && (
                       <button
                         type="button"
+                        aria-label="Xoá từ khoá"
                         onClick={() => setServiceQuery('')}
                         className="rounded p-0.5 text-slate-400 hover:text-slate-600"
                       >
@@ -452,7 +453,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                                 'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
                                 svc.category === 'imaging'
                                   ? 'bg-sky-50 text-sky-600'
-                                  : 'bg-orange-50 text-orange-500',
+                                  : 'bg-orange-50 text-orange-700',
                               )}
                             >
                               {svc.category === 'imaging' ? (
@@ -467,7 +468,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                             </div>
                           </div>
                           <div className="flex shrink-0 items-center gap-3">
-                            <span className="text-[13.5px] font-semibold text-emerald-600 tabular-nums">
+                            <span className="text-[13.5px] font-semibold text-emerald-700 tabular-nums">
                               {formatMoney(svc.price)}
                             </span>
                             <button
@@ -507,7 +508,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                           className="flex cursor-pointer items-center justify-between gap-3 px-4 py-3 transition hover:bg-slate-50"
                         >
                           <div className="flex min-w-0 items-center gap-3">
-                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700">
                               <Layers className="h-4 w-4" />
                             </span>
                             <div className="min-w-0">
@@ -518,7 +519,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                             </div>
                           </div>
                           <div className="flex shrink-0 items-center gap-3">
-                            <span className="text-[13.5px] font-semibold text-emerald-600 tabular-nums">
+                            <span className="text-[13.5px] font-semibold text-emerald-700 tabular-nums">
                               {formatMoney(total)}
                             </span>
                             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-blue-600">
@@ -610,7 +611,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                                         'flex h-7 w-7 shrink-0 items-center justify-center rounded-md',
                                         item.category === 'imaging'
                                           ? 'bg-sky-50 text-sky-600'
-                                          : 'bg-orange-50 text-orange-500',
+                                          : 'bg-orange-50 text-orange-700',
                                       )}
                                     >
                                       {item.category === 'imaging' ? (
@@ -622,7 +623,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                                     <div className="min-w-0">
                                       <p className="truncate text-[13px] font-semibold text-slate-900">{item.name}</p>
                                       <p className="text-[12px] tabular-nums">
-                                        <span className="font-semibold text-emerald-600">
+                                        <span className="font-semibold text-emerald-700">
                                           {formatMoney(item.unitPrice)}
                                         </span>{' '}
                                         <span className="text-slate-500">x{item.quantity}</span>
@@ -682,7 +683,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                                   <button
                                     type="button"
                                     onClick={() => setExpandedInstruction((m) => ({ ...m, [item.id]: true }))}
-                                    className="mt-2 flex h-7 w-full items-center justify-center gap-1 rounded-md border border-slate-200/70 bg-white text-[12px] text-slate-400 transition hover:border-slate-300 hover:text-slate-600"
+                                    className="mt-2 flex h-7 w-full items-center justify-center gap-1 rounded-md border border-slate-200/70 bg-white text-[12px] text-slate-500 transition hover:border-slate-300 hover:text-slate-600"
                                   >
                                     <Plus className="h-3 w-3" />
                                     Hướng dẫn người bệnh
@@ -726,7 +727,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                   <div className="flex items-center justify-between gap-4">
                     <div>
                       <p className="text-[12px] text-slate-500">Tổng dự kiến</p>
-                      <p className="text-[17px] font-bold text-emerald-600 tabular-nums">
+                      <p className="text-[17px] font-bold text-emerald-700 tabular-nums">
                         {formatMoney(estimatedTotal)}
                       </p>
                     </div>

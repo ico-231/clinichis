@@ -377,7 +377,7 @@ function ResultFolderModal({ files, onChange, onClose }: { files: ResultFile[]; 
                 <a href={f.dataUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
                   {f.name}
                 </a>
-                <span className="ml-1 text-xs text-slate-400">({formatBytes(f.size)})</span>
+                <span className="ml-1 text-xs text-slate-500">({formatBytes(f.size)})</span>
               </td>
               <td className="py-2">{formatDateTimeVN(f.at)}</td>
               <td className="py-2 text-right">

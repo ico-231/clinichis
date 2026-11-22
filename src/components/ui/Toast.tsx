@@ -22,9 +22,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setTimeout(() => setItems((list) => list.filter((x) => x.id !== id)), 4200)
   }, [])
   const icons = {
-    success: <CircleCheck className="h-4.5 w-4.5 text-emerald-600" />,
+    success: <CircleCheck className="h-4.5 w-4.5 text-emerald-700" />,
     info: <Info className="h-4.5 w-4.5 text-blue-600" />,
-    warning: <CircleAlert className="h-4.5 w-4.5 text-amber-600" />,
+    warning: <CircleAlert className="h-4.5 w-4.5 text-amber-700" />,
   }
   return (
     <ToastContext.Provider value={push}>

@@ -78,7 +78,7 @@ export function DashboardPage() {
 
   const cards: { title: string; value: number; icon: ReactNode; tone: string; sub: [string, number][] }[] = [
     { title: 'Tổng doanh thu', value: data.total, icon: <Stethoscope className="h-4 w-4" />, tone: 'bg-blue-50 text-blue-600', sub: [['Lượt khám', data.visits]] },
-    { title: 'Phòng khám', value: data.clinic, icon: <Building2 className="h-4 w-4" />, tone: 'bg-orange-50 text-orange-600', sub: [['Ký trước', data.booked]] },
+    { title: 'Phòng khám', value: data.clinic, icon: <Building2 className="h-4 w-4" />, tone: 'bg-orange-50 text-orange-700', sub: [['Ký trước', data.booked]] },
     { title: 'Doanh thu dịch vụ', value: data.services, icon: <FlaskConical className="h-4 w-4" />, tone: 'bg-violet-50 text-violet-600', sub: [['Đơn thuốc', data.prescriptions], ['Chỉ định', data.orders]] },
   ]
 
@@ -152,11 +152,10 @@ export function DashboardPage() {
                       <span className="h-4 w-1 rounded" style={{ background: color }} />
                       {title}
                     </span>
-                    <b className="tabular-nums" style={{ color }}>
-                      {formatNumber(value)}
-                    </b>
+                    {/* Số dùng chữ đậm trung tính để đủ tương phản; màu nhận diện nằm ở vạch bên trái và biểu đồ */}
+                    <b className="text-[15px] text-slate-900 tabular-nums">{formatNumber(value)}</b>
                   </div>
-                  {values.some((v) => v > 0) ? <MiniArea values={[...values]} color={color} label={`${title} theo ngày`} /> : <p className="py-8 text-center text-[13px] text-slate-400">Không có dữ liệu</p>}
+                  {values.some((v) => v > 0) ? <MiniArea values={[...values]} color={color} label={`${title} theo ngày`} /> : <p className="py-8 text-center text-[13px] text-slate-500">Không có dữ liệu</p>}
                 </div>
               ))}
             </div>
@@ -175,7 +174,7 @@ export function DashboardPage() {
                       onClick={() => c.route && navigate(c.route)}
                       className="flex w-full items-start gap-2 text-left text-[12.5px] text-slate-700 enabled:hover:text-blue-700 disabled:cursor-default"
                     >
-                      {c.done ? <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" /> : <Circle className="mt-0.5 h-4 w-4 shrink-0 text-slate-300" />}
+                      {c.done ? <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" /> : <Circle className="mt-0.5 h-4 w-4 shrink-0 text-slate-300" />}
                       <span className={cn(c.done && 'text-slate-500')}>{c.label}</span>
                     </button>
                   </li>
@@ -222,11 +221,11 @@ export function DashboardPage() {
                       >
                         <span className="flex items-center gap-1.5 text-[12.5px] font-semibold text-slate-900">
                           {!readIds.has(n.id) && <span className="h-1.5 w-1.5 rounded-full bg-blue-600" />}
-                          {n.title === 'Có kết quả cận lâm sàng' ? <FlaskConical className="h-3.5 w-3.5 text-violet-600" /> : <Wallet className="h-3.5 w-3.5 text-orange-500" />}
+                          {n.title === 'Có kết quả cận lâm sàng' ? <FlaskConical className="h-3.5 w-3.5 text-violet-600" /> : <Wallet className="h-3.5 w-3.5 text-orange-700" />}
                           {n.title}
                         </span>
                         <span className="block text-[12px] text-slate-600">{n.body}</span>
-                        <span className="text-[11px] text-slate-400">{formatDateTimeVN(n.at)}</span>
+                        <span className="text-[11px] text-slate-500">{formatDateTimeVN(n.at)}</span>
                       </button>
                     </li>
                   ))}

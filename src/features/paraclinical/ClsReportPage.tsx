@@ -166,7 +166,7 @@ export function ClsReportPage() {
                       <span className={cn('rounded-full px-2 py-0.5 text-[11.5px]', g.internal ? 'bg-slate-100 text-slate-700' : 'bg-violet-50 text-violet-700')}>{g.internal ? 'Nội bộ' : 'Gửi ra ngoài'}</span>
                     </td>
                     <td className={td}>{formatDateVN(g.visit.date)}</td>
-                    <td className={cn(td, g.paid ? 'text-emerald-600' : 'text-orange-600')}>{g.paid ? 'Đã thanh toán' : 'Chưa thanh toán'}</td>
+                    <td className={cn(td, g.paid ? 'text-emerald-700' : 'text-orange-700')}>{g.paid ? 'Đã thanh toán' : 'Chưa thanh toán'}</td>
                     <td className={cn(td, 'text-right tabular-nums')}>{formatNumber(g.total)}</td>
                     <td className={cn(td, 'text-right tabular-nums')}>{formatNumber(discountOf(g))}</td>
                     <td className={cn(td, 'text-right font-semibold tabular-nums')}>{formatNumber(g.total - discountOf(g))}</td>

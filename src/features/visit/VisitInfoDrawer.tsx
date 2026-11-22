@@ -222,12 +222,12 @@ function ClsTab({ visit }: { visit: Visit }) {
               return (
                 <div key={o.id} className="grid grid-cols-[1fr_130px_110px] items-center py-1.5">
                   <span className="flex items-center gap-2">
-                    <span className={cn('flex h-7 w-7 items-center justify-center rounded-lg', o.category === 'imaging' ? 'bg-violet-50 text-violet-600' : 'bg-orange-50 text-orange-600')}>
+                    <span className={cn('flex h-7 w-7 items-center justify-center rounded-lg', o.category === 'imaging' ? 'bg-violet-50 text-violet-600' : 'bg-orange-50 text-orange-700')}>
                       {o.category === 'imaging' ? <ScanLine className="h-3.5 w-3.5" /> : <FlaskConical className="h-3.5 w-3.5" />}
                     </span>
                     <span>
                       {o.name}
-                      <span className="block text-xs text-emerald-600">{formatMoney(o.unitPrice * o.quantity)}</span>
+                      <span className="block text-xs text-emerald-700">{formatMoney(o.unitPrice * o.quantity)}</span>
                     </span>
                   </span>
                   <span className="flex flex-col items-start gap-1 text-[11.5px] font-medium">
