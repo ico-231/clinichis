@@ -44,7 +44,7 @@ export const PROVINCES: ProvinceItem[] = [
   },
   {
     name: 'TP. Cần Thơ',
-    wards: ['Phường Long Tuyến, Quận Bình Thủy', 'Phường Xuân Khánh, Quận Ninh Kiều', 'Phường An Hòa, Quận Ninh Kiều'],
+    wards: ['Phường Long Tuyến, Quận Bình Thuỷ', 'Phường Xuân Khánh, Quận Ninh Kiều', 'Phường An Hòa, Quận Ninh Kiều'],
   },
   {
     name: 'TP. Đà Nẵng',

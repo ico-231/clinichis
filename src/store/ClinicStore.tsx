@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
+import { useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react'
 import { createSeedState, defaultReceptionView } from './seed'
+import { ActionsContext, StateContext } from './storeContext'
 import { migrateState } from './migrations'
 import { INITIAL_COMBOS } from './paraclinicalCatalog'
 import { INITIAL_PRESCRIPTION_TEMPLATES } from './drugCatalog'
@@ -458,7 +459,7 @@ function createActions(dispatch: React.Dispatch<Action>, getState: () => ClinicS
       const paid = paidAmount(visit)
       const payments =
         refund && paid > 0
-          ? [...visit.payments, { id: uid('pay'), kind: 'refund' as const, amount: paid, method: refundMethod, at: now(), note: 'Hoàn tiền do hủy lượt khám' }]
+          ? [...visit.payments, { id: uid('pay'), kind: 'refund' as const, amount: paid, method: refundMethod, at: now(), note: 'Hoàn tiền do huỷ lượt khám' }]
           : visit.payments
       dispatch({
         type: 'UPDATE_VISIT',
@@ -480,8 +481,7 @@ function createActions(dispatch: React.Dispatch<Action>, getState: () => ClinicS
 
 export type ClinicActions = ReturnType<typeof createActions>
 
-const StateContext = createContext<ClinicState | null>(null)
-const ActionsContext = createContext<ClinicActions | null>(null)
+// Context nằm ở module riêng (storeContext.ts): sửa file này khi dev (HMR) không tạo context mới làm vỡ cây component
 
 export function ClinicProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, undefined, createSeedState)

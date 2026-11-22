@@ -166,7 +166,7 @@ const NOTES = [
   'Ưu tiên – trẻ dưới 6 tháng',
   'Đã gọi xác nhận lịch',
   'Dị ứng Amoxicillin',
-  'Cần xuất hóa đơn công ty',
+  'Cần xuất hoá đơn công ty',
   'Bé sợ tiêm, cần dỗ',
   'Mang theo kết quả XN cũ',
   'Chuyển tuyến từ TYT phường',
@@ -377,7 +377,7 @@ export function createSeedState(): ClinicState {
         payments.push({ id: `pay${visitSeq}a`, kind: 'payment', amount: Math.round(fee / 2 / 10_000) * 10_000, method, at: paidAt })
       }
       if (paymentStatus === 'refunded') {
-        payments.push({ id: `pay${visitSeq}b`, kind: 'refund', amount: fee, method, at: isoAt(date, time, 20), note: 'Hoàn tiền do hủy lịch' })
+        payments.push({ id: `pay${visitSeq}b`, kind: 'refund', amount: fee, method, at: isoAt(date, time, 20), note: 'Hoàn tiền do huỷ lịch' })
       }
 
       const patientType = seenPatients.has(patient.id) ? 'returning' : 'new'

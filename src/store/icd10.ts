@@ -8,7 +8,7 @@ export const ICD10: Diagnosis[] = [
   { code: 'A08.4', name: 'Nhiễm virus đường ruột, không đặc hiệu' },
   { code: 'A09', name: 'Tiêu chảy và viêm dạ dày – ruột có nguồn gốc nhiễm trùng' },
   { code: 'A90', name: 'Sốt Dengue [sốt xuất huyết Dengue cổ điển]' },
-  { code: 'B01.9', name: 'Thủy đậu không có biến chứng' },
+  { code: 'B01.9', name: 'Thuỷ đậu không có biến chứng' },
   { code: 'B05.9', name: 'Sởi không có biến chứng' },
   { code: 'B08.4', name: 'Viêm miệng mụn nước do Enterovirus có ban (Tay chân miệng)' },
   { code: 'B09', name: 'Nhiễm virus không đặc hiệu đặc trưng bởi tổn thương da và niêm mạc' },

@@ -60,6 +60,8 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
   const [draft, setDraft] = useState<ExamDraft>(() => draftFromVisit(visit, patient.allergies))
   const [savedSnapshot, setSavedSnapshot] = useState(() => serializeDraft(draftFromVisit(visit, patient.allergies)))
   const dirty = serializeDraft(draft) !== savedSnapshot
+  /** Lượt đã huỷ: chỉ xem, không lưu / hoàn thành / thu tiền */
+  const readOnly = visit.status === 'cancelled'
   const update = useCallback((patch: Partial<ExamDraft>) => setDraft((d) => ({ ...d, ...patch })), [])
 
   const [vitalErrors, setVitalErrors] = useState<Set<string>>(new Set())
@@ -92,6 +94,17 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
   // Lượt 0đ chưa có phiếu thu: không có gì để thu (trạng thái "Không thanh toán")
   const free = tt === 0 && !visit.payments.some((p) => p.kind === 'payment')
 
+  /** Chỉ định không được xoá / sửa số lượng nữa: tiền đã thu hoặc phòng CLS đã làm */
+  const lockedOrders = useMemo(() => {
+    const m = new Map<string, string>()
+    for (const o of liveDraft.orders) {
+      if (paidKeys.has(`paraclinical:${o.id}`)) m.set(o.id, 'Đã thu tiền – cần hoàn tiền trước khi bỏ')
+      else if (o.resultStatus === 'has_result') m.set(o.id, 'Đã có kết quả')
+      else if (o.performStatus === 'in_progress' || o.performStatus === 'done') m.set(o.id, 'Phòng CLS đang / đã thực hiện')
+    }
+    return m
+  }, [liveDraft.orders, paidKeys])
+
   /* ------------------------- Lưu ------------------------- */
   const persist = useCallback(
     (nextDraft: ExamDraft, extra: Partial<Visit> = {}) => {
@@ -99,9 +112,12 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
       const next = { ...nextDraft, orders: withLiveResults(nextDraft.orders, visit.paraclinicalOrders) }
       const patch: Partial<Visit> = { ...draftToVisitPatch(next, visit), ...extra }
       if (extra.exam) patch.exam = { ...draftToVisitPatch(next, visit).exam!, ...extra.exam }
-      if (visit.status === 'waiting' && !extra.status) {
+      // Bác sĩ bắt đầu ghi nhận => lượt chuyển sang Đang khám (kể cả khi lễ tân chưa bấm Tiếp nhận)
+      if ((visit.status === 'waiting' || visit.status === 'registered') && !extra.status) {
+        const at = new Date().toISOString()
         patch.status = 'in_progress'
-        patch.startedAt = new Date().toISOString()
+        patch.startedAt = at
+        if (!visit.checkedInAt) patch.checkedInAt = at
       }
       saveExam(visit.id, patch)
       setSavedSnapshot(serializeDraft(nextDraft))
@@ -110,13 +126,14 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
   )
 
   const save = useCallback(() => {
-    if (!dirty && visit.status !== 'waiting') return
+    if (readOnly || (!dirty && visit.status !== 'waiting')) return
     persist(draft)
     toast({ title: 'Đã lưu thông tin khám', description: `${visit.code} · ${patient.fullName}`, tone: 'success' })
-  }, [dirty, draft, persist, toast, visit, patient])
+  }, [dirty, draft, persist, toast, visit, patient, readOnly])
 
   const [confirmNoDx, setConfirmNoDx] = useState(false)
   const finish = useCallback((force = false) => {
+    if (readOnly) return
     const missing = new Set<string>()
     if (!draft.vitals.heightCm) missing.add('heightCm')
     if (!draft.vitals.weightKg) missing.add('weightKg')
@@ -136,16 +153,16 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
     const orders = draft.orders.map((o) => (o.sentAt ? o : { ...o, sentAt: now, resultStatus: 'waiting' as const }))
     const next = { ...draft, orders }
     setDraft(next)
-    persist(next, { status: 'done', finishedAt: now, startedAt: visit.startedAt ?? now })
+    persist(next, { status: 'done', finishedAt: now, startedAt: visit.startedAt ?? now, checkedInAt: visit.checkedInAt ?? now })
     toast({
       title: `Đã hoàn thành khám: ${patient.fullName}`,
       description: draft.diagnoses.length ? `Chẩn đoán: ${draft.diagnoses.map((d) => d.code || d.name).join(', ')}` : 'Chưa nhập chẩn đoán',
       tone: 'success',
     })
-  }, [draft, persist, toast, visit.startedAt, patient.fullName, scrollToSection])
+  }, [draft, persist, toast, visit.startedAt, visit.checkedInAt, patient.fullName, scrollToSection, readOnly])
 
   const sendOrders = useCallback(() => {
-    if (!draft.orders.length) return
+    if (readOnly || !draft.orders.length) return
     const now = new Date().toISOString()
     const fresh = draft.orders.filter((o) => !o.sentAt).length
     const next = { ...draft, orders: draft.orders.map((o) => (o.sentAt ? o : { ...o, sentAt: now, resultStatus: 'waiting' as const })) }
@@ -156,16 +173,17 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
       description: [...new Set(next.orders.map((o) => o.providerName))].join(', '),
       tone: 'success',
     })
-  }, [draft, persist, toast])
+  }, [draft, persist, toast, readOnly])
 
   const openPay = useCallback(() => {
+    if (readOnly) return
     if (free) {
       toast({ title: 'Lượt khám miễn phí', description: 'Chưa có dịch vụ tính phí nên không cần thu tiền', tone: 'info' })
       return
     }
     if (dirty) persist(draft) // phí cần khớp với chỉ định/công khám mới nhất
     setPayOpen(true)
-  }, [dirty, draft, persist, free, toast])
+  }, [dirty, draft, persist, free, toast, readOnly])
 
   const confirmSendRx = () => {
     const now = new Date().toISOString()
@@ -221,20 +239,20 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (hasOpenOverlay()) return
-      const map: Record<string, () => void> = { F2: sendOrders, F3: openPay, F4: save, F8: () => draft.prescription.length && setSendRxOpen(true), F9: () => finish() }
+      const map: Record<string, () => void> = { F2: sendOrders, F3: openPay, F4: save, F8: () => !readOnly && draft.prescription.length && setSendRxOpen(true), F9: () => finish() }
       if (map[e.key]) {
         e.preventDefault()
         map[e.key]()
         return
       }
-      if (e.shiftKey && e.key.toLowerCase() === 'c' && !e.ctrlKey && !e.metaKey && !e.altKey && !isTypingTarget(e.target)) {
+      if (!readOnly && e.shiftKey && e.key.toLowerCase() === 'c' && !e.ctrlKey && !e.metaKey && !e.altKey && !isTypingTarget(e.target)) {
         e.preventDefault()
         setClsOpen(true)
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [sendOrders, openPay, save, finish, draft.prescription.length])
+  }, [sendOrders, openPay, save, finish, draft.prescription.length, readOnly])
 
   /* ------------------------- Tab theo vị trí cuộn ------------------------- */
   useEffect(() => {
@@ -275,6 +293,7 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
           <div className="flex items-center gap-3">
             <h1 className="min-w-0 flex-1 truncate text-[14px] font-semibold text-slate-900">{title}</h1>
             {visit.status === 'done' && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Đã khám</span>}
+            {readOnly && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">Đã huỷ</span>}
             {dirty && <span className="text-xs text-amber-600">● Chưa lưu</span>}
             <DropdownMenu
               align="end"
@@ -312,7 +331,14 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
           </nav>
         </header>
 
+        {readOnly && (
+          <p className="shrink-0 border-b border-amber-200 bg-amber-50 px-4 py-2 text-[13px] text-amber-800" role="status">
+            Lượt khám đã huỷ{visit.cancelReason ? ` (${visit.cancelReason})` : ''} – chỉ xem, không chỉnh sửa được.
+          </p>
+        )}
         <div ref={scrollerRef} className="thin-scroll relative min-h-0 flex-1 overflow-y-auto">
+          {/* Lượt đã huỷ: khoá mọi ô nhập / nút bên trong */}
+          <fieldset disabled={readOnly} className="contents">
           <InfoSection draft={draft} update={update} patient={patient} />
           <ClinicalSections draft={draft} update={update} vitalErrors={vitalErrors} />
           <ParaclinicalSection
@@ -335,6 +361,7 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
           />
           <FollowUpSection draft={draft} update={update} />
           <NotesSection draft={draft} update={update} />
+          </fieldset>
         </div>
 
         <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-white px-4 py-2.5">
@@ -350,7 +377,7 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
             <button
               type="button"
               onClick={openPay}
-              disabled={free}
+              disabled={free || readOnly}
               className={cn(
                 'inline-flex h-9 items-center gap-2 rounded-lg border px-3 text-[13px] font-semibold transition',
                 free
@@ -365,7 +392,7 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
               <Kbd tone="blue">F3</Kbd>
             </button>
           </div>
-          <div className="flex items-center gap-2">
+          <div className={cn('flex items-center gap-2', readOnly && 'hidden')}>
             <Button variant="success" disabled={!dirty && visit.status !== 'waiting'} onClick={save} leftIcon={<Save className="h-4 w-4" />} rightIcon={<Kbd tone="green">F4</Kbd>}>
               Lưu
             </Button>
@@ -376,7 +403,7 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
         </footer>
       </div>
 
-      <ParaclinicalOrderModal open={clsOpen} initialOrders={draft.orders} onClose={() => setClsOpen(false)} onConfirm={mergeOrders} />
+      <ParaclinicalOrderModal open={clsOpen} initialOrders={draft.orders} locked={lockedOrders} onClose={() => setClsOpen(false)} onConfirm={mergeOrders} />
       {payOpen && <PaymentModal visitId={visit.id} onClose={() => setPayOpen(false)} />}
       <VisitInfoDrawer visitId={detailId} onClose={() => setDetailId(null)} />
       <ResultViewer visitId={visit.id} orderId={viewResultId} onClose={() => setViewResultId(null)} />

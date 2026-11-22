@@ -62,7 +62,7 @@ export const VISIT_STATUS: Record<VisitStatus, { label: string; tone: Tone }> = 
   waiting: { label: 'Chờ khám', tone: 'amber' },
   in_progress: { label: 'Đang khám', tone: 'blue' },
   done: { label: 'Đã khám', tone: 'green' },
-  cancelled: { label: 'Đã hủy', tone: 'gray' },
+  cancelled: { label: 'Đã huỷ', tone: 'gray' },
 }
 
 /** Thứ tự dùng cho bộ lọc "Trạng thái" (đúng như hệ thống gốc) */
@@ -71,7 +71,7 @@ export const VISIT_STATUS_FILTER: { value: VisitStatus; label: string }[] = [
   { value: 'waiting', label: 'Chờ khám' },
   { value: 'in_progress', label: 'Đang khám' },
   { value: 'done', label: 'Đã khám' },
-  { value: 'cancelled', label: 'Đã hủy' },
+  { value: 'cancelled', label: 'Đã huỷ' },
 ]
 
 export const PAYMENT_STATUS: Record<PaymentStatus, { label: string; short: string; tone: Tone }> = {
@@ -79,7 +79,7 @@ export const PAYMENT_STATUS: Record<PaymentStatus, { label: string; short: strin
   paid: { label: 'Đã thanh toán', short: 'Đã thanh toán', tone: 'green' },
   unpaid: { label: 'Chưa thanh toán', short: 'Chưa thanh toán', tone: 'orange' },
   partial: { label: 'Thanh toán một phần', short: 'TT một phần', tone: 'yellow' },
-  cancelled: { label: 'Đã hủy', short: 'Đã hủy', tone: 'gray' },
+  cancelled: { label: 'Đã huỷ', short: 'Đã huỷ', tone: 'gray' },
   refunded: { label: 'Đã hoàn tiền', short: 'Đã hoàn tiền', tone: 'violet' },
   failed: { label: 'Thất bại', short: 'Thất bại', tone: 'red' },
 }

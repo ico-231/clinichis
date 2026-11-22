@@ -122,7 +122,7 @@ function DetailContent({ visitId, onClose, onOpenVisit, onPay, onCancel }: Props
           </Button>
           {canCancel && (
             <Button size="sm" variant="ghost" className="text-red-600 hover:bg-red-50 hover:text-red-700" leftIcon={<Ban className="h-3.5 w-3.5" />} onClick={() => onCancel(visit.id)}>
-              Hủy lượt
+              Huỷ lượt
             </Button>
           )}
         </div>
@@ -239,7 +239,7 @@ function VisitTab({ visit }: { visit: Visit }) {
           { label: 'Nguồn', value: SOURCE_LABEL[visit.source] },
           { label: 'Lý do khám', value: visit.reason, full: true },
           ...(visit.symptoms ? [{ label: 'Triệu chứng', value: visit.symptoms, full: true }] : []),
-          ...(visit.cancelReason ? [{ label: 'Lý do hủy', value: <span className="text-red-600">{visit.cancelReason}</span>, full: true }] : []),
+          ...(visit.cancelReason ? [{ label: 'Lý do huỷ', value: <span className="text-red-600">{visit.cancelReason}</span>, full: true }] : []),
         ]}
       />
 
@@ -334,7 +334,7 @@ function PatientTab({ patientId }: { patientId: string }) {
         <PatientFields value={draft} onChange={(p) => setDraft((d) => ({ ...d, ...p }))} errors={errors} />
         <div className="mt-4 flex justify-end gap-2">
           <Button size="sm" variant="outline" onClick={() => setEditing(false)}>
-            Hủy
+            Huỷ
           </Button>
           <Button size="sm" type="submit">
             Lưu hồ sơ

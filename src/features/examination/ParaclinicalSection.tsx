@@ -208,7 +208,7 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
                               </Button>
                             )}
                           >
-                            <MenuItem icon={<Trash2 className="h-3.5 w-3.5" />} danger disabled={o.resultStatus === 'has_result' || isPaid(o.id)} onSelect={() => remove(o.id)}>
+                            <MenuItem icon={<Trash2 className="h-3.5 w-3.5" />} danger disabled={o.resultStatus === 'has_result' || o.performStatus === 'in_progress' || o.performStatus === 'done' || isPaid(o.id)} onSelect={() => remove(o.id)}>
                               Xoá chỉ định
                             </MenuItem>
                           </DropdownMenu>

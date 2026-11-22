@@ -10,6 +10,7 @@ import {
   Search,
   Sparkles,
   Trash2,
+  Lock,
   X,
 } from 'lucide-react'
 import { Portal } from '@/components/ui/Portal'
@@ -32,6 +33,8 @@ interface ParaclinicalOrderModalProps {
   initialOrders: ParaclinicalOrderItem[]
   onClose: () => void
   onConfirm: (orders: ParaclinicalOrderItem[]) => void
+  /** Chỉ định không được xoá / đổi số lượng (đã thu tiền, đang làm, đã có kết quả) kèm lý do */
+  locked?: Map<string, string>
 }
 
 const serializeOrders = (orders: ParaclinicalOrderItem[]) =>
@@ -49,7 +52,9 @@ export function ParaclinicalOrderModal(props: ParaclinicalOrderModalProps) {
   return <ParaclinicalModalContent {...props} />
 }
 
-function ParaclinicalModalContent({ initialOrders, onClose, onConfirm }: ParaclinicalOrderModalProps) {
+const NO_LOCKS = new Map<string, string>()
+
+function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = NO_LOCKS }: ParaclinicalOrderModalProps) {
   const { defaultProviderId, paraclinicalCombos } = useClinicState()
   const { setDefaultProvider, saveParaclinicalCombo } = useClinicActions()
   const toast = useToast()
@@ -92,7 +97,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm }: Paracli
     return PARACLINICAL_PROVIDERS.filter((p) => normalizeText(`${p.name} ${p.address}`).includes(q))
   }, [providerQuery])
 
-  // Dịch vụ và combo thuộc nơi thực hiện đang chọn + khớp từ khóa
+  // Dịch vụ và combo thuộc nơi thực hiện đang chọn + khớp từ khoá
   const { providerServices, providerCombos, imagingList, labList } = useMemo(() => {
     const q = normalizeText(serviceQuery)
     const services = PARACLINICAL_SERVICES.filter(
@@ -121,6 +126,11 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm }: Paracli
   const toggleService = (service: ParaclinicalServiceItem) => {
     const exists = draftOrders.find((o) => o.serviceId === service.id)
     if (exists) {
+      const reason = locked.get(exists.id)
+      if (reason) {
+        toast({ title: 'Không bỏ được chỉ định này', description: reason, tone: 'warning' })
+        return
+      }
       setDraftOrders((list) => list.filter((o) => o.serviceId !== service.id))
       return
     }
@@ -174,7 +184,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm }: Paracli
 
   const updateQuantity = (id: string, delta: number) => {
     setDraftOrders((list) =>
-      list.map((o) => (o.id === id ? { ...o, quantity: Math.max(1, o.quantity + delta) } : o)),
+      list.map((o) => (o.id === id && !locked.has(id) ? { ...o, quantity: Math.max(1, o.quantity + delta) } : o)),
     )
   }
 
@@ -183,6 +193,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm }: Paracli
   }
 
   const removeOrder = (id: string) => {
+    if (locked.has(id)) return
     setDraftOrders((list) => list.filter((o) => o.id !== id))
   }
 
@@ -548,7 +559,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm }: Paracli
                   {draftOrders.length > 0 && (
                     <button
                       type="button"
-                      onClick={() => setDraftOrders([])}
+                      onClick={() => setDraftOrders((list) => list.filter((o) => locked.has(o.id)))}
                       className="inline-flex items-center gap-1 text-[12.5px] font-medium text-red-500 transition hover:text-red-600"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -624,7 +635,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm }: Paracli
                                       <button
                                         type="button"
                                         onClick={() => updateQuantity(item.id, -1)}
-                                        disabled={item.quantity <= 1}
+                                        disabled={item.quantity <= 1 || locked.has(item.id)}
                                         className="flex h-full w-6 items-center justify-center text-slate-500 hover:text-slate-900 disabled:opacity-35"
                                         aria-label="Giảm số lượng"
                                       >
@@ -636,20 +647,27 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm }: Paracli
                                       <button
                                         type="button"
                                         onClick={() => updateQuantity(item.id, 1)}
-                                        className="flex h-full w-6 items-center justify-center text-slate-500 hover:text-slate-900"
+                                        disabled={locked.has(item.id)}
+                                        className="flex h-full w-6 items-center justify-center text-slate-500 hover:text-slate-900 disabled:opacity-35"
                                         aria-label="Tăng số lượng"
                                       >
                                         <Plus className="h-3 w-3" />
                                       </button>
                                     </div>
-                                    <button
-                                      type="button"
-                                      onClick={() => removeOrder(item.id)}
-                                      className="rounded p-1 text-red-400 transition hover:bg-red-50 hover:text-red-600"
-                                      aria-label="Xoá chỉ định"
-                                    >
-                                      <Trash2 className="h-3.5 w-3.5" />
-                                    </button>
+                                    {locked.has(item.id) ? (
+                                      <span className="rounded p-1 text-slate-400" title={locked.get(item.id)} aria-label={`Không xoá được: ${locked.get(item.id)}`}>
+                                        <Lock className="h-3.5 w-3.5" />
+                                      </span>
+                                    ) : (
+                                      <button
+                                        type="button"
+                                        onClick={() => removeOrder(item.id)}
+                                        className="rounded p-1 text-red-400 transition hover:bg-red-50 hover:text-red-600"
+                                        aria-label="Xoá chỉ định"
+                                      >
+                                        <Trash2 className="h-3.5 w-3.5" />
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
 

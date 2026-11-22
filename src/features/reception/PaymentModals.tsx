@@ -21,7 +21,7 @@ function useVisitWithPatient(visitId: string | null) {
 export { CheckoutModal as PaymentModal } from '../billing/CheckoutModal'
 
 /* ------------------------------------------------------------------ */
-/* Hủy lượt khám                                                       */
+/* Huỷ lượt khám                                                       */
 /* ------------------------------------------------------------------ */
 
 const CANCEL_REASONS = ['Người nhà báo bận', 'Bé đã hết triệu chứng', 'Đổi sang ngày khác', 'Đăng ký nhầm', 'Chờ quá lâu']
@@ -47,7 +47,7 @@ function CancelForm({ visitId, onClose }: { visitId: string; onClose: () => void
     if (!reason.trim()) return
     cancelVisit(visit.id, reason.trim(), refund, method)
     toast({
-      title: 'Đã hủy lượt khám',
+      title: 'Đã huỷ lượt khám',
       description: `${patient.fullName} · ${visit.code}${refund && paid > 0 ? ` · hoàn ${formatMoney(paid)}` : ''}`,
       tone: 'warning',
     })
@@ -59,7 +59,7 @@ function CancelForm({ visitId, onClose }: { visitId: string; onClose: () => void
       open
       onClose={onClose}
       size="sm"
-      title="Hủy lượt khám"
+      title="Huỷ lượt khám"
       description={`${patient.fullName} · ${visit.code} · ${visit.time}`}
       footer={
         <>
@@ -67,12 +67,12 @@ function CancelForm({ visitId, onClose }: { visitId: string; onClose: () => void
             Quay lại
           </Button>
           <Button variant="danger" onClick={confirm}>
-            Xác nhận hủy
+            Xác nhận huỷ
           </Button>
         </>
       }
     >
-      <p className="mb-2 text-[12.5px] font-medium text-slate-700">Lý do hủy</p>
+      <p className="mb-2 text-[12.5px] font-medium text-slate-700">Lý do huỷ</p>
       <div className="mb-4 flex flex-wrap gap-1.5">
         {CANCEL_REASONS.map((r) => (
           <button
@@ -92,7 +92,7 @@ function CancelForm({ visitId, onClose }: { visitId: string; onClose: () => void
         placeholder="Nhập hoặc chọn lý do ở trên"
         value={reason}
         onChange={(e) => setReason(e.target.value)}
-        error={touched && !reason.trim() ? 'Vui lòng nhập lý do hủy' : undefined}
+        error={touched && !reason.trim() ? 'Vui lòng nhập lý do huỷ' : undefined}
       />
       {paid > 0 && (
         <div className="mt-4 space-y-3 rounded-lg border border-slate-200 bg-slate-50/70 p-3">
