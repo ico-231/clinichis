@@ -34,6 +34,10 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
   const dirty = JSON.stringify(emr) !== saved
   const code = emrCodeOf(visit)
   const state = emr.closed ? 'closed' : visit.emr ? 'created' : 'draft'
+  // Bản đã lưu: ký số => khoá vĩnh viễn; đã đóng (chưa ký) => chỉ xem, có thể mở lại (ghi nhật ký)
+  const lockedSigned = visit.emr?.signStatus === 'signed'
+  const lockedClosed = !!visit.emr?.closed
+  const readOnly = lockedSigned || lockedClosed
 
   const logged = useRef(false)
   useEffect(() => {
@@ -47,7 +51,17 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
   const set = (p: Partial<EmrRecord>) => setEmr((e) => ({ ...e, ...p }))
   const setSum = (p: Partial<EmrRecord['summary']>) => setEmr((e) => ({ ...e, summary: { ...e.summary, ...p } }))
 
+  const reopen = () => {
+    const next: EmrRecord = { ...emr, closed: false, savedAt: new Date().toISOString() }
+    saveExam(visit.id, { emr: next })
+    setEmr(next)
+    setSaved(JSON.stringify(next))
+    logEmrAccess({ action: 'edit', visitId: visit.id, emrCode: code, signStatus: next.signStatus, state: 'created' })
+    toast({ title: 'Đã mở lại bệnh án', description: `${code} · có thể chỉnh sửa`, tone: 'info' })
+  }
+
   const save = () => {
+    if (readOnly) return
     const next: EmrRecord = { ...emr, savedAt: new Date().toISOString(), signStatus: emr.signStatus === 'pending' ? 'signed' : emr.signStatus, signedAt: emr.signStatus === 'pending' ? new Date().toISOString() : emr.signedAt }
     saveExam(visit.id, { emr: next })
     setEmr(next)
@@ -115,7 +129,19 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
             />
           </div>
 
-          <div className="thin-scroll min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-3 text-[13px]">
+          {readOnly && (
+            <div className="mx-4 mt-2 flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-[12.5px] text-amber-800" role="status">
+              <span className="flex-1">
+                {lockedSigned ? 'Bệnh án đã ký số – không thể chỉnh sửa.' : 'Bệnh án đã đóng – chỉ xem.'}
+              </span>
+              {!lockedSigned && (
+                <Button size="sm" variant="outline" onClick={reopen}>
+                  Mở lại bệnh án
+                </Button>
+              )}
+            </div>
+          )}
+          <fieldset disabled={readOnly} className="thin-scroll min-h-0 min-w-0 flex-1 space-y-3 overflow-y-auto px-4 py-3 text-[13px]">
             {tab === 'record' && (
               <>
                 <Row label="Loại bệnh án">
@@ -282,7 +308,7 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
                 {emr.signStatus === 'pending' && <p className="text-xs text-amber-700">Bệnh án sẽ được ký số (mô phỏng) khi bấm “Lưu bệnh án”.</p>}
               </>
             )}
-          </div>
+          </fieldset>
 
           <div className="flex justify-end gap-2 border-t border-slate-200 px-4 py-2.5">
             <Button size="sm" variant="outline" leftIcon={<Download className="h-3.5 w-3.5" />} disabled={!visit.emr?.savedAt} onClick={download} title="Tải bản bệnh án đã lưu (HTML)">
@@ -291,7 +317,7 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
             <Button size="sm" variant="soft" leftIcon={<Printer className="h-3.5 w-3.5" />} onClick={() => setPrintOpen(true)}>
               In bệnh án
             </Button>
-            <Button size="sm" leftIcon={<Save className="h-3.5 w-3.5" />} onClick={save}>
+            <Button size="sm" leftIcon={<Save className="h-3.5 w-3.5" />} onClick={save} disabled={readOnly}>
               Lưu bệnh án
             </Button>
           </div>
