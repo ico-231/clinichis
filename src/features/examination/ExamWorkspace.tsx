@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { CheckCircle2, ClipboardList, MoreHorizontal, Pill, Printer, Save, Send } from 'lucide-react'
+import { CheckCircle2, ClipboardList, ListOrdered, MoreHorizontal, PanelLeft, Pill, Printer, Save, Send } from 'lucide-react'
 import { Button, Kbd } from '@/components/ui/Button'
 import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
 import { DropdownMenu, MenuItem } from '@/components/ui/DropdownMenu'
@@ -12,6 +12,7 @@ import { ageLabel } from '@/lib/date'
 import { formatMoney, formatPhone } from '@/lib/format'
 import { isTypingTarget } from '@/lib/keyboard'
 import { cn } from '@/lib/cn'
+import { NARROW_QUERY, useMediaQuery } from '@/lib/useMediaQuery'
 import { ParaclinicalOrderModal } from '../reception/ParaclinicalOrderModal'
 import { PaymentModal } from '../reception/PaymentModals'
 import { VisitInfoDrawer } from '../visit/VisitInfoDrawer'
@@ -54,7 +55,9 @@ export function ExamWorkspace({ visitId }: { visitId: string }) {
 }
 
 function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<ReturnType<typeof useClinicState>['patients'][number]> }) {
-  const { saveExam, openExam, forceNavigate, setNavigationGuard, startReception } = useClinicActions()
+  const { saveExam, openExam, forceNavigate, setNavigationGuard, startReception, setUI } = useClinicActions()
+  const narrow = useMediaQuery(NARROW_QUERY)
+  const [queueOpen, setQueueOpen] = useState(false)
   const toast = useToast()
 
   const [draft, setDraft] = useState<ExamDraft>(() => draftFromVisit(visit, patient.allergies))
@@ -281,7 +284,13 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
     <div className="flex h-full">
       <QueuePanel
         visit={visit}
-        onSelect={(id) => guardLeave(() => openExam(id))}
+        narrow={narrow}
+        open={queueOpen}
+        onClose={() => setQueueOpen(false)}
+        onSelect={(id) => {
+          setQueueOpen(false)
+          guardLeave(() => openExam(id))
+        }}
         onBack={() => guardLeave(() => openExam(null))}
         onOpenDetail={setDetailId}
         onCopyPrescription={copyPrescription}
@@ -291,6 +300,16 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
       <div className="flex min-w-0 flex-1 flex-col bg-slate-100">
         <header className="shrink-0 border-b border-slate-200 bg-white px-4 pt-2 pb-2">
           <div className="flex items-center gap-3">
+            {narrow && (
+              <>
+                <Button size="icon-sm" variant="ghost" onClick={() => setUI({ sidebarCollapsed: false })} aria-label="Mở menu">
+                  <PanelLeft className="h-4 w-4" />
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => setQueueOpen(true)} leftIcon={<ListOrdered className="h-3.5 w-3.5" />}>
+                  Hàng chờ
+                </Button>
+              </>
+            )}
             <h1 className="min-w-0 flex-1 truncate text-[14px] font-semibold text-slate-900">{title}</h1>
             {visit.status === 'done' && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Đã khám</span>}
             {readOnly && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">Đã huỷ</span>}

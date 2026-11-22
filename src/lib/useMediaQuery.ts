@@ -8,7 +8,12 @@ export function useMediaQuery(query: string) {
     const onChange = () => setMatches(mql.matches)
     onChange()
     mql.addEventListener('change', onChange)
-    return () => mql.removeEventListener('change', onChange)
+    // Dự phòng: vài môi trường (giả lập thiết bị, iframe) không bắn sự kiện change của matchMedia
+    window.addEventListener('resize', onChange)
+    return () => {
+      mql.removeEventListener('change', onChange)
+      window.removeEventListener('resize', onChange)
+    }
   }, [query])
   return matches
 }

@@ -18,12 +18,16 @@ interface Props {
   onOpenDetail: (visitId: string) => void
   onCopyPrescription: (from: Visit) => void
   onAddPatient: () => void
+  /** Màn hẹp: cột hàng chờ là ngăn kéo phủ lên vùng khám */
+  narrow?: boolean
+  open?: boolean
+  onClose?: () => void
 }
 
 const tabOf = (s: VisitStatus): QueueTab => (s === 'done' ? 'done' : s === 'in_progress' ? 'in_progress' : 'waiting')
 
 /** Cột trái màn khám: hàng chờ trong ngày + lịch sử bệnh của người bệnh đang khám */
-export function QueuePanel({ visit, onSelect, onBack, onOpenDetail, onCopyPrescription, onAddPatient }: Props) {
+export function QueuePanel({ visit, onSelect, onBack, onOpenDetail, onCopyPrescription, onAddPatient, narrow = false, open = false, onClose }: Props) {
   const { ui } = useClinicState()
   const { setUI } = useClinicActions()
   const rows = useVisitRows()
@@ -50,7 +54,16 @@ export function QueuePanel({ visit, onSelect, onBack, onOpenDetail, onCopyPrescr
   }, [dayRows, tab, query])
 
   return (
-    <aside className="flex w-[272px] shrink-0 flex-col border-r border-slate-200 bg-white">
+    <>
+    {narrow && open && <div className="fixed inset-0 z-30 animate-fade-in bg-slate-900/40" onClick={onClose} aria-hidden="true" />}
+    <aside
+      aria-label="Hàng chờ khám"
+      inert={narrow && !open ? true : undefined}
+      className={cn(
+        'flex w-[272px] shrink-0 flex-col border-r border-slate-200 bg-white',
+        narrow && cn('fixed inset-y-0 left-0 z-40 w-[288px] max-w-[85vw] shadow-2xl transition-transform duration-200', open ? 'translate-x-0' : '-translate-x-full'),
+      )}
+    >
       <div className="flex h-[50px] shrink-0 items-center gap-2 border-b border-slate-200 px-3">
         <button
           type="button"
@@ -173,5 +186,6 @@ export function QueuePanel({ visit, onSelect, onBack, onOpenDetail, onCopyPrescr
         </ul>
       </div>
     </aside>
+    </>
   )
 }
