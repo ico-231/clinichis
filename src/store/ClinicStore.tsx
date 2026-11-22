@@ -14,6 +14,7 @@ export type { ClinicActions } from './storeLogic'
 export { paidAmount, remainingAmount } from './billing'
 
 const STORAGE_KEY = 'clinic-his:state'
+const SAVE_DELAY_MS = 400
 
 /** Khôi phục state đã lưu; bộ lọc ngày luôn quay về hôm nay khi mở lại ứng dụng */
 function loadPersisted(): ClinicState | null {
@@ -87,15 +88,46 @@ export function ClinicProvider({ children }: { children: ReactNode }) {
     setHydrated(true)
   }, [])
 
+  // Lưu localStorage có gom nhịp: gõ ô tìm kiếm / nhập liệu liên tục không phải serialize cả state
+  // (có thể vài MB nếu có ảnh kết quả) sau mỗi phím. Đóng tab / chuyển nền thì ghi ngay.
+  const pendingSave = useRef<ClinicState | null>(null)
   useEffect(() => {
     if (!hydrated) return
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-    } catch {
-      // Bộ nhớ trình duyệt đầy (thường do ảnh / tệp kết quả lớn) – báo cho giao diện hiển thị cảnh báo
-      window.dispatchEvent(new CustomEvent('clinic:storage-full'))
+    const flush = () => {
+      const next = pendingSave.current
+      if (!next) return
+      pendingSave.current = null
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+      } catch {
+        // Bộ nhớ trình duyệt đầy (thường do ảnh / tệp kết quả lớn) – báo cho giao diện hiển thị cảnh báo
+        window.dispatchEvent(new CustomEvent('clinic:storage-full'))
+      }
+    }
+    pendingSave.current = state
+    const timer = window.setTimeout(flush, SAVE_DELAY_MS)
+    const onHide = () => document.visibilityState === 'hidden' && flush()
+    window.addEventListener('pagehide', flush)
+    document.addEventListener('visibilitychange', onHide)
+    return () => {
+      window.clearTimeout(timer)
+      window.removeEventListener('pagehide', flush)
+      document.removeEventListener('visibilitychange', onHide)
     }
   }, [state, hydrated])
+  // Gỡ Provider (HMR) => ghi nốt bản đang chờ
+  useEffect(
+    () => () => {
+      if (pendingSave.current) {
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(pendingSave.current))
+        } catch {
+          /* bỏ qua */
+        }
+      }
+    },
+    [],
+  )
 
   const actions = useMemo(() => {
     const syncDispatch: React.Dispatch<Action> = (action) => {
