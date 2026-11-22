@@ -61,7 +61,7 @@ Transcript phiên trước nằm trên máy này:
   và đã merge fast-forward vào `main` (chưa push). Mỗi nhóm sửa là một commit riêng — muốn bỏ nhóm nào thì
   `git revert <commit>`; mốc trước review là `19e005e`. Nhánh review giữ lại để tham chiếu, xoá được.
 - **22/11 (sau đó):** giai đoạn M (nâng cấp kỹ thuật: tách store, test luồng, a11y, hiệu năng, an toàn) làm trên nhánh
-  `upgrade/2026-11-22` (tách từ `main` tại `b423bf1`), mỗi nhóm một commit — **chưa merge**, chờ người dùng duyệt.
+  `upgrade/2026-11-22` (tách từ `main` tại `b423bf1`), mỗi nhóm một commit — người dùng duyệt, đã merge fast-forward vào `main` (chưa push). Mốc trước giai đoạn M là `b423bf1`.
 - Git có cảnh báo LF → CRLF khi commit trên Windows: vô hại, không cần xử lý.
 - Ảnh tham chiếu `docs/reference/screenshots/` (176 ảnh, 15 thư mục module, đọc theo số thứ tự) bị `.gitignore` (ảnh của bên thứ ba, có thể chứa dữ liệu
   người bệnh) — **không bao giờ commit**.
