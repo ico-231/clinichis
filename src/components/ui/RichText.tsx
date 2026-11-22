@@ -3,14 +3,20 @@ import { Bold, Italic, List, ListOrdered, Redo2, Underline, Undo2 } from 'lucide
 import { cn } from '@/lib/cn'
 
 const ALLOWED = new Set(['B', 'STRONG', 'I', 'EM', 'U', 'UL', 'OL', 'LI', 'BR', 'P', 'DIV', 'SPAN'])
+/** Thẻ bỏ hẳn cả nội dung (không giữ lại phần chữ bên trong như các thẻ lạ khác) */
+const DROP = new Set(['SCRIPT', 'STYLE', 'TEMPLATE', 'NOSCRIPT', 'IFRAME', 'OBJECT', 'EMBED', 'TITLE', 'HEAD', 'META', 'LINK'])
 
 /** Làm sạch HTML: chỉ giữ thẻ định dạng cơ bản, bỏ mọi thuộc tính (chống chèn script) */
 export function sanitizeHtml(html: string) {
   const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html')
   const walk = (node: Element) => {
     for (const child of [...node.children]) {
+      if (DROP.has(child.tagName.toUpperCase())) {
+        child.remove()
+        continue
+      }
       walk(child)
-      if (!ALLOWED.has(child.tagName)) {
+      if (!ALLOWED.has(child.tagName.toUpperCase())) {
         child.replaceWith(...child.childNodes)
       } else {
         for (const attr of [...child.attributes]) child.removeAttribute(attr.name)
