@@ -73,7 +73,6 @@ export function revenueEntries(visits: Visit[]): RevenueEntry[] {
     for (const p of v.payments) {
       const lines = p.lines ?? []
       const ck = lines.filter((l) => l.kind === 'consultation').reduce((s, l) => s + lineNet(l), 0)
-      const cls = lines.filter((l) => l.kind === 'paraclinical').reduce((s, l) => s + lineNet(l), 0)
       const discount = (p.discount ?? 0) + lines.reduce((s, l) => s + l.discount, 0)
       // phiếu cũ không có dòng: tính vào công khám
       const consultation = lines.length ? Math.max(ck - (p.discount ?? 0), 0) : p.amount

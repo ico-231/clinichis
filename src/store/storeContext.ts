@@ -1,6 +1,6 @@
 import { createContext } from 'react'
 import type { ClinicState } from './types'
-import type { ClinicActions } from './ClinicStore'
+import type { ClinicActions } from './storeLogic'
 
 /**
  * Context của store tách khỏi ClinicStore.tsx để Vite HMR giữ nguyên đối tượng context
