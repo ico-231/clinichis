@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { ChevronRight, ChevronsUpDown, Crown, LogOut, RotateCcw, UserRound, X } from 'lucide-react'
+import { ChevronsUpDown, LogOut, RotateCcw, UserRound } from 'lucide-react'
 import { NAV_SECTIONS } from '@/navigation'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
 import { initials } from '@/lib/format'
@@ -75,25 +75,6 @@ export function Sidebar() {
 
       {/* Chân sidebar */}
       <div className="shrink-0 border-t border-slate-200 p-2">
-        {!collapsed && !ui.upgradeCardDismissed && (
-          <div className="mb-2 rounded-lg border border-slate-200 p-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-md bg-slate-100">
-                  <Crown className="h-3.5 w-3.5 text-slate-500" />
-                </span>
-                <span className="text-[14px] font-semibold text-slate-900">Standard</span>
-              </div>
-              <button type="button" onClick={() => setUI({ upgradeCardDismissed: true })} className="rounded p-0.5 text-slate-400 hover:text-slate-700" aria-label="Ẩn">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-            <button type="button" className="mt-2.5 inline-flex items-center gap-0.5 text-[13px] font-medium text-blue-600 hover:underline">
-              Nâng cấp ngay <ChevronRight className="h-3.5 w-3.5" />
-            </button>
-          </div>
-        )}
-
         <DropdownMenu
           align="start"
           className="w-56"

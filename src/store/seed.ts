@@ -432,7 +432,6 @@ export function createSeedState(): ClinicState {
     ui: {
       activeRoute: 'reception',
       sidebarCollapsed: false,
-      upgradeCardDismissed: false,
       reception: defaultReceptionView(),
     },
   }

@@ -65,7 +65,7 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { key: 'imaging', label: 'Chẩn đoán hình ảnh', icon: ScanLine, color: 'text-blue-700', description: 'Chỉ định và trả kết quả siêu âm, X-quang.' },
       { key: 'lab', label: 'Xét nghiệm', icon: FlaskConical, color: 'text-red-500', description: 'Chỉ định, lấy mẫu và trả kết quả xét nghiệm.' },
-      { key: 'paraclinical-reports', label: 'Báo cáo', icon: Activity, color: 'text-green-600', description: 'Thống kê chỉ định và doanh thu cận lâm sàng.' },
+      { key: 'paraclinical-reports', label: 'Báo cáo CLS', icon: Activity, color: 'text-green-600', description: 'Thống kê chỉ định và doanh thu cận lâm sàng.' },
       { key: 'paraclinical-settings', label: 'Thiết lập', icon: Settings2, color: 'text-slate-600', description: 'Danh mục dịch vụ cận lâm sàng, chỉ số và mẫu kết quả.' },
     ],
   },

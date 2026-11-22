@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { CalendarCheck2, MessageSquareText, Search, Video, X } from 'lucide-react'
+import { CalendarCheck2, Search, X } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { DatePicker } from '@/components/ui/DatePicker'
@@ -30,7 +30,6 @@ export function AppointmentsPage() {
   const [to, setTo] = useState(todayISO)
   const [status, setStatus] = useState<'all' | VisitStatus>('all')
   const [payment, setPayment] = useState<'all' | PaymentStatus>('all')
-  const [kind, setKind] = useState<'all' | 'exam' | 'online'>('all')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
   const [detailId, setDetailId] = useState<string | null>(null)
@@ -46,12 +45,11 @@ export function AppointmentsPage() {
         if (v.date < from || v.date > to) return false
         if (status !== 'all' && v.status !== status) return false
         if (payment !== 'all' && v.paymentStatus !== payment) return false
-        if (kind === 'online') return false // chưa có lịch tư vấn trực tuyến
         if (q && !normalizeText(`${p.fullName} ${p.code} ${v.code}`).includes(q) && !(digits.length >= 3 && p.phone.includes(digits))) return false
         return true
       })
       .sort((a, b) => b.visit.date.localeCompare(a.visit.date) || a.visit.time.localeCompare(b.visit.time))
-  }, [booked, query, from, to, status, payment, kind])
+  }, [booked, query, from, to, status, payment])
   const prev = previousRange(from, to)
   const prevCount = booked.filter((r) => r.visit.date >= prev.from && r.visit.date <= prev.to).length
   const pageCount = Math.ceil(filtered.length / pageSize)
@@ -65,8 +63,6 @@ export function AppointmentsPage() {
 
   const cards = [
     { label: 'Danh sách lịch hẹn', value: filtered.length, prev: prevCount, icon: <CalendarCheck2 className="h-4 w-4" /> },
-    { label: 'Lịch tư vấn', value: 0, prev: 0, icon: <Video className="h-4 w-4" /> },
-    { label: 'Cuộc hội thoại', value: 0, prev: 0, icon: <MessageSquareText className="h-4 w-4" /> },
   ]
 
   return (
@@ -109,17 +105,6 @@ export function AppointmentsPage() {
           value={payment}
           options={[{ value: 'all', label: 'Tất cả' }, ...PAYMENT_STATUS_ORDER.map((p) => ({ value: p, label: PAYMENT_STATUS[p].label }))]}
           onChange={(v) => (setPayment(v), setPage(1))}
-          className="w-[150px]"
-        />
-        <Select
-          label="Loại hình"
-          value={kind}
-          options={[
-            { value: 'all', label: 'Tất cả' },
-            { value: 'exam', label: 'Lịch khám' },
-            { value: 'online', label: 'Tư vấn trực tuyến' },
-          ]}
-          onChange={(v) => (setKind(v), setPage(1))}
           className="w-[150px]"
         />
         <Button onClick={() => (setQuery(input), setPage(1))} className="w-[72px]">

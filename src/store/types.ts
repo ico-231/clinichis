@@ -601,7 +601,6 @@ export interface ReceptionViewState {
 export interface UIState {
   activeRoute: RouteKey
   sidebarCollapsed: boolean
-  upgradeCardDismissed: boolean
   reception: ReceptionViewState
   /** Lượt khám đang mở trong màn Khám bệnh (null = danh sách) */
   examVisitId?: string | null
