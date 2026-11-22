@@ -107,3 +107,22 @@ Người dùng giao "tự review toàn bộ theo vai designer / user / PM, sửa
 - [x] L7. Truy cập (a11y): focus vào/giữ trong/trả về khi mở/đóng hộp thoại; aria-labelledby; nhãn nút icon; tương phản đạt WCAG AA ở chế độ sáng và tối (đo tự động mọi màn).
 - [x] L8. Độ bền: Error Boundary từng màn (không trắng cả app, có Tải lại / Khôi phục dữ liệu mẫu); Tailwind không quét `docs/`.
 - [x] L9. Dữ liệu minh hoạ: địa chỉ/SĐT phòng khám không trùng cơ sở thật (migration v5→v6); thống nhất chính tả huỷ/hoá; meta description.
+
+## Giai đoạn M — Nâng cấp chất lượng kỹ thuật (22/11/2026)
+
+Người dùng: "nâng cấp, cải thiện max, all out". Không thêm tính năng ngoài ảnh tham chiếu; tập trung độ tin cậy,
+truy cập, hiệu năng, an toàn. Làm trên nhánh `upgrade/2026-11-22`, mỗi nhóm một commit.
+
+- [x] M1. Kiến trúc store: reducer + thao tác nghiệp vụ tách sang `src/store/storeLogic.ts` (thuần, không React/DOM);
+  `ClinicStore.tsx` chỉ còn Provider, lưu trữ, đồng bộ danh mục. Bật `noUnusedLocals` / `noUnusedParameters`, dọn mã thừa.
+- [x] M2. Test luồng đầu-cuối trên store thật (`src/store/workflow.test.ts`, 23 test): tiếp nhận (mã BN, STT, thu đủ/thiếu,
+  lượt 0đ, đặt lịch, bệnh cũ), khám thêm CLS sau khi đã thu, checkout giảm giá dòng + tổng, thu 2 lần liên tiếp,
+  CLS huỷ/không đến, huỷ lượt có/không hoàn tiền, chặn xoá hồ sơ, chốt chặn rời trang. Test thư viện ngày/định dạng/CSV.
+- [x] M3. Truy cập: nhãn hiển thị của mọi khung trường được gắn với ô nhập (`useControlLabel` — `aria-labelledby`,
+  `aria-invalid`, `aria-describedby` khi lỗi); ô tìm kiếm, bảng thuốc, sinh hiệu có nhãn; ô chọn đọc cả giá trị;
+  id gradient biểu đồ không trùng; chữ đỏ đạt AA; link "Bỏ qua menu"; viền tiêu điểm bàn phím thống nhất;
+  tôn trọng "giảm chuyển động"; tiêu đề tab trình duyệt theo màn. Quét tự động 14 màn + form tiếp nhận + màn khám: 0 lỗi.
+- [x] M4. Hiệu năng: lưu localStorage gom nhịp 400 ms (ghi ngay khi đóng tab / chuyển nền); ô tìm kiếm Lễ tân giữ state
+  cục bộ khi gõ (118 → 23 ms mỗi phím ở chế độ dev).
+- [x] M5. An toàn: CSV xuất báo cáo chống CSV injection (ô bắt đầu bằng = + - @); bộ làm sạch HTML kết quả bỏ hẳn
+  script/style/iframe kèm nội dung.

@@ -25,7 +25,7 @@ Tài liệu để một phiên Claude Code mới (tài khoản khác) bắt kị
   `npm --prefix clinic run dev`) và `clinic/.claude/` (`npm run dev`), cổng **8443**.
   Lần đầu khởi động Vite tối ưu lại dependencies mất ~15 giây, trang trắng trong lúc đó là bình thường.
 - Tailwind bị chặn quét `docs/` (`@source not '../docs'` trong `src/index.css`): đường dẫn Windows kiểu dấu gạch ngược + hex trong tài liệu từng làm dev server trắng trang lỗi "Invalid code point". Đổi `@source` thì phải khởi động lại dev server.
-- Kiểm tra: `npx tsc -b --noEmit` · `npx vitest run` (32 test) · `npx vite build` (bundle chính ~336 kB).
+- Kiểm tra: `npx tsc -b --noEmit` (bật `noUnusedLocals`/`noUnusedParameters`) · `npx vitest run` (63 test) · `npx vite build` (bundle chính ~335 kB).
 - Dữ liệu demo nằm ở `localStorage` khoá `clinic-his:state` (STATE_VERSION = **6**). Xoá khoá rồi tải
   lại để về dữ liệu mẫu. Menu tài khoản (góc dưới Sidebar) có "Khôi phục dữ liệu mẫu".
 - `portfolio 1/CLAUDE.md` nằm **ngoài** git repo (repo chỉ là `clinic/`), chỉ có trên máy này.
@@ -60,6 +60,8 @@ Transcript phiên trước nằm trên máy này:
 - **22/11:** K8, K9 và giai đoạn L (tự review theo vai) làm trên nhánh `review/2026-11-22`, người dùng duyệt
   và đã merge fast-forward vào `main` (chưa push). Mỗi nhóm sửa là một commit riêng — muốn bỏ nhóm nào thì
   `git revert <commit>`; mốc trước review là `19e005e`. Nhánh review giữ lại để tham chiếu, xoá được.
+- **22/11 (sau đó):** giai đoạn M (nâng cấp kỹ thuật: tách store, test luồng, a11y, hiệu năng, an toàn) làm trên nhánh
+  `upgrade/2026-11-22` (tách từ `main` tại `b423bf1`), mỗi nhóm một commit — **chưa merge**, chờ người dùng duyệt.
 - Git có cảnh báo LF → CRLF khi commit trên Windows: vô hại, không cần xử lý.
 - Ảnh tham chiếu `docs/reference/screenshots/` (176 ảnh, 15 thư mục module, đọc theo số thứ tự) bị `.gitignore` (ảnh của bên thứ ba, có thể chứa dữ liệu
   người bệnh) — **không bao giờ commit**.
@@ -82,7 +84,8 @@ Transcript phiên trước nằm trên máy này:
 
 ## 5. Kiến trúc nhanh
 
-- Store: `src/store/ClinicStore.tsx` (Context + useReducer, persist localStorage), migration
+- Store: `src/store/storeLogic.ts` (reducer + mọi thao tác nghiệp vụ, thuần — test ở `workflow.test.ts`),
+  `src/store/ClinicStore.tsx` (Provider, lưu localStorage gom nhịp 400 ms), migration
   `src/store/migrations.ts` (v2→v3→v4→v5→v6; phiên bản lạ được sao lưu `clinic-his:backup-v<n>`).
 - Nghiệp vụ thanh toán: `src/store/billing.ts` — dòng phiếu thu, `derivePaymentStatus`
   (lượt 0đ chưa có phiếu = `none` "Không thanh toán"), `isOrderCharged`/`clsCharge`
@@ -102,6 +105,8 @@ Transcript phiên trước nằm trên máy này:
 - 21/11: bỏ 4 mục Sidebar (mục 4), Tổng quan còn 3 thẻ, checklist "Thiết lập thông tin phòng khám" trỏ sang Hệ thống.
 - 22/11 giai đoạn L (ROADMAP): điện thoại, a11y/tương phản AA, Error Boundary, các quy tắc nghiệp vụ mới
   (chặn xoá hồ sơ có bệnh án/phiếu thu, khoá chỉ định đã thu/đã làm, trùng hồ sơ, bệnh án ký/đóng…).
+- 22/11 giai đoạn M (ROADMAP): tách store thuần + 23 test luồng, nhãn ô nhập cho trình đọc màn hình (`src/lib/useControlLabel.ts`),
+  lưu trữ gom nhịp, CSV chống injection, làm sạch HTML chặt hơn.
 - 22/11 (K8): Lịch hẹn bỏ 2 thẻ tư vấn + bộ lọc Loại hình; Sidebar "Báo cáo CLS" / "Báo cáo", bỏ ô gói tài khoản Standard / Nâng cấp ngay; nơi thực hiện CĐHA giữ "Lab nội bộ" (người dùng chốt giữ nguyên). K9: đơn vị CLS bên ngoài dùng tên giả (migration v4→v5).
 
 ## 7. Việc có thể làm tiếp (chưa ai yêu cầu — hỏi người dùng trước)

@@ -53,6 +53,11 @@ sang `clinic-his:backup-v<n>` trước khi dùng dữ liệu mẫu mới.
 - **Truy cập:** hộp thoại giữ focus bàn phím và trả focus khi đóng; tương phản màu đạt WCAG AA ở chế độ sáng và tối.
 - **An toàn dữ liệu:** không xoá được hồ sơ đã có bệnh án / phiếu thu; chỉ định đã thu tiền hoặc đã làm không xoá được;
   bệnh án đã ký số bị khoá; cảnh báo trùng hồ sơ khi tạo người bệnh mới; một màn lỗi không làm trắng cả ứng dụng.
+- **Kiểm thử:** 63 test Vitest, gồm 23 test luồng nghiệp vụ đầu-cuối chạy trên store thật (`src/store/workflow.test.ts`):
+  tiếp nhận → khám → chỉ định CLS → thu tiền → huỷ / hoàn tiền.
+- **Truy cập (tiếp):** mọi ô nhập có nhãn đọc được bằng trình đọc màn hình, lỗi nhập liệu được thông báo; link
+  "Bỏ qua menu"; tôn trọng chế độ giảm chuyển động.
+- **Bảo mật:** CSV xuất ra chống chèn công thức Excel; nội dung định dạng (kết quả CĐHA) được làm sạch trước khi hiển thị.
 
 ## Phím tắt
 
