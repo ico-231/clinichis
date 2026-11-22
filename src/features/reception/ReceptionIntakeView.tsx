@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
+import { findDuplicatePatients } from '@/store/patientRules'
 import { DocumentsEmptyIllustration } from '@/components/ui/EmptyState'
 import { Modal, hasOpenOverlay } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
@@ -220,6 +221,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
   const [payModalOpen, setPayModalOpen] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitted, setSubmitted] = useState(false)
+  const [dupPrompt, setDupPrompt] = useState<{ patient: Patient; status: VisitStatus; opts?: { print?: boolean } } | null>(null)
 
   // Xác nhận huỷ thay đổi (khi bấm quay lại hoặc chuyển menu bên trái)
   const [discardTarget, setDiscardTarget] = useState<'back' | RouteKey | null>(null)
@@ -350,7 +352,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
   }, [submitted, pForm, vForm, validateAll])
 
   const handleSubmit = useCallback(
-    (targetStatus: VisitStatus, opts?: { print?: boolean }) => {
+    (targetStatus: VisitStatus, opts?: { print?: boolean; allowDuplicate?: boolean }) => {
       setSubmitted(true)
       const errs = validateAll(pForm, vForm)
       setErrors(errs)
@@ -361,6 +363,15 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
           tone: 'warning',
         })
         return
+      }
+
+      // Bệnh mới nhưng trùng họ tên + ngày sinh / SĐT với hồ sơ đã có => hỏi trước khi tạo hồ sơ thứ hai
+      if (!pForm.existingPatientId && !opts?.allowDuplicate) {
+        const dup = findDuplicatePatients(patients, { fullName: pForm.fullName, dob: pForm.dob, phone: pForm.phone })[0]
+        if (dup) {
+          setDupPrompt({ patient: dup, status: targetStatus, opts })
+          return
+        }
       }
 
       const composedAddress = [pForm.streetAddress.trim(), pForm.ward, pForm.province]
@@ -455,6 +466,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
       registerNewPatient,
       toast,
       onSaved,
+      patients,
     ],
   )
 
@@ -1255,6 +1267,51 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
             ]}
           />
         </div>
+      </Modal>
+
+      {/* Cảnh báo trùng hồ sơ khi tiếp nhận bệnh mới */}
+      <Modal
+        open={dupPrompt !== null}
+        onClose={() => setDupPrompt(null)}
+        size="sm"
+        title="Có thể đã có hồ sơ này"
+        description="Một người bệnh cùng họ tên và ngày sinh / số điện thoại đã có trong hệ thống."
+        footer={
+          <>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const d = dupPrompt
+                setDupPrompt(null)
+                if (d) handleSubmit(d.status, { ...d.opts, allowDuplicate: true })
+              }}
+            >
+              Vẫn tạo hồ sơ mới
+            </Button>
+            <Button
+              autoFocus
+              onClick={() => {
+                const d = dupPrompt
+                setDupPrompt(null)
+                if (d) applyExistingPatient(d.patient)
+              }}
+            >
+              Dùng hồ sơ cũ
+            </Button>
+          </>
+        }
+      >
+        {dupPrompt && (
+          <div className="space-y-2 text-[13px]">
+            <div className="rounded-lg border border-slate-200 p-3">
+              <p className="font-semibold text-slate-900 uppercase">{dupPrompt.patient.fullName}</p>
+              <p className="mt-0.5 text-slate-600">
+                {dupPrompt.patient.code} · {formatDateVN(dupPrompt.patient.dob)} · {formatPhone(dupPrompt.patient.phone)}
+              </p>
+            </div>
+            <p className="text-slate-600">Dùng hồ sơ cũ để lịch sử khám, dị ứng và bệnh án của bé nằm liền một mạch. Kiểm tra lại thông tin rồi bấm lưu lần nữa.</p>
+          </div>
+        )}
       </Modal>
 
       {/* Hộp thoại xác nhận huỷ thay đổi */}

@@ -6,10 +6,11 @@ import { useOverlayBehavior } from '@/components/ui/Modal'
 import { Portal } from '@/components/ui/Portal'
 import { Select } from '@/components/ui/Select'
 import { useToast } from '@/components/ui/Toast'
-import { useClinicActions } from '@/store/ClinicStore'
+import { useClinicActions, useClinicState } from '@/store/ClinicStore'
+import { findDuplicatePatients } from '@/store/patientRules'
 import { BLOOD_TYPES, ETHNICITIES, NATIONALITIES, OCCUPATIONS, PROVINCES } from '@/store/administrativeCatalog'
 import { RELATION_LABEL, toOptions } from '@/store/catalog'
-import { addDays, ageInYears, todayISO } from '@/lib/date'
+import { addDays, ageInYears, formatDateVN, todayISO } from '@/lib/date'
 import { cn } from '@/lib/cn'
 import type { Gender, GuardianRelation, Patient, PatientInput } from '@/store/types'
 
@@ -116,6 +117,8 @@ function toInput(f: Form): PatientInput {
 export function PatientFormDrawer({ patient, onClose, onSaved }: { patient?: Patient; onClose: () => void; onSaved?: (p: Patient) => void }) {
   useOverlayBehavior(true, onClose)
   const { addPatient, updatePatient } = useClinicActions()
+  const { patients } = useClinicState()
+  const [dupAck, setDupAck] = useState<string | null>(null)
   const toast = useToast()
   const [f, setF] = useState<Form>(() => fromPatient(patient))
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -134,6 +137,18 @@ export function PatientFormDrawer({ patient, onClose, onSaved }: { patient?: Pat
     setErrors(e)
     if (Object.keys(e).length) return
     const input = toInput(f)
+    // Cảnh báo trùng hồ sơ (cùng họ tên + ngày sinh / SĐT); bấm Lưu lần nữa với cùng thông tin là vẫn lưu
+    const dup = findDuplicatePatients(patients, input, patient?.id)[0]
+    const signature = `${input.fullName}|${input.dob}|${input.phone}`
+    if (dup && dupAck !== signature) {
+      setDupAck(signature)
+      toast({
+        title: 'Có thể trùng hồ sơ đã có',
+        description: `${dup.code} · ${dup.fullName} · ${formatDateVN(dup.dob)}. Kiểm tra lại; bấm Lưu lần nữa nếu vẫn muốn lưu.`,
+        tone: 'warning',
+      })
+      return
+    }
     if (patient) {
       updatePatient(patient.id, input)
       toast({ title: 'Đã cập nhật thông tin người bệnh', description: input.fullName, tone: 'success' })
