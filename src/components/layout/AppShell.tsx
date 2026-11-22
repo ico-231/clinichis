@@ -1,9 +1,10 @@
 import { lazy, Suspense, useEffect, type ComponentType } from 'react'
 import { Loader2 } from 'lucide-react'
 import { Sidebar } from './Sidebar'
+import { ErrorBoundary } from './ErrorBoundary'
 import { useToast } from '@/components/ui/Toast'
 import { applyTheme } from '@/lib/theme'
-import { useClinicState } from '@/store/ClinicStore'
+import { useClinicActions, useClinicState } from '@/store/ClinicStore'
 import { ReceptionPage } from '@/features/reception/ReceptionPage'
 import { PlaceholderPage } from '@/features/placeholder/PlaceholderPage'
 import type { RouteKey } from '@/store/types'
@@ -55,6 +56,7 @@ function Loading() {
 
 export function AppShell() {
   const { ui } = useClinicState()
+  const { resetDemoData } = useClinicActions()
   const toast = useToast()
   useEffect(() => applyTheme(ui.theme ?? 'light'), [ui.theme])
   useEffect(() => {
@@ -68,7 +70,10 @@ export function AppShell() {
     <div className="flex h-screen overflow-hidden bg-white text-slate-900">
       <Sidebar />
       <main className="min-w-0 flex-1">
-        <Suspense fallback={<Loading />}>{Screen ? <Screen key={ui.activeRoute} /> : <PlaceholderPage key={ui.activeRoute} route={ui.activeRoute} />}</Suspense>
+        {/* key theo route: chuyển màn khác là thử hiển thị lại từ đầu */}
+        <ErrorBoundary key={ui.activeRoute} onResetData={resetDemoData}>
+          <Suspense fallback={<Loading />}>{Screen ? <Screen key={ui.activeRoute} /> : <PlaceholderPage key={ui.activeRoute} route={ui.activeRoute} />}</Suspense>
+        </ErrorBoundary>
       </main>
     </div>
   )
