@@ -92,3 +92,18 @@ Quyết định của người dùng (17/11/2026): làm một mạch tới xong 
 - [x] K7. (21/11) Bỏ khỏi Sidebar theo yêu cầu: Cuộc gọi, Tin nhắn, Thông tin phòng khám, Phát triển thương hiệu (giữ Kê đơn). Route đã lưu cũ tự về Lễ tân; Tổng quan bỏ thẻ "Dịch vụ trực tuyến" và 2 mục kích hoạt tư vấn; "Thiết lập thông tin phòng khám" trỏ sang Hệ thống.
 - [x] K8. (22/11) Lịch hẹn bỏ 2 thẻ "Lịch tư vấn", "Cuộc hội thoại" và bộ lọc "Loại hình" (chỉ còn lịch khám); mục Báo cáo trong nhóm Cận lâm sàng đổi tên "Báo cáo CLS" (nhóm Quản lý giữ "Báo cáo"). Bỏ ô gói tài khoản "Standard / Nâng cấp ngay" ở chân Sidebar (và cờ `ui.upgradeCardDismissed`). Nơi thực hiện CĐHA giữ nguyên (đã chọn được đơn vị khác trong hộp chỉ định). Sửa kèm: Tailwind không quét `docs/` nữa (`@source not '../docs'` trong `src/index.css`) — đường dẫn Windows trong HANDOFF bị đọc thành mã thoát CSS làm dev server và `vite build` lỗi "Invalid code point".
 - [x] K9. (22/11) Đơn vị CLS bên ngoài đổi sang **tên giả** (mã, tên, địa chỉ): An Bình, Hoa Sen, Tân Phát, Việt An, Minh Tâm; Lab nội bộ đặt tại "Tầng 2 - Phòng khám Nhi Khoa". Migration v4→v5 đổi cả dữ liệu đã lưu (`PROVIDER_RENAMES` trong `src/store/migrations.ts` — nơi duy nhất còn giữ tên cũ để ánh xạ), STATE_VERSION = 5, thêm test.
+
+## Giai đoạn L — Tự review & cải thiện theo vai (22/11/2026)
+
+Người dùng giao "tự review toàn bộ theo vai designer / user / PM, sửa đến khi ổn, không cần hỏi". Làm trên nhánh
+`review/2026-11-22`, mỗi nhóm một commit để rollback từng phần (xem HANDOFF mục 3).
+
+- [x] L1. Bố cục: biểu đồ không đẩy rộng ô grid (thẻ donut Tổng quan đè cột phải ở 1280px); kiểm tra tự động 1440/1280/1024/390px.
+- [x] L2. Điện thoại (< 768px): menu trái thành ngăn kéo; Hệ thống/Báo cáo dùng tab cuộn ngang; phân trang xuống dòng; ẩn gợi ý phím F; màn khám có ngăn kéo Hàng chờ.
+- [x] L3. Điều khiển "giả": menu tài khoản (Hồ sơ cá nhân, Đăng xuất, Khôi phục dữ liệu có xác nhận); bộ lọc Lịch sử tải về, Phòng CLS; sắp xếp cột Lịch hẹn.
+- [x] L4. Nghiệp vụ: không xoá người bệnh đã khám/đã có phiếu thu; khoá chỉ định đã thu/đã làm/có kết quả trong hộp chỉ định; lượt huỷ mở màn khám chỉ xem; bác sĩ lưu lượt chưa tiếp nhận => Đang khám; không thu tiền lượt huỷ; tiền thừa chỉ cho tiền mặt; phiếu thu không có dòng công khám 0đ; cảnh báo trùng hồ sơ (họ tên + ngày sinh/SĐT); bệnh án đã ký thì khoá, đã đóng chỉ xem + mở lại.
+- [x] L5. Số liệu: hoàn tiền chia đúng theo tỉ lệ công khám/CLS đã thu (trước trừ hết vào công khám).
+- [x] L6. Store: `getState` luôn mới nhất trong cùng sự kiện; đơn vị CLS trên phiếu thu theo danh mục; context tách ra `storeContext.ts` (sửa store khi dev không còn trắng trang).
+- [x] L7. Truy cập (a11y): focus vào/giữ trong/trả về khi mở/đóng hộp thoại; aria-labelledby; nhãn nút icon; tương phản đạt WCAG AA ở chế độ sáng và tối (đo tự động mọi màn).
+- [x] L8. Độ bền: Error Boundary từng màn (không trắng cả app, có Tải lại / Khôi phục dữ liệu mẫu); Tailwind không quét `docs/`.
+- [x] L9. Dữ liệu minh hoạ: địa chỉ/SĐT phòng khám không trùng cơ sở thật (migration v5→v6); thống nhất chính tả huỷ/hoá; meta description.

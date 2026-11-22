@@ -47,6 +47,13 @@ sang `clinic-his:backup-v<n>` trước khi dùng dữ liệu mẫu mới.
 | **Báo cáo** | Tổng quan, doanh thu bán hàng, chẩn đoán ICD, dịch vụ chưa thu, hoá đơn, khám bệnh, sổ khám bệnh, lịch sử tải về; xuất CSV |
 | **Hệ thống** | Thông tin phòng khám, tài khoản, giao diện sáng/tối, cài đặt chung (tiền tố mã, lab mặc định), cơ cấu tổ chức, tiền công khám, nhân viên, nhật ký bệnh án |
 
+## Chất lượng
+
+- **Nhiều cỡ màn hình:** desktop 1024px trở lên; điện thoại dùng được (menu trái và hàng chờ khám thành ngăn kéo).
+- **Truy cập:** hộp thoại giữ focus bàn phím và trả focus khi đóng; tương phản màu đạt WCAG AA ở chế độ sáng và tối.
+- **An toàn dữ liệu:** không xoá được hồ sơ đã có bệnh án / phiếu thu; chỉ định đã thu tiền hoặc đã làm không xoá được;
+  bệnh án đã ký số bị khoá; cảnh báo trùng hồ sơ khi tạo người bệnh mới; một màn lỗi không làm trắng cả ứng dụng.
+
 ## Phím tắt
 
 Phím chữ (Shift + …) không chạy khi đang gõ trong ô nhập. Khi có hộp thoại mở, phím F của màn phía sau bị chặn; Esc đóng lớp trên cùng.
@@ -76,7 +83,7 @@ Phím chữ (Shift + …) không chạy khi đang gõ trong ô nhập. Khi có h
   - `src/components/` — layout, UI dùng chung, biểu đồ, phiếu in
   - `src/lib/` — ngày giờ, định dạng, CSV, tệp, phím tắt, giao diện sáng/tối
 - **In ấn:** khối `.print-area` trong hộp xem trước, dùng CSS `@media print`.
-- **Test:** `src/**/*.test.ts` — nghiệp vụ thanh toán, migration, bộ lọc Lễ tân, tính liều/BMI, mã khám.
+- **Test:** `src/**/*.test.ts` — nghiệp vụ thanh toán, báo cáo doanh thu, migration, trùng hồ sơ, bộ lọc Lễ tân, tính liều/BMI, mã khám.
 
 ## Phạm vi
 

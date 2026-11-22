@@ -1,4 +1,4 @@
-# Bàn giao phiên làm việc — ClinicHIS (cập nhật 21/11/2026)
+# Bàn giao phiên làm việc — ClinicHIS (cập nhật 22/11/2026)
 
 Tài liệu để một phiên Claude Code mới (tài khoản khác) bắt kịp và làm tiếp ngay.
 Đọc file này trước, rồi `README.md`, `docs/ROADMAP.md`, `docs/reference/INDEX.md`.
@@ -25,8 +25,8 @@ Tài liệu để một phiên Claude Code mới (tài khoản khác) bắt kị
   `npm --prefix clinic run dev`) và `clinic/.claude/` (`npm run dev`), cổng **8443**.
   Lần đầu khởi động Vite tối ưu lại dependencies mất ~15 giây, trang trắng trong lúc đó là bình thường.
 - Tailwind bị chặn quét `docs/` (`@source not '../docs'` trong `src/index.css`): đường dẫn Windows kiểu dấu gạch ngược + hex trong tài liệu từng làm dev server trắng trang lỗi "Invalid code point". Đổi `@source` thì phải khởi động lại dev server.
-- Kiểm tra: `npx tsc -b --noEmit` · `npx vitest run` (22 test) · `npx vite build` (bundle chính ~336 kB).
-- Dữ liệu demo nằm ở `localStorage` khoá `clinic-his:state` (STATE_VERSION = **5**). Xoá khoá rồi tải
+- Kiểm tra: `npx tsc -b --noEmit` · `npx vitest run` (32 test) · `npx vite build` (bundle chính ~336 kB).
+- Dữ liệu demo nằm ở `localStorage` khoá `clinic-his:state` (STATE_VERSION = **6**). Xoá khoá rồi tải
   lại để về dữ liệu mẫu. Menu tài khoản (góc dưới Sidebar) có "Khôi phục dữ liệu mẫu".
 - `portfolio 1/CLAUDE.md` nằm **ngoài** git repo (repo chỉ là `clinic/`), chỉ có trên máy này.
 
@@ -39,8 +39,12 @@ Tài liệu để một phiên Claude Code mới (tài khoản khác) bắt kị
 - Điều khiển bằng `javascript_tool` nhanh hơn click toạ độ. Nút Sidebar: tìm theo `title`
   (khi thu gọn) hoặc `textContent` đã bỏ số đếm ở cuối (vd. "Lễ tân8"). Input React cần gán qua
   native setter + `dispatchEvent(new Event('input', { bubbles: true }))`.
-- Lỗi console kiểu `useClinicState phải nằm trong <ClinicProvider>` xuất hiện sau khi sửa file store là
-  do HMR, không phải lỗi thật — tải lại trang rồi kiểm tra lại.
+- (Đã sửa 22/11) Lỗi HMR `useClinicState phải nằm trong <ClinicProvider>` khi sửa store: context đã tách
+  ra `src/store/storeContext.ts`. Sửa file có export không phải component (Modal.tsx, billing.ts…) vẫn có thể
+  làm Vite tải lại cả trang — biến JS gán trên `window` khi kiểm thử sẽ mất, cần khai báo lại.
+- Ô chọn dạng Popover (tỉnh/thành, ô chọn có tìm kiếm) không mở bằng `element.click()` trong `javascript_tool`
+  (Popover đóng ngay vì không có mousedown) — dùng `find` + `computer left_click` theo ref.
+- Pane trình duyệt bị ẩn thì ảnh chụp lệch khung: kiểm tra bố cục bằng đo DOM (getBoundingClientRect) thay vì ảnh.
 
 ### Lịch sử hội thoại đầy đủ (nếu cần tra chi tiết)
 
@@ -53,6 +57,10 @@ Transcript phiên trước nằm trên máy này:
 - `c862a26` Import ClinicHIS từ Figma Make và sửa lỗi luồng Lễ tân.
 - `de9516a` (21/11) Hoàn thiện ClinicHIS theo ảnh tham chiếu (giai đoạn A–K) và tài liệu bàn giao —
   toàn bộ công việc đến lúc đổi tài khoản đã được commit, working tree sạch.
+- **22/11: nhánh `review/2026-11-22`** (tách từ `main` @ `19e005e`, chưa merge, chưa push) chứa K8, K9 và
+  giai đoạn L (tự review theo vai). Mỗi nhóm sửa một commit để rollback từng phần:
+  `git log --oneline main..review/2026-11-22` để xem; bỏ một nhóm: `git revert <commit>`;
+  bỏ hết: `git switch main` (nhánh review vẫn còn để xem lại). Người dùng chưa duyệt merge.
 - Git có cảnh báo LF → CRLF khi commit trên Windows: vô hại, không cần xử lý.
 - Ảnh tham chiếu `docs/reference/screenshots/` (176 ảnh, 15 thư mục module, đọc theo số thứ tự) bị `.gitignore` (ảnh của bên thứ ba, có thể chứa dữ liệu
   người bệnh) — **không bao giờ commit**.
@@ -76,7 +84,7 @@ Transcript phiên trước nằm trên máy này:
 ## 5. Kiến trúc nhanh
 
 - Store: `src/store/ClinicStore.tsx` (Context + useReducer, persist localStorage), migration
-  `src/store/migrations.ts` (v2→v3→v4→v5; phiên bản lạ được sao lưu `clinic-his:backup-v<n>`).
+  `src/store/migrations.ts` (v2→v3→v4→v5→v6; phiên bản lạ được sao lưu `clinic-his:backup-v<n>`).
 - Nghiệp vụ thanh toán: `src/store/billing.ts` — dòng phiếu thu, `derivePaymentStatus`
   (lượt 0đ chưa có phiếu = `none` "Không thanh toán"), `isOrderCharged`/`clsCharge`
   (chỉ định huỷ / NB không đến không tính tiền trừ khi đã thu).
@@ -93,10 +101,14 @@ Transcript phiên trước nằm trên máy này:
   Hệ thống, Thiết lập CLS); J1–J6; I1 kiểm tra toàn luồng; I2 README/INDEX.
 - K (17/11): rà soát theo vai designer / lễ tân / bác sĩ / KTV CLS / thu ngân / quản trị, sửa ~30 lỗi.
 - 21/11: bỏ 4 mục Sidebar (mục 4), Tổng quan còn 3 thẻ, checklist "Thiết lập thông tin phòng khám" trỏ sang Hệ thống.
+- 22/11 giai đoạn L (ROADMAP): điện thoại, a11y/tương phản AA, Error Boundary, các quy tắc nghiệp vụ mới
+  (chặn xoá hồ sơ có bệnh án/phiếu thu, khoá chỉ định đã thu/đã làm, trùng hồ sơ, bệnh án ký/đóng…).
 - 22/11 (K8): Lịch hẹn bỏ 2 thẻ tư vấn + bộ lọc Loại hình; Sidebar "Báo cáo CLS" / "Báo cáo", bỏ ô gói tài khoản Standard / Nâng cấp ngay; nơi thực hiện CĐHA giữ "Lab nội bộ" (người dùng chốt giữ nguyên). K9: đơn vị CLS bên ngoài dùng tên giả (migration v4→v5).
 
 ## 7. Việc có thể làm tiếp (chưa ai yêu cầu — hỏi người dùng trước)
 
+- Form tiếp nhận không có ô chọn bác sĩ/phòng (đúng ảnh 011–012, mô hình phòng khám một bác sĩ chính):
+  lượt mới luôn gán bác sĩ đầu danh mục. Nếu muốn nhiều bác sĩ thì cần ảnh / hỏi người dùng.
 - Chưa có test E2E tự động; luồng chính được kiểm tra thủ công trên trình duyệt tích hợp (22/11 người dùng nói "để sau").
 - Nếu người dùng gửi thêm ảnh cho các trang chờ: phân loại vào `docs/reference/screenshots/<NN-module>/`,
   cập nhật INDEX, thêm giai đoạn mới vào ROADMAP rồi làm.
