@@ -124,6 +124,7 @@ export function ExamListPage() {
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (setSearch(searchInput), setPage(1))}
               placeholder="Tìm theo tên, số điện thoại..."
+              aria-label="Tìm theo tên, số điện thoại"
               className="h-9 w-full rounded-md bg-slate-100 pr-8 pl-8 text-[13px] text-slate-900 outline-none placeholder:text-slate-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
             />
             {searchInput && (

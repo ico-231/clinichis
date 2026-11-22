@@ -54,7 +54,7 @@ export function MenuItem({ icon, children, onSelect, danger, disabled, shortcut,
         danger ? 'text-red-600 hover:bg-red-50' : 'text-slate-800 hover:bg-slate-100',
       )}
     >
-      {icon && <span className={cn('flex h-4 w-4 items-center justify-center', danger ? 'text-red-500' : 'text-slate-500')}>{icon}</span>}
+      {icon && <span className={cn('flex h-4 w-4 items-center justify-center', danger ? 'text-red-600' : 'text-slate-500')}>{icon}</span>}
       <span className="flex-1">{children}</span>
       {shortcut && <span className="text-[11px] text-slate-500">{shortcut}</span>}
     </button>

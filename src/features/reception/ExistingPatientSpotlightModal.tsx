@@ -98,6 +98,7 @@ function SpotlightBody({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Tìm tên, số điện thoại người bệnh..."
+              aria-label="Tìm tên, số điện thoại người bệnh"
               className="w-full bg-transparent text-[13.5px] text-slate-900 outline-none placeholder:text-slate-400"
             />
           </div>

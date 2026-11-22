@@ -60,6 +60,7 @@ export function Select<T extends string>({
         disabled={disabled}
         aria-haspopup="listbox"
         aria-expanded={open}
+        aria-label={label ? `${label}: ${selected?.label ?? placeholder}` : undefined}
         onClick={() => (open ? setOpen(false) : openMenu())}
         onKeyDown={(e) => {
           if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {

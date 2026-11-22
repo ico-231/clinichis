@@ -64,7 +64,7 @@ function Viewer({ visitId, orderId, onClose }: { visitId: string; orderId: strin
             <div className="flex min-h-0 flex-1">
               <div className="flex min-w-0 flex-1 flex-col border-r border-slate-100 p-4">
                 <div className="mb-2 flex items-center gap-2">
-                  {active.kind === 'image' ? <ImageIcon className="h-5 w-5 text-blue-500" /> : <FileText className="h-5 w-5 text-red-500" />}
+                  {active.kind === 'image' ? <ImageIcon className="h-5 w-5 text-blue-500" /> : <FileText className="h-5 w-5 text-red-600" />}
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-semibold">{active.name}</p>
                     <p className="text-xs text-slate-500">

@@ -18,6 +18,7 @@ import { formatNumber, normalizeText } from '@/lib/format'
 import { cn } from '@/lib/cn'
 import { RESULT_TEMPLATES } from './resultTemplates'
 import type { ParaclinicalServiceItem, ResultTemplate } from '@/store/types'
+import { useControlLabel } from '@/lib/useControlLabel'
 
 const CLASSES = ['Sinh hoá', 'Huyết học', 'Miễn dịch', 'Vi sinh', 'Thăm dò chức năng', 'Siêu âm', 'X-quang', 'Khác']
 const input = 'h-9 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[13px] outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15'
@@ -110,7 +111,7 @@ export function ClsSettingsPage() {
         ) : (
           <>
             <div className="mb-3 flex flex-wrap items-end gap-2">
-              <input value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && (setApplied({ q, cls, room }), setPage(1))} placeholder="Tìm theo tên" className={cn(input, 'w-[220px] bg-slate-50')} />
+              <input value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && (setApplied({ q, cls, room }), setPage(1))} placeholder="Tìm theo tên" aria-label="Tìm theo tên" className={cn(input, 'w-[220px] bg-slate-50')} />
               <Select label="Phân loại" value={cls} options={[{ value: 'all', label: 'Tất cả' }, ...CLASSES.map((c) => ({ value: c, label: c }))]} onChange={setCls} className="w-[150px]" />
               <Select label="Phòng CLS" value={room} options={[{ value: 'all', label: 'Tất cả' }, ...roomOptions.map((r) => ({ value: r, label: r }))]} onChange={setRoom} className="w-[150px]" />
               <Button onClick={() => (setApplied({ q, cls, room }), setPage(1))}>Tìm kiếm</Button>
@@ -482,7 +483,7 @@ function TemplateModal({ service, onClose }: { service: ParaclinicalServiceItem;
                       setResultTemplates(all.filter((x) => x.id !== t.id))
                       if (cur.id === t.id) setCur(blank())
                     }}
-                    className="rounded p-1 text-red-500 hover:bg-red-50"
+                    className="rounded p-1 text-red-600 hover:bg-red-50"
                     aria-label={`Xoá mẫu ${t.name}`}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -531,14 +532,15 @@ function TemplateModal({ service, onClose }: { service: ParaclinicalServiceItem;
 }
 
 function ReqField({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+  const { ref, labelId, errorId } = useControlLabel<HTMLSpanElement>(error)
   return (
     <div>
-      <span className="mb-1 block text-[12.5px] font-medium text-slate-700">
+      <span ref={ref} id={labelId} className="mb-1 block text-[12.5px] font-medium text-slate-700">
         {label}
         <span className="text-red-600">*</span>
       </span>
       {children}
-      {error && <span className="mt-1 block text-xs text-red-600">{error}</span>}
+      {error && <span id={errorId} className="mt-1 block text-xs text-red-600">{error}</span>}
     </div>
   )
 }

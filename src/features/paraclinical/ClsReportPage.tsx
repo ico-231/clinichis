@@ -94,7 +94,7 @@ export function ClsReportPage() {
         <div className="flex flex-wrap items-end gap-2">
           <div className="relative min-w-[240px] flex-1">
             <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-            <input value={q} onChange={(e) => (setQ(e.target.value), setPage(1))} placeholder="Tìm kiếm mã phiếu khám, mã phiếu chỉ định" className="h-9 w-full rounded-md border border-slate-200 pr-3 pl-8 text-[13px] outline-none focus:border-blue-500" />
+            <input value={q} onChange={(e) => (setQ(e.target.value), setPage(1))} placeholder="Tìm kiếm mã phiếu khám, mã phiếu chỉ định" aria-label="Tìm kiếm mã phiếu khám, mã phiếu chỉ định" className="h-9 w-full rounded-md border border-slate-200 pr-3 pl-8 text-[13px] outline-none focus:border-blue-500" />
           </div>
           <DateRangePicker value={range} onChange={(r) => (setRange(r), setPage(1))} />
           <Select

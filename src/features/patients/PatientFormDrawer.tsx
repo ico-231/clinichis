@@ -13,6 +13,7 @@ import { RELATION_LABEL, toOptions } from '@/store/catalog'
 import { addDays, ageInYears, formatDateVN, todayISO } from '@/lib/date'
 import { cn } from '@/lib/cn'
 import type { Gender, GuardianRelation, Patient, PatientInput } from '@/store/types'
+import { useControlLabel } from '@/lib/useControlLabel'
 
 interface Form {
   fullName: string
@@ -269,14 +270,15 @@ export function PatientFormDrawer({ patient, onClose, onSaved }: { patient?: Pat
 }
 
 function Field({ label, required, error, children }: { label: string; required?: boolean; error?: string; children: ReactNode }) {
+  const { ref, labelId, errorId } = useControlLabel<HTMLSpanElement>(error)
   return (
     <div>
-      <span className="mb-1.5 block text-[12.5px] font-medium text-slate-600">
+      <span ref={ref} id={labelId} className="mb-1.5 block text-[12.5px] font-medium text-slate-600">
         {label}
         {required && <span className="ml-0.5 text-red-600">*</span>}
       </span>
       {children}
-      {error && <span className="mt-1 block text-xs text-red-600">{error}</span>}
+      {error && <span id={errorId} className="mt-1 block text-xs text-red-600">{error}</span>}
     </div>
   )
 }

@@ -12,6 +12,7 @@ import { formatNumber, initials } from '@/lib/format'
 import { cn } from '@/lib/cn'
 import { PendingProfileBanner } from '../schedule/SchedulePage'
 import type { ClinicProfile } from '@/store/types'
+import { useControlLabel } from '@/lib/useControlLabel'
 
 export function defaultProfile(): ClinicProfile {
   const d = DOCTORS[0]
@@ -275,9 +276,10 @@ export function ClinicInfoPage() {
 }
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: ReactNode }) {
+  const { ref, labelId } = useControlLabel<HTMLSpanElement>()
   return (
     <div>
-      <span className="mb-1 block text-[12.5px] font-medium text-slate-700">
+      <span ref={ref} id={labelId} className="mb-1 block text-[12.5px] font-medium text-slate-700">
         {label}
         {required && <span className="text-red-600">*</span>}
       </span>
@@ -360,7 +362,7 @@ function ListEditor({ label, items, cols, onChange, numericCol }: { label: strin
                 className={cn(input.replace('w-full', ''), k === numericCol ? 'w-[120px] shrink-0 text-right' : 'min-w-0 flex-1')}
               />
             ))}
-            <button type="button" onClick={() => onChange(items.filter((_, j) => j !== i))} className="shrink-0 rounded-md border border-slate-200 px-2 text-red-500 hover:bg-red-50" aria-label="Xoá dòng">
+            <button type="button" onClick={() => onChange(items.filter((_, j) => j !== i))} className="shrink-0 rounded-md border border-slate-200 px-2 text-red-600 hover:bg-red-50" aria-label="Xoá dòng">
               <Trash2 className="h-3.5 w-3.5" />
             </button>
           </div>

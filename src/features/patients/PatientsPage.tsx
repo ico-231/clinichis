@@ -126,6 +126,7 @@ export function PatientsPage() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (setQuery(input), setPage(1))}
               placeholder="Tìm theo số điện thoại hoặc họ tên"
+              aria-label="Tìm theo số điện thoại hoặc họ tên"
               className="h-9 w-full rounded-md bg-slate-100 pr-3 pl-8 text-[13px] outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20"
             />
           </div>

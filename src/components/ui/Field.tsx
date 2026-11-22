@@ -1,5 +1,6 @@
 import { forwardRef, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from 'react'
 import { cn } from '@/lib/cn'
+import { useControlLabel } from '@/lib/useControlLabel'
 import { formatNumber } from '@/lib/format'
 
 export const inputBase =
@@ -18,17 +19,18 @@ interface FieldShellProps {
 
 /** Khung trường nhập với nhãn nhỏ nằm trên viền (giống hệ thống gốc) */
 export function FieldShell({ label, required, error, hint, className, children }: FieldShellProps) {
+  const { ref, labelId, errorId } = useControlLabel<HTMLSpanElement>(error)
   return (
     <div className={cn('relative', className)}>
       {label && (
-        <span className="pointer-events-none absolute -top-[7px] left-2 z-[1] bg-white px-1 text-[11px] leading-[14px] text-slate-600">
+        <span ref={ref} id={labelId} className="pointer-events-none absolute -top-[7px] left-2 z-[1] bg-white px-1 text-[11px] leading-[14px] text-slate-600">
           {label}
           {required && <span className="text-red-600"> *</span>}
         </span>
       )}
       {children}
       {error ? (
-        <p className="mt-1 text-[11px] text-red-600">{error}</p>
+        <p id={errorId} className="mt-1 text-[11px] text-red-600">{error}</p>
       ) : hint ? (
         <p className="mt-1 text-[11px] text-slate-500">{hint}</p>
       ) : null}

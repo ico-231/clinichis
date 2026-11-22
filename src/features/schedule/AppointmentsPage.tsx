@@ -91,6 +91,7 @@ export function AppointmentsPage() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && (setQuery(input), setPage(1))}
             placeholder="Tìm theo tên, số điện thoại..."
+            aria-label="Tìm theo tên, số điện thoại"
             className="h-9 w-full rounded-md bg-slate-100 pr-7 pl-8 text-[13px] outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20"
           />
           {input && (

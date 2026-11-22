@@ -441,7 +441,7 @@ function IcdReport() {
         <DateBox label="Đến ngày" value={to} onChange={setTo} />
         <label className="block">
           <span className="mb-1 block text-[11.5px] text-slate-500">Tên chẩn đoán</span>
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Tìm theo tên chẩn đoán" className="h-9 w-[220px] rounded-md border border-slate-200 px-2.5 text-[13px] outline-none focus:border-blue-500" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Tìm theo tên chẩn đoán" aria-label="Tìm theo tên chẩn đoán" className="h-9 w-[220px] rounded-md border border-slate-200 px-2.5 text-[13px] outline-none focus:border-blue-500" />
         </label>
         <Select label="ICD-10" value={code} options={[{ value: 'all', label: 'Lọc theo mã ICD' }, ...ICD10.map((d) => ({ value: d.code, label: `${d.code} – ${d.name}` }))]} onChange={setCode} className="w-[200px]" menuMinWidth={360} />
         <Select
@@ -643,7 +643,7 @@ function InvoicesReport() {
         />
         <div className="relative">
           <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-          <input value={q} onChange={(e) => (setQ(e.target.value), setPage(1))} placeholder="Tìm theo tên khách hàng, mã hoá đơn..." className="h-9 w-[260px] rounded-md border border-slate-200 pr-2 pl-8 text-[13px] outline-none focus:border-blue-500" />
+          <input value={q} onChange={(e) => (setQ(e.target.value), setPage(1))} placeholder="Tìm theo tên khách hàng, mã hoá đơn..." aria-label="Tìm theo tên khách hàng, mã hoá đơn" className="h-9 w-[260px] rounded-md border border-slate-200 pr-2 pl-8 text-[13px] outline-none focus:border-blue-500" />
         </div>
         <ExportBtn
           label="Tải về"

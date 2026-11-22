@@ -22,6 +22,7 @@ import { SIGN_LABEL } from '../emr/emrData'
 import { defaultSystem } from '@/store/systemDefaults'
 import { localDate } from '../reports/reportData'
 import type { OrgItem, Service, SignStatus, StaffMember, SystemSettings } from '@/store/types'
+import { useControlLabel } from '@/lib/useControlLabel'
 
 const input = 'h-9 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[13px] outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 disabled:bg-slate-50 disabled:text-slate-500'
 const SIGN_PROVIDERS = ['Viettel', 'VNPT', 'FPT', 'BKAV']
@@ -35,14 +36,15 @@ export function useSystem() {
 }
 
 function Field({ label, required, hint, error, children }: { label: string; required?: boolean; hint?: string; error?: string; children: ReactNode }) {
+  const { ref, labelId, errorId } = useControlLabel<HTMLSpanElement>(error)
   return (
     <div>
-      <span className="mb-1 block text-[12.5px] font-medium text-slate-700">
+      <span ref={ref} id={labelId} className="mb-1 block text-[12.5px] font-medium text-slate-700">
         {label}
         {required && <span className="text-red-600">*</span>}
       </span>
       {children}
-      {error ? <span className="mt-1 block text-xs text-red-600">{error}</span> : hint && <span className="mt-1 block text-[11.5px] text-slate-500">{hint}</span>}
+      {error ? <span id={errorId} className="mt-1 block text-xs text-red-600">{error}</span> : hint && <span className="mt-1 block text-[11.5px] text-slate-500">{hint}</span>}
     </div>
   )
 }

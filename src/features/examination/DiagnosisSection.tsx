@@ -68,6 +68,7 @@ export function DiagnosisInput({
       <div ref={anchorRef} className="relative">
         <Search className="pointer-events-none absolute top-1/2 left-1 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
         <input
+          aria-label={placeholder}
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);

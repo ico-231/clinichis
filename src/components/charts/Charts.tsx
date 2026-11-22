@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { useLayoutEffect, useRef, useState, type ReactNode, useId } from 'react'
 import { formatNumber } from '@/lib/format'
 
 /** Bảng màu đã kiểm tra bằng validator dataviz (light): cũ / mới / lượt khám */
@@ -195,7 +195,7 @@ export function MiniArea({ values, color, height = 90, label }: { values: number
   const max = Math.max(1, ...values)
   const n = Math.max(values.length - 1, 1)
   const pts = values.map((v, i) => [(i / n) * width, height - 4 - (v / max) * (height - 12)] as const)
-  const id = `g${color.slice(1)}`
+  const id = `g${useId().replace(/:/g, '')}`
   return (
     <div ref={ref} className="relative w-full min-w-0" style={{ height }} onMouseLeave={() => setHover(null)}>
       {width > 0 && values.length > 0 && (

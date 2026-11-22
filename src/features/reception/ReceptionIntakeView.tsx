@@ -845,7 +845,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                   onChange={(e) => setVForm((f) => ({ ...f, time: e.target.value }))}
                   className={cn(underlineBase, 'mt-0.5 tabular-nums', errors.visitTime && 'border-red-400')}
                 />
-                {errors.visitTime && <p className="mt-1 text-[11px] text-red-500">{errors.visitTime}</p>}
+                {errors.visitTime && <p className="mt-1 text-[11px] text-red-600">{errors.visitTime}</p>}
               </div>
 
               <UnderlineSelect
@@ -917,6 +917,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                   <div className="flex min-w-0 flex-1 items-center gap-1 text-[13px] tabular-nums">
                     <input
                       value={vitals.bpSystolic ?? ''}
+                      aria-label="Huyết áp tâm thu"
                       inputMode="numeric"
                       placeholder=""
                       onChange={(e) => updateVitals({ bpSystolic: e.target.value.replace(/\D/g, '').slice(0, 3) })}
@@ -925,6 +926,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                     {(vitals.bpSystolic || vitals.bpDiastolic) && <span className="text-slate-400">/</span>}
                     <input
                       value={vitals.bpDiastolic ?? ''}
+                      aria-label="Huyết áp tâm trương"
                       inputMode="numeric"
                       placeholder=""
                       onChange={(e) => updateVitals({ bpDiastolic: e.target.value.replace(/\D/g, '').slice(0, 3) })}

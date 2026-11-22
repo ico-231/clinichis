@@ -352,6 +352,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                         value={providerQuery}
                         onChange={(e) => setProviderQuery(e.target.value)}
                         placeholder="Tìm theo tên lab, địa chỉ..."
+                        aria-label="Tìm theo tên lab, địa chỉ"
                         className="w-full bg-transparent text-[13px] text-slate-900 outline-none placeholder:text-slate-400"
                       />
                     </div>
@@ -393,6 +394,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                       value={serviceQuery}
                       onChange={(e) => setServiceQuery(e.target.value)}
                       placeholder="Tìm theo tên cận lâm sàng, combo..."
+                      aria-label="Tìm theo tên cận lâm sàng, combo"
                       className="h-7 w-full bg-transparent text-[13px] text-slate-900 outline-none placeholder:text-slate-400"
                     />
                     {serviceQuery && (
@@ -561,7 +563,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                     <button
                       type="button"
                       onClick={() => setDraftOrders((list) => list.filter((o) => locked.has(o.id)))}
-                      className="inline-flex items-center gap-1 text-[12.5px] font-medium text-red-500 transition hover:text-red-600"
+                      className="inline-flex items-center gap-1 text-[12.5px] font-medium text-red-600 transition hover:text-red-600"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                       Xoá tất cả

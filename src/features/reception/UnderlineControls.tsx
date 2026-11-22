@@ -4,6 +4,7 @@ import { Popover } from '@/components/ui/Popover'
 import { cn } from '@/lib/cn'
 import { formatNumber, normalizeText } from '@/lib/format'
 import { parseISODate, toISODate, todayISO, WEEKDAYS_VN } from '@/lib/date'
+import { useControlLabel } from '@/lib/useControlLabel'
 
 export function CardSectionHeader({
   title,
@@ -31,8 +32,9 @@ export function CardSectionHeader({
 }
 
 export function FieldLabel({ label, required }: { label: string; required?: boolean }) {
+  const { ref, labelId } = useControlLabel<HTMLLabelElement>()
   return (
-    <label className="block text-[12.5px] font-semibold text-slate-800">
+    <label ref={ref} id={labelId} className="block text-[12.5px] font-semibold text-slate-800">
       {label}
       {required && <span className="ml-0.5 text-red-600">*</span>}
     </label>
@@ -77,7 +79,7 @@ export function UnderlineInput({
         {rightSlot && <div className="absolute right-0 flex items-center">{rightSlot}</div>}
       </div>
       {error ? (
-        <p className="mt-1 text-[11px] text-red-500">{error}</p>
+        <p className="mt-1 text-[11px] text-red-600">{error}</p>
       ) : helper ? (
         <p className="mt-1 text-[11px] text-slate-500">{helper}</p>
       ) : null}
@@ -219,7 +221,7 @@ export function UnderlineSelect<T extends string>({
         </span>
         <Icon className="h-3.5 w-3.5 shrink-0 text-slate-400" />
       </button>
-      {error && <p className="mt-1 text-[11px] text-red-500">{error}</p>}
+      {error && <p className="mt-1 text-[11px] text-red-600">{error}</p>}
 
       <Popover
         open={open}
@@ -240,6 +242,7 @@ export function UnderlineSelect<T extends string>({
               }}
               onKeyDown={onSearchKey}
               placeholder="Tìm nhanh..."
+              aria-label="Tìm nhanh"
               className="w-full bg-transparent text-[12.5px] text-slate-900 outline-none placeholder:text-slate-400"
             />
             {query && (
@@ -385,7 +388,7 @@ export function UnderlineDateField({
           <CalendarDays className="h-3.5 w-3.5" />
         </button>
       </div>
-      {error && <p className="mt-1 text-[11px] text-red-500">{error}</p>}
+      {error && <p className="mt-1 text-[11px] text-red-600">{error}</p>}
 
       <Popover open={open} onClose={() => setOpen(false)} anchorRef={wrapRef} className="w-[252px] p-3">
         <div className="select-none">

@@ -152,7 +152,7 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
               {items.map((it) => (
                 <tr key={it.id} className="border-t border-slate-100 align-top">
                   <td className="px-1 pt-2.5 text-center">
-                    <button type="button" onClick={() => setItems(items.filter((x) => x.id !== it.id))} className="text-red-500 hover:text-red-700" aria-label={`Xoá ${it.name}`}>
+                    <button type="button" onClick={() => setItems(items.filter((x) => x.id !== it.id))} className="text-red-600 hover:text-red-700" aria-label={`Xoá ${it.name}`}>
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </td>
@@ -161,19 +161,19 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
                     <p className="text-xs text-slate-500">{it.activeIngredient}</p>
                   </td>
                   <td className="px-2 py-1.5">
-                    <NumberCell value={it.days} min={1} onChange={(days) => patchItem(it.id, { days: Math.max(1, Math.round(days)) })} />
+                    <NumberCell label={`Số ngày dùng ${it.name}`} value={it.days} min={1} onChange={(days) => patchItem(it.id, { days: Math.max(1, Math.round(days)) })} />
                   </td>
                   <td className="px-2 py-1.5">
-                    <UnitSelect value={it.doseUnit} onChange={(doseUnit) => patchItem(it.id, { doseUnit, quantityUnit: doseUnit })} />
+                    <UnitSelect label={`Đơn vị liều ${it.name}`} value={it.doseUnit} onChange={(doseUnit) => patchItem(it.id, { doseUnit, quantityUnit: doseUnit })} />
                   </td>
-                  {(['morning', 'noon', 'afternoon', 'evening'] as const).map((k) => (
+                  {(['morning', 'noon', 'afternoon', 'evening'] as const).map((k, i) => (
                     <td key={k} className="px-1 py-1.5">
-                      <NumberCell value={it[k]} step={0.5} onChange={(n) => patchItem(it.id, { [k]: Math.max(0, n) })} />
+                      <NumberCell label={`Liều ${['sáng', 'trưa', 'chiều', 'tối'][i]} ${it.name}`} value={it[k]} step={0.5} onChange={(n) => patchItem(it.id, { [k]: Math.max(0, n) })} />
                     </td>
                   ))}
                   <td className="px-2 py-1.5">
                     <div className="flex items-center gap-1">
-                      <NumberCell value={it.quantity} onChange={(quantity) => patchItem(it.id, { quantity: Math.max(0, Math.round(quantity)) })} />
+                      <NumberCell label={`Số lượng ${it.name}`} value={it.quantity} onChange={(quantity) => patchItem(it.id, { quantity: Math.max(0, Math.round(quantity)) })} />
                       <span className="shrink-0 text-xs text-slate-500">{it.quantityUnit}</span>
                     </div>
                   </td>
@@ -183,6 +183,7 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
                       rows={1}
                       onChange={(e) => patchItem(it.id, { usage: e.target.value })}
                       placeholder="Nhập cách dùng..."
+                      aria-label={`Cách dùng ${it.name}`}
                       className={cn(boxInput, 'resize-y py-1.5')}
                     />
                   </td>
@@ -198,6 +199,7 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
         rows={2}
         onChange={(e) => update({ advice: e.target.value })}
         placeholder="Lời dặn của bác sĩ..."
+        aria-label="Lời dặn của bác sĩ"
         className={cn(boxInput, 'mt-2 resize-y py-2')}
       />
 
@@ -206,9 +208,10 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
   )
 }
 
-function NumberCell({ value, onChange, step = 1, min = 0 }: { value: number; onChange: (n: number) => void; step?: number; min?: number }) {
+function NumberCell({ label, value, onChange, step = 1, min = 0 }: { label: string; value: number; onChange: (n: number) => void; step?: number; min?: number }) {
   return (
     <input
+      aria-label={label}
       type="number"
       value={value}
       step={step}
@@ -220,10 +223,10 @@ function NumberCell({ value, onChange, step = 1, min = 0 }: { value: number; onC
   )
 }
 
-function UnitSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+function UnitSelect({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   const options = DOSE_UNITS.includes(value) ? DOSE_UNITS : [value, ...DOSE_UNITS]
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full border-b border-slate-300 bg-transparent outline-none focus:border-blue-600">
+    <select aria-label={label} value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full border-b border-slate-300 bg-transparent outline-none focus:border-blue-600">
       {options.map((u) => (
         <option key={u}>{u}</option>
       ))}
@@ -270,6 +273,7 @@ function DrugSearch({ onPick, inputRef }: { onPick: (d: Drug) => void; inputRef:
           }
         }}
         placeholder="Tìm theo tên thuốc, hoạt chất"
+        aria-label="Tìm theo tên thuốc, hoạt chất"
         className={cn(boxInput, 'h-9 pl-8')}
       />
       <Popover open={open} onClose={() => setOpen(false)} anchorRef={anchorRef} matchWidth className="py-1">
@@ -316,7 +320,7 @@ function TemplatePicker({ onPick }: { onPick: (t: PrescriptionTemplate) => void 
       <Popover open={open} onClose={() => setOpen(false)} anchorRef={ref} className="w-[340px] p-2">
         <div className="relative">
           <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Tìm theo tên đơn mẫu..." className={cn(boxInput, 'h-8 pl-8')} />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Tìm theo tên đơn mẫu..." aria-label="Tìm theo tên đơn mẫu" className={cn(boxInput, 'h-8 pl-8')} />
         </div>
         {list.length === 0 ? (
           <div className="flex flex-col items-center gap-1 py-5 text-center">

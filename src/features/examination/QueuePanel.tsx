@@ -109,6 +109,7 @@ export function QueuePanel({ visit, onSelect, onBack, onOpenDetail, onCopyPrescr
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Tìm theo tên, số điện thoại..."
+              aria-label="Tìm theo tên, số điện thoại"
               className="h-8 w-full rounded-md bg-slate-100 pr-2 pl-8 text-[12.5px] outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20"
             />
           </div>

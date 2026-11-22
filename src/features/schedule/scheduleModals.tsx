@@ -185,7 +185,7 @@ export function WeeklySetupModal({ initial, onClose, onApply }: { initial: Fixed
                       <span className="rounded bg-white px-1.5 py-0.5 ring-1 ring-slate-200">{s.enabled ? 'Đang bật' : 'Nháp'}</span>
                       <span>{s.slotMinutes} phút/slot</span>
                       <span>{formatNumber(slotCount(s))} lượt</span>
-                      <button type="button" onClick={() => setSlots((l) => l.filter((x) => x.id !== s.id))} className="ml-auto rounded p-1 text-red-500 hover:bg-red-50" aria-label="Xoá khung giờ">
+                      <button type="button" onClick={() => setSlots((l) => l.filter((x) => x.id !== s.id))} className="ml-auto rounded p-1 text-red-600 hover:bg-red-50" aria-label="Xoá khung giờ">
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
                     </div>

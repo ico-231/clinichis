@@ -296,6 +296,7 @@ function RiskRow({
         value={note}
         onChange={(e) => onNote(e.target.value)}
         placeholder="Ghi chú"
+        aria-label={`Ghi chú ${label.toLowerCase()}`}
         className="h-8 w-full border-b border-slate-200 bg-transparent text-[13px] outline-none placeholder:text-slate-400 focus:border-blue-600"
       />
     </div>
@@ -386,6 +387,7 @@ export function NotesSection({ draft, update }: { draft: ExamDraft; update: Draf
             }
           }}
           placeholder="Nhập nội dung ghi chú (Ctrl + Enter để thêm)"
+          aria-label="Nội dung ghi chú người bệnh"
           className={cn(boxInput, 'resize-y py-2')}
         />
         <Button variant="outline" onClick={add} disabled={!text.trim()}>

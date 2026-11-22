@@ -122,6 +122,7 @@ export function ParaclinicalListPage({ category }: { category: 'imaging' | 'lab'
               value={query}
               onChange={(e) => (setQuery(e.target.value), setPage(1))}
               placeholder="Tìm kiếm mã phiếu khám, mã phiếu chỉ định, người bệnh"
+              aria-label="Tìm kiếm mã phiếu khám, mã phiếu chỉ định, người bệnh"
               className="h-9 w-full rounded-md border border-slate-200 pr-3 pl-8 text-[13px] outline-none focus:border-blue-500"
             />
           </div>
