@@ -69,9 +69,10 @@ export function StackedBarLine({ data, height = 220 }: { data: StackPoint[]; hei
   const ticks = [0, max / 4, max / 2, (max * 3) / 4, max]
   const labelEvery = Math.ceil(data.length / Math.max(1, Math.floor(innerW / 48)))
   return (
-    <div ref={ref} className="relative w-full" onMouseLeave={() => setHover(null)}>
+    // SVG nằm tuyệt đối trong khung cao cố định => không đẩy rộng ô grid/flex chứa nó, chỉ co giãn theo khung
+    <div ref={ref} className="relative w-full min-w-0" style={{ height }} onMouseLeave={() => setHover(null)}>
       {width > 0 && (
-        <svg width={width} height={height} role="img" aria-label="Biểu đồ lượt người bệnh đến khám theo ngày">
+        <svg width={width} height={height} className="absolute top-0 left-0" role="img" aria-label="Biểu đồ lượt người bệnh đến khám theo ngày">
           {ticks.map((t) => (
             <g key={t}>
               <line x1={pad.l} x2={width - pad.r} y1={y(t)} y2={y(t)} stroke="#e2e8f0" strokeDasharray={t === 0 ? undefined : '3 4'} />
@@ -196,11 +197,12 @@ export function MiniArea({ values, color, height = 90, label }: { values: number
   const pts = values.map((v, i) => [(i / n) * width, height - 4 - (v / max) * (height - 12)] as const)
   const id = `g${color.slice(1)}`
   return (
-    <div ref={ref} className="relative w-full" onMouseLeave={() => setHover(null)}>
+    <div ref={ref} className="relative w-full min-w-0" style={{ height }} onMouseLeave={() => setHover(null)}>
       {width > 0 && values.length > 0 && (
         <svg
           width={width}
           height={height}
+          className="absolute top-0 left-0"
           role="img"
           aria-label={label}
           onMouseMove={(e) => {

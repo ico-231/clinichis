@@ -15,11 +15,11 @@ export function Pagination({ page, pageCount, pageSize, total, onPageChange, onP
   const btn =
     'flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:pointer-events-none disabled:text-slate-300'
   return (
-    <div className="flex items-center justify-between gap-6 px-1 py-3">
+    <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 px-1 py-3">
       <p className="text-[13.5px] font-semibold text-slate-900">
         {total > 0 ? `Tổng ${total} kết quả` : ''}
       </p>
-      <div className="flex items-center gap-7">
+      <div className="flex flex-wrap items-center gap-x-7 gap-y-2 max-sm:w-full max-sm:justify-between max-sm:gap-x-3">
         <div className="flex items-center gap-3">
           <Select
             value={String(pageSize)}
@@ -28,7 +28,7 @@ export function Pagination({ page, pageCount, pageSize, total, onPageChange, onP
             className="w-[72px]"
             triggerClassName="h-8"
           />
-          <span className="text-[13px] text-slate-700">dòng</span>
+          <span className="text-[13px] text-slate-700 max-sm:hidden">dòng</span>
         </div>
         <span className="text-[13px] font-medium text-slate-800 tabular-nums">
           {pageCount === 0 ? 'Trang 0 / 0' : `Trang ${page}/${pageCount}`}

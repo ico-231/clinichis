@@ -53,6 +53,9 @@ export function isOrderCharged(o: ParaclinicalOrderItem, payments: PaymentRecord
 export const clsCharge = (orders: ParaclinicalOrderItem[] = [], payments: PaymentRecord[] = []) =>
   orders.filter((o) => isOrderCharged(o, payments)).reduce((s, o) => s + o.unitPrice * o.quantity, 0)
 
+/** Đơn vị tính của dịch vụ CLS theo danh mục (Thiết lập › Đơn vị) để phiếu thu khớp danh mục */
+export const clsUnit = (serviceId: string) => PARACLINICAL_SERVICES.find((s) => s.id === serviceId)?.unit || 'Lượt'
+
 /** Mọi dòng có thể thu của lượt khám: công khám + từng chỉ định CLS (bỏ chỉ định huỷ chưa thu) */
 export function billableLines(visit: Visit): ReceiptLine[] {
   const ck = visit.consultationFee ?? 0
@@ -69,9 +72,7 @@ export function billableLines(visit: Visit): ReceiptLine[] {
   ]
   for (const o of visit.paraclinicalOrders ?? []) {
     if (!isOrderCharged(o, visit.payments)) continue
-    // Đơn vị lấy theo danh mục CLS (Thiết lập › Đơn vị) để phiếu thu khớp danh mục
-    const unit = PARACLINICAL_SERVICES.find((s) => s.id === o.serviceId)?.unit || 'Lượt'
-    lines.push({ kind: 'paraclinical', refId: o.id, name: o.name, unit, quantity: o.quantity, unitPrice: o.unitPrice, discount: 0 })
+    lines.push({ kind: 'paraclinical', refId: o.id, name: o.name, unit: clsUnit(o.serviceId), quantity: o.quantity, unitPrice: o.unitPrice, discount: 0 })
   }
   return lines
 }
@@ -123,3 +124,16 @@ export function nextReceiptCode(visits: Visit[], dateIso: string) {
 
 /** Phiếu thu hiển thị được (có mã); phiếu cũ được gán mã hiển thị từ id */
 export const receiptsOf = (visit: Visit): PaymentRecord[] => visit.payments.filter((p) => p.kind === 'payment')
+
+/**
+ * Lý do không được xoá hồ sơ người bệnh (null = được xoá).
+ * Bệnh án và chứng từ thu tiền phải lưu trữ, nên chỉ xoá được hồ sơ chưa khám và chưa thu tiền
+ * (vd. tạo nhầm, đăng ký rồi huỷ).
+ */
+export function patientDeleteBlock(visits: Pick<Visit, 'status' | 'payments'>[]): string | null {
+  const examined = visits.filter((v) => v.status === 'done' || v.status === 'in_progress').length
+  const receipts = visits.reduce((n, v) => n + v.payments.filter((p) => p.kind === 'payment').length, 0)
+  if (!examined && !receipts) return null
+  const parts = [examined && `${examined} lượt đã khám`, receipts && `${receipts} phiếu thu`].filter(Boolean).join(' và ')
+  return `Người bệnh đã có ${parts}. Bệnh án và chứng từ thu tiền cần được lưu trữ nên không thể xoá hồ sơ.`
+}

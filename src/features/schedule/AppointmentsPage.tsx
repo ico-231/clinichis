@@ -17,7 +17,8 @@ import { CancelVisitModal, PaymentModal } from '../reception/PaymentModals'
 import { VisitDetailDrawer } from '../reception/VisitDetailDrawer'
 import { previousRange } from '../reports/reportData'
 import { PendingProfileBanner } from './SchedulePage'
-import type { PaymentStatus, VisitStatus } from '@/store/types'
+import { nextSort, sortVisitRows } from '../reception/useReceptionData'
+import type { PaymentStatus, ReceptionViewState, VisitStatus } from '@/store/types'
 
 /** Lịch hẹn: các lượt đặt trước qua website / ứng dụng / Zalo / tổng đài (ảnh 074) */
 export function AppointmentsPage() {
@@ -31,6 +32,7 @@ export function AppointmentsPage() {
   const [status, setStatus] = useState<'all' | VisitStatus>('all')
   const [payment, setPayment] = useState<'all' | PaymentStatus>('all')
   const [page, setPage] = useState(1)
+  const [sort, setSort] = useState<ReceptionViewState['sort']>(null)
   const [pageSize, setPageSize] = useState(20)
   const [detailId, setDetailId] = useState<string | null>(null)
   const [payId, setPayId] = useState<string | null>(null)
@@ -40,16 +42,16 @@ export function AppointmentsPage() {
   const filtered = useMemo(() => {
     const q = normalizeText(query)
     const digits = q.replace(/\D/g, '')
-    return booked
-      .filter(({ visit: v, patient: p }) => {
+    const list = booked.filter(({ visit: v, patient: p }) => {
         if (v.date < from || v.date > to) return false
         if (status !== 'all' && v.status !== status) return false
         if (payment !== 'all' && v.paymentStatus !== payment) return false
         if (q && !normalizeText(`${p.fullName} ${p.code} ${v.code}`).includes(q) && !(digits.length >= 3 && p.phone.includes(digits))) return false
         return true
       })
-      .sort((a, b) => b.visit.date.localeCompare(a.visit.date) || a.visit.time.localeCompare(b.visit.time))
-  }, [booked, query, from, to, status, payment])
+    // Mặc định theo giờ hẹn trong ngày; bấm tiêu đề cột để sắp xếp khác
+    return sort ? sortVisitRows(list, sort) : list.sort((a, b) => b.visit.date.localeCompare(a.visit.date) || a.visit.time.localeCompare(b.visit.time))
+  }, [booked, query, from, to, status, payment, sort])
   const prev = previousRange(from, to)
   const prevCount = booked.filter((r) => r.visit.date >= prev.from && r.visit.date <= prev.to).length
   const pageCount = Math.ceil(filtered.length / pageSize)
@@ -116,8 +118,8 @@ export function AppointmentsPage() {
           <ReceptionTable
             rows={filtered.slice((safePage - 1) * pageSize, safePage * pageSize)}
             visibleColumns={DEFAULT_COLUMNS}
-            sort={null}
-            onSort={() => {}}
+            sort={sort}
+            onSort={(key) => (setSort((s) => nextSort(s, key)), setPage(1))}
             highlightId={null}
             onOpen={setDetailId}
             onChangeStatus={onChangeStatus}

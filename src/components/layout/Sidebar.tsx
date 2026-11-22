@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ChevronsUpDown, LogOut, RotateCcw, UserRound } from 'lucide-react'
 import { NAV_SECTIONS } from '@/navigation'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
@@ -6,6 +6,8 @@ import { initials } from '@/lib/format'
 import { CLINIC } from '@/store/catalog'
 import { DropdownMenu, MenuItem, MenuSeparator } from '@/components/ui/DropdownMenu'
 import { useToast } from '@/components/ui/Toast'
+import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
+import { NARROW_QUERY, useMediaQuery } from '@/lib/useMediaQuery'
 import { cn } from '@/lib/cn'
 import { todayISO } from '@/lib/date'
 import type { RouteKey } from '@/store/types'
@@ -16,7 +18,22 @@ export function Sidebar() {
   const userName = account ? `${account.lastName} ${account.firstName}` : 'Nguyễn Đắc Nghĩa'
   const { navigate, setUI, resetDemoData } = useClinicActions()
   const toast = useToast()
-  const collapsed = ui.sidebarCollapsed
+  const narrow = useMediaQuery(NARROW_QUERY)
+  // Màn hẹp: "thu gọn" = ẩn hẳn ngăn kéo; "mở rộng" = ngăn kéo phủ lên nội dung (luôn hiện đủ nhãn)
+  const collapsed = narrow ? false : ui.sidebarCollapsed
+  const drawerOpen = narrow && !ui.sidebarCollapsed
+  const [confirmReset, setConfirmReset] = useState(false)
+
+  // Vào app trên điện thoại: bắt đầu với menu đóng để nội dung chiếm trọn màn hình
+  useEffect(() => {
+    if (narrow && !ui.sidebarCollapsed) setUI({ sidebarCollapsed: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [narrow])
+
+  const go = (key: RouteKey) => {
+    navigate(key)
+    if (narrow) setUI({ sidebarCollapsed: true })
+  }
 
   // Bộ đếm trên menu lấy trực tiếp từ store dùng chung
   const counters = useMemo(() => {
@@ -29,7 +46,18 @@ export function Sidebar() {
   }, [visits])
 
   return (
-    <aside className={cn('flex h-full shrink-0 flex-col overflow-hidden whitespace-nowrap border-r border-slate-200 bg-white transition-[width] duration-200', collapsed ? 'w-[64px]' : 'w-[230px]')}>
+    <>
+    {drawerOpen && <div className="fixed inset-0 z-40 animate-fade-in bg-slate-900/40" onClick={() => setUI({ sidebarCollapsed: true })} aria-hidden="true" />}
+    <aside
+      aria-label="Menu chính"
+      className={cn(
+        'flex h-full shrink-0 flex-col overflow-hidden whitespace-nowrap border-r border-slate-200 bg-white',
+        narrow
+          ? cn('fixed inset-y-0 left-0 z-50 w-[260px] shadow-2xl transition-transform duration-200', drawerOpen ? 'translate-x-0' : '-translate-x-full')
+          : cn('transition-[width] duration-200', collapsed ? 'w-[64px]' : 'w-[230px]'),
+      )}
+      inert={narrow && !drawerOpen ? true : undefined}
+    >
       {/* Thương hiệu */}
       <div className={cn('flex h-[52px] shrink-0 items-center gap-2.5', collapsed ? 'justify-center px-2' : 'px-3')}>
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-rose-600 text-sm font-bold text-white shadow-sm">{CLINIC.shortName}</div>
@@ -51,7 +79,7 @@ export function Sidebar() {
                     <button
                       type="button"
                       title={collapsed ? item.label : undefined}
-                      onClick={() => navigate(item.key)}
+                      onClick={() => go(item.key)}
                       className={cn(
                         'group relative flex h-8 w-full items-center gap-2.5 rounded-md text-[13.5px] transition-colors',
                         collapsed ? 'justify-center' : 'px-2',
@@ -97,23 +125,44 @@ export function Sidebar() {
             </button>
           )}
         >
-          <MenuItem icon={<UserRound className="h-4 w-4" />}>Hồ sơ cá nhân</MenuItem>
           <MenuItem
-            icon={<RotateCcw className="h-4 w-4" />}
+            icon={<UserRound className="h-4 w-4" />}
             onSelect={() => {
-              resetDemoData()
-              toast({ title: 'Đã khôi phục dữ liệu mẫu', tone: 'info' })
+              setUI({ systemSection: 'account' })
+              go('system')
             }}
           >
+            Hồ sơ cá nhân
+          </MenuItem>
+          <MenuItem icon={<RotateCcw className="h-4 w-4" />} onSelect={() => setConfirmReset(true)}>
             Khôi phục dữ liệu mẫu
           </MenuItem>
           <MenuSeparator />
-          <MenuItem icon={<LogOut className="h-4 w-4" />} danger>
+          <MenuItem
+            icon={<LogOut className="h-4 w-4" />}
+            danger
+            onSelect={() => toast({ title: 'Bản demo không có đăng nhập', description: 'Dữ liệu chỉ lưu trên trình duyệt này, không gửi đi đâu.', tone: 'info' })}
+          >
             Đăng xuất
           </MenuItem>
         </DropdownMenu>
         {!collapsed && <p className="mt-1 px-1.5 text-[10.5px] text-slate-500">ClinicHIS 0.1.0 · Bản demo</p>}
       </div>
     </aside>
+    <ConfirmDiscardModal
+      open={confirmReset}
+      title="Khôi phục dữ liệu mẫu?"
+      description="Mọi người bệnh, lượt khám, phiếu thu và cài đặt đã nhập trên trình duyệt này sẽ được thay bằng dữ liệu mẫu. Không thể hoàn tác."
+      cancelLabel="Huỷ"
+      confirmLabel="Khôi phục"
+      danger
+      onCancel={() => setConfirmReset(false)}
+      onConfirm={() => {
+        setConfirmReset(false)
+        resetDemoData()
+        toast({ title: 'Đã khôi phục dữ liệu mẫu', tone: 'info' })
+      }}
+    />
+    </>
   )
 }

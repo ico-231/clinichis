@@ -14,7 +14,7 @@ import { ReceptionIntakeView, type IntakeInit } from './ReceptionIntakeView'
 import { CancelVisitModal, PaymentModal } from './PaymentModals'
 import { VisitDetailDrawer } from './VisitDetailDrawer'
 import { CheckInTicket } from '@/components/clinic/CheckInTicket'
-import { filtersRevealingVisit, useReceptionData } from './useReceptionData'
+import { filtersRevealingVisit, nextSort, useReceptionData } from './useReceptionData'
 import type { ReceptionColumnKey, Visit, VisitStatus } from '@/store/types'
 import type { VisitRow } from '@/store/selectors'
 
@@ -104,9 +104,7 @@ export function ReceptionPage() {
   )
 
   const onSort = (key: ReceptionColumnKey) => {
-    const s = view.sort
-    const next = !s || s.key !== key ? { key, direction: 'asc' as const } : s.direction === 'asc' ? { key, direction: 'desc' as const } : null
-    setReceptionView({ sort: next, page: 1 })
+    setReceptionView({ sort: nextSort(view.sort, key), page: 1 })
   }
 
   const onChangeStatus = (row: VisitRow, to: VisitStatus) => {

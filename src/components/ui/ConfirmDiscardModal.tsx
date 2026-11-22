@@ -9,6 +9,8 @@ interface ConfirmDiscardModalProps {
   confirmLabel?: string
   onCancel: () => void
   onConfirm: () => void
+  /** Nút xác nhận màu đỏ cho thao tác không hoàn tác được */
+  danger?: boolean
 }
 
 /** Hộp thoại xác nhận huỷ thay đổi (khớp ảnh chụp "Huỷ các thay đổi?") */
@@ -20,6 +22,7 @@ export function ConfirmDiscardModal({
   confirmLabel = 'Có',
   onCancel,
   onConfirm,
+  danger,
 }: ConfirmDiscardModalProps) {
   useOverlayBehavior(open, onCancel)
   if (!open) return null
@@ -45,7 +48,7 @@ export function ConfirmDiscardModal({
               type="button"
               autoFocus
               onClick={onConfirm}
-              className="inline-flex h-9 items-center justify-center rounded-lg bg-blue-600 px-5 text-[13px] font-semibold text-white shadow-xs transition hover:bg-blue-700"
+              className={`inline-flex h-9 items-center justify-center rounded-lg px-5 text-[13px] font-semibold text-white shadow-xs transition ${danger ? 'bg-rose-600 hover:bg-rose-700' : 'bg-blue-600 hover:bg-blue-700'}`}
             >
               {confirmLabel}
             </button>

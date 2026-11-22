@@ -21,7 +21,7 @@ export function PageHeader({ title, subtitle, actions }: { title: ReactNode; sub
         <h1 className="truncate text-[15px] font-semibold text-slate-900">{title}</h1>
         {subtitle && <span className="truncate text-[12.5px] text-slate-500">{subtitle}</span>}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
     </header>
   )
 }

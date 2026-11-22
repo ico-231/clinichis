@@ -3,7 +3,7 @@ import { useClinicState, paidAmount, remainingAmount } from '@/store/ClinicStore
 import { useVisitRows, type VisitRow } from '@/store/selectors'
 import { normalizeText } from '@/lib/format'
 import { RECEPTION_COLUMNS } from './columns'
-import type { ReceptionFilters, Visit, VisitStatus } from '@/store/types'
+import type { ReceptionColumnKey, ReceptionFilters, ReceptionViewState, Visit, VisitStatus } from '@/store/types'
 
 function matches(row: VisitRow, f: ReceptionFilters, ignoreStatus = false) {
   const { visit: v, patient: p } = row
@@ -48,6 +48,25 @@ export function filtersRevealingVisit(f: ReceptionFilters, v: Visit): ReceptionF
   return changed ? next : null
 }
 
+/** Sắp xếp theo cột đang chọn; mặc định ngày khám mới nhất trước, trong ngày theo STT (dùng chung Lễ tân / Lịch hẹn) */
+export function sortVisitRows(rows: VisitRow[], sort: ReceptionViewState['sort']) {
+  const col = sort ? RECEPTION_COLUMNS.find((c) => c.key === sort.key) : null
+  return [...rows].sort((a, b) => {
+    if (col?.sortValue) {
+      const av = col.sortValue(a)
+      const bv = col.sortValue(b)
+      const cmp = typeof av === 'number' && typeof bv === 'number' ? av - bv : String(av).localeCompare(String(bv), 'vi')
+      if (cmp !== 0) return sort!.direction === 'asc' ? cmp : -cmp
+    }
+    return b.visit.date.localeCompare(a.visit.date) || a.visit.queueNumber - b.visit.queueNumber
+  })
+}
+
+/** Bấm tiêu đề cột: tăng dần → giảm dần → bỏ sắp xếp */
+export function nextSort(current: ReceptionViewState['sort'], key: ReceptionColumnKey): ReceptionViewState['sort'] {
+  return !current || current.key !== key ? { key, direction: 'asc' } : current.direction === 'asc' ? { key, direction: 'desc' } : null
+}
+
 export function useReceptionData() {
   const rows = useVisitRows()
   const { ui } = useClinicState()
@@ -58,17 +77,7 @@ export function useReceptionData() {
     const scoped = rows.filter((r) => matches(r, filters, true))
     const filtered = filters.status === 'all' ? scoped : scoped.filter((r) => r.visit.status === filters.status)
 
-    const col = sort ? RECEPTION_COLUMNS.find((c) => c.key === sort.key) : null
-    const sorted = [...filtered].sort((a, b) => {
-      if (col?.sortValue) {
-        const av = col.sortValue(a)
-        const bv = col.sortValue(b)
-        const cmp = typeof av === 'number' && typeof bv === 'number' ? av - bv : String(av).localeCompare(String(bv), 'vi')
-        if (cmp !== 0) return sort!.direction === 'asc' ? cmp : -cmp
-      }
-      // mặc định: ngày khám mới nhất trước, trong ngày theo STT
-      return b.visit.date.localeCompare(a.visit.date) || a.visit.queueNumber - b.visit.queueNumber
-    })
+    const sorted = sortVisitRows(filtered, sort)
 
     const pageCount = Math.ceil(sorted.length / pageSize)
     const page = Math.min(Math.max(view.page, 1), Math.max(pageCount, 1))

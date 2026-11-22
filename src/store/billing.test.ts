@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { billableLines, clsCharge, derivePaymentStatus, discountAmount, isLinePaid, nextReceiptCode, paidAmount, remainingAmount, unpaidLines } from './billing'
+import { billableLines, clsCharge, derivePaymentStatus, discountAmount, isLinePaid, nextReceiptCode, paidAmount, remainingAmount, patientDeleteBlock, unpaidLines } from './billing'
 import type { ParaclinicalOrderItem, PaymentRecord, Visit } from './types'
 
 const order = (id: string, price: number): ParaclinicalOrderItem => ({
@@ -100,5 +100,17 @@ describe('billing', () => {
     expect(billableLines(visit({ paraclinicalOrders: orders })).map((l) => l.refId)).toEqual(['ck'])
     const paidA = [pay({ amount: 90_000, lines: [lineA] })]
     expect(clsCharge(orders, paidA)).toBe(100_000)
+  })
+})
+
+describe('patientDeleteBlock', () => {
+  const pay = { id: 'p', kind: 'payment' as const, amount: 100, method: 'cash' as const, at: '' }
+  it('cho xoá hồ sơ chưa khám, chưa thu tiền', () => {
+    expect(patientDeleteBlock([])).toBeNull()
+    expect(patientDeleteBlock([{ status: 'registered', payments: [] }, { status: 'cancelled', payments: [] }])).toBeNull()
+  })
+  it('chặn khi đã khám hoặc đã có phiếu thu', () => {
+    expect(patientDeleteBlock([{ status: 'done', payments: [] }])).toMatch(/1 lượt đã khám/)
+    expect(patientDeleteBlock([{ status: 'cancelled', payments: [pay] }])).toMatch(/1 phiếu thu/)
   })
 })

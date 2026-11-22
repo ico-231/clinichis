@@ -32,7 +32,8 @@ export function ClsSettingsPage() {
   const [tab, setTab] = useState<'catalog' | 'classes' | 'combo'>('catalog')
   const [q, setQ] = useState('')
   const [cls, setCls] = useState('all')
-  const [applied, setApplied] = useState({ q: '', cls: 'all' })
+  const [room, setRoom] = useState('all')
+  const [applied, setApplied] = useState({ q: '', cls: 'all', room: 'all' })
   const [edit, setEdit] = useState<{ s: ParaclinicalServiceItem; isNew: boolean } | null>(null)
   const [tplFor, setTplFor] = useState<ParaclinicalServiceItem | null>(null)
   const [del, setDel] = useState<ParaclinicalServiceItem | null>(null)
@@ -40,7 +41,13 @@ export function ClsSettingsPage() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
 
-  const rows = list.filter((s) => (applied.cls === 'all' || s.classification === applied.cls) && (!applied.q || normalizeText(s.name).includes(normalizeText(applied.q))))
+  const rows = list.filter(
+    (s) =>
+      (applied.cls === 'all' || s.classification === applied.cls) &&
+      (applied.room === 'all' || (s.room || 'Mặc định') === applied.room) &&
+      (!applied.q || normalizeText(s.name).includes(normalizeText(applied.q))),
+  )
+  const roomOptions = [...new Set(['Mặc định', ...list.map((s) => s.room || 'Mặc định')])]
   const save = (next: ParaclinicalServiceItem[], msg: string) => {
     setClsServices(next)
     toast({ title: msg, tone: 'success' })
@@ -103,10 +110,10 @@ export function ClsSettingsPage() {
         ) : (
           <>
             <div className="mb-3 flex flex-wrap items-end gap-2">
-              <input value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && setApplied({ q, cls })} placeholder="Tìm theo tên" className={cn(input, 'w-[220px] bg-slate-50')} />
+              <input value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && (setApplied({ q, cls, room }), setPage(1))} placeholder="Tìm theo tên" className={cn(input, 'w-[220px] bg-slate-50')} />
               <Select label="Phân loại" value={cls} options={[{ value: 'all', label: 'Tất cả' }, ...CLASSES.map((c) => ({ value: c, label: c }))]} onChange={setCls} className="w-[150px]" />
-              <Select label="Phòng CLS" value="all" options={[{ value: 'all', label: 'Tất cả' }, { value: 'default', label: 'Mặc định' }]} onChange={() => {}} className="w-[130px]" />
-              <Button onClick={() => (setApplied({ q, cls }), setPage(1))}>Tìm kiếm</Button>
+              <Select label="Phòng CLS" value={room} options={[{ value: 'all', label: 'Tất cả' }, ...roomOptions.map((r) => ({ value: r, label: r }))]} onChange={setRoom} className="w-[150px]" />
+              <Button onClick={() => (setApplied({ q, cls, room }), setPage(1))}>Tìm kiếm</Button>
               <Button variant="success" className="ml-auto" leftIcon={<PlusCircle className="h-4 w-4" />} rightIcon={<Kbd tone="green">F2</Kbd>} onClick={openNew}>
                 Thêm mới
               </Button>

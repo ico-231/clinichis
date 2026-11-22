@@ -15,6 +15,7 @@ import { cn } from '@/lib/cn'
 import { VisitInfoDrawer } from '../visit/VisitInfoDrawer'
 import { PatientFormDrawer } from './PatientFormDrawer'
 import type { Patient } from '@/store/types'
+import { patientDeleteBlock } from '@/store/billing'
 
 /** Hồ sơ người bệnh (ảnh 108, 114–117) */
 export function PatientProfile({ patient, onBack }: { patient: Patient; onBack: () => void }) {
@@ -63,7 +64,12 @@ export function PatientProfile({ patient, onBack }: { patient: Patient; onBack: 
           <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
           <span className="font-medium text-slate-900">{patient.code}</span>
         </nav>
-        <Button size="sm" variant="outline" className="border-red-200 text-red-600 hover:bg-red-50" leftIcon={<Trash2 className="h-3.5 w-3.5" />} onClick={() => setConfirmDelete(true)}>
+        <Button size="sm" variant="outline" className="border-red-200 text-red-600 hover:bg-red-50" leftIcon={<Trash2 className="h-3.5 w-3.5" />} onClick={() => {
+            const block = patientDeleteBlock(visits)
+            if (block) toast({ title: 'Không thể xoá hồ sơ', description: block, tone: 'warning' })
+            else setConfirmDelete(true)
+          }}
+        >
           Xoá
         </Button>
         <Button size="sm" variant="outline" leftIcon={<Pencil className="h-3.5 w-3.5" />} onClick={() => setEditOpen(true)}>
@@ -219,7 +225,7 @@ export function PatientProfile({ patient, onBack }: { patient: Patient; onBack: 
       <ConfirmDiscardModal
         open={confirmDelete}
         title="Bạn có chắc muốn xoá?"
-        description={`Xoá thông tin ${patient.fullName} cùng ${visits.length} lượt khám. Không thể hoàn tác.`}
+        description={`Xoá thông tin ${patient.fullName}${visits.length ? ' cùng các lượt đăng ký chưa khám' : ''}. Không thể hoàn tác.`}
         cancelLabel="Huỷ"
         confirmLabel="Xác nhận"
         onCancel={() => setConfirmDelete(false)}

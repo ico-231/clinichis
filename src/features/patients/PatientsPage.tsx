@@ -17,6 +17,7 @@ import { cn } from '@/lib/cn'
 import { PatientFormDrawer } from './PatientFormDrawer'
 import { PatientProfile } from './PatientProfile'
 import type { Patient } from '@/store/types'
+import { patientDeleteBlock } from '@/store/billing'
 
 type SortKey = 'code' | 'name' | 'dob' | 'age' | 'address' | 'lastVisit' | 'created'
 
@@ -24,6 +25,11 @@ type SortKey = 'code' | 'name' | 'dob' | 'age' | 'address' | 'lastVisit' | 'crea
 export function PatientsPage() {
   const { patients, visits, ui } = useClinicState()
   const { deletePatient, setUI } = useClinicActions()
+  const tryDelete = (p: Patient) => {
+    const block = patientDeleteBlock(visits.filter((v) => v.patientId === p.id))
+    if (block) toast({ title: 'Không thể xoá hồ sơ', description: block, tone: 'warning' })
+    else setDeleting(p)
+  }
   const toast = useToast()
   const [input, setInput] = useState('')
   const [query, setQuery] = useState('')
@@ -168,7 +174,7 @@ export function PatientsPage() {
                       <MenuItem icon={<Pencil className="h-3.5 w-3.5" />} onSelect={() => setFormFor(p)}>
                         Chỉnh sửa
                       </MenuItem>
-                      <MenuItem icon={<Trash2 className="h-3.5 w-3.5" />} danger onSelect={() => setDeleting(p)}>
+                      <MenuItem icon={<Trash2 className="h-3.5 w-3.5" />} danger onSelect={() => tryDelete(p)}>
                         Xoá
                       </MenuItem>
                     </DropdownMenu>
@@ -196,7 +202,7 @@ export function PatientsPage() {
       <ConfirmDiscardModal
         open={!!deleting}
         title="Bạn có chắc muốn xoá?"
-        description={deleting ? `Xoá hồ sơ ${deleting.fullName} cùng ${visits.filter((v) => v.patientId === deleting.id).length} lượt khám. Không thể hoàn tác.` : ''}
+        description={deleting ? `Xoá hồ sơ ${deleting.fullName}${visits.some((v) => v.patientId === deleting.id) ? ' cùng các lượt đăng ký chưa khám' : ''}. Không thể hoàn tác.` : ''}
         cancelLabel="Huỷ"
         confirmLabel="Xác nhận"
         onCancel={() => setDeleting(null)}

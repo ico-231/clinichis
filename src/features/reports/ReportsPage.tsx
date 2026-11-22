@@ -47,14 +47,15 @@ export function ReportsPage() {
   return (
     <div className="flex h-full flex-col">
       <PageHeader title={item.label} />
-      <div className="flex min-h-0 flex-1">
-        <nav className="w-[180px] shrink-0 space-y-0.5 border-r border-slate-200 bg-slate-50/60 p-2 text-[13px]" aria-label="Danh mục báo cáo">
+      <div className="flex min-h-0 flex-1 max-md:flex-col">
+        {/* Màn hẹp: danh mục thành thanh tab cuộn ngang phía trên */}
+        <nav className="thin-scroll shrink-0 bg-slate-50/60 p-2 text-[13px] max-md:flex max-md:gap-1 max-md:overflow-x-auto max-md:border-b max-md:border-slate-200 md:w-[180px] md:space-y-0.5 md:border-r md:border-slate-200" aria-label="Danh mục báo cáo">
           {MENU.map((m) => (
             <button
               key={m.key}
               type="button"
               onClick={() => setKey(m.key)}
-              className={cn('w-full rounded-md px-2.5 py-1.5 text-left', key === m.key ? 'bg-white font-medium text-blue-700 shadow-sm' : 'text-slate-700 hover:bg-white/70')}
+              className={cn('rounded-md px-2.5 py-1.5 text-left max-md:shrink-0 max-md:whitespace-nowrap md:w-full', key === m.key ? 'bg-white font-medium text-blue-700 shadow-sm' : 'text-slate-700 hover:bg-white/70')}
             >
               {m.label}
             </button>
@@ -936,7 +937,11 @@ function DownloadHistory() {
   const [from, setFrom] = useState(() => addDays(todayISO(), -7))
   const [to, setTo] = useState(todayISO)
   const [report, setReport] = useState('all')
-  const list = (reportDownloads ?? []).filter((d) => inRange(localDate(d.at), from, to) && (report === 'all' || d.report === report))
+  const [status, setStatus] = useState('all')
+  const [fileType, setFileType] = useState('all')
+  const list = (reportDownloads ?? []).filter(
+    (d) => inRange(localDate(d.at), from, to) && (report === 'all' || d.report === report) && (status === 'all' || d.status === status) && (fileType === 'all' || d.fileType.toLowerCase() === fileType),
+  )
   const reports = [...new Set((reportDownloads ?? []).map((d) => d.report))]
   return (
     <>
@@ -944,8 +949,8 @@ function DownloadHistory() {
         <DateBox label="Từ ngày" value={from} onChange={setFrom} />
         <DateBox label="Đến ngày" value={to} onChange={setTo} />
         <Select label="Loại báo cáo" value={report} options={[{ value: 'all', label: 'Tất cả' }, ...reports.map((r) => ({ value: r, label: r }))]} onChange={setReport} className="w-[180px]" />
-        <Select label="Trạng thái" value="all" options={[{ value: 'all', label: 'Tất cả' }]} onChange={() => {}} className="w-[120px]" />
-        <Select label="Loại tập tin" value="all" options={[{ value: 'all', label: 'Tất cả' }]} onChange={() => {}} className="w-[120px]" />
+        <Select label="Trạng thái" value={status} options={[{ value: 'all', label: 'Tất cả' }, { value: 'success', label: 'Thành công' }, { value: 'failed', label: 'Thất bại' }]} onChange={setStatus} className="w-[120px]" />
+        <Select label="Loại tập tin" value={fileType} options={[{ value: 'all', label: 'Tất cả' }, { value: 'csv', label: 'Excel (CSV)' }]} onChange={setFileType} className="w-[130px]" />
       </Toolbar>
       <Table head={['#', 'Tên báo cáo', 'Loại tập tin', 'Trạng thái', 'Ngày cập nhật', 'Hành động']} minWidth={700}>
         {list.length === 0 && (

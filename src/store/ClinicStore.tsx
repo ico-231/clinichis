@@ -4,7 +4,7 @@ import { migrateState } from './migrations'
 import { INITIAL_COMBOS } from './paraclinicalCatalog'
 import { INITIAL_PRESCRIPTION_TEMPLATES } from './drugCatalog'
 import { syncCatalogs, syncRuntime } from './catalogSync'
-import { clsCharge, derivePaymentStatus, nextReceiptCode, paidAmount } from './billing'
+import { clsCharge, clsUnit, derivePaymentStatus, nextReceiptCode, paidAmount, patientDeleteBlock } from './billing'
 import { currentUser, runtimeCode } from './runtime'
 import { addMinutesToTime, todayISO } from '@/lib/date'
 import { serviceById } from './catalog'
@@ -224,7 +224,7 @@ function createActions(dispatch: React.Dispatch<Action>, getState: () => ClinicS
                 payAmt >= totalFee
                   ? [
                       { kind: 'consultation' as const, refId: 'ck', name: serviceById(input.serviceId)?.name ?? 'Công khám', unit: 'Lần', quantity: 1, unitPrice: ck, discount: 0 },
-                      ...(input.paraclinicalOrders ?? []).map((o) => ({ kind: 'paraclinical' as const, refId: o.id, name: o.name, unit: 'Lượt', quantity: o.quantity, unitPrice: o.unitPrice, discount: 0 })),
+                      ...(input.paraclinicalOrders ?? []).map((o) => ({ kind: 'paraclinical' as const, refId: o.id, name: o.name, unit: clsUnit(o.serviceId), quantity: o.quantity, unitPrice: o.unitPrice, discount: 0 })),
                     ]
                   : undefined,
             },
@@ -390,7 +390,11 @@ function createActions(dispatch: React.Dispatch<Action>, getState: () => ClinicS
     },
 
     /** Xoá hồ sơ người bệnh cùng mọi lượt khám của người bệnh đó */
-    deletePatient: (id: string) => dispatch({ type: 'DELETE_PATIENT', id }),
+    deletePatient: (id: string) => {
+      if (patientDeleteBlock(getState().visits.filter((v) => v.patientId === id))) return false
+      dispatch({ type: 'DELETE_PATIENT', id })
+      return true
+    },
     updateVisit: (id: string, patch: Partial<Visit>) => dispatch({ type: 'UPDATE_VISIT', id, patch }),
 
     setVisitStatus: (id: string, status: VisitStatus) => {
@@ -484,8 +488,14 @@ export function ClinicProvider({ children }: { children: ReactNode }) {
   // Danh mục chỉnh sửa được phải có hiệu lực trước khi các màn con render
   syncCatalogs(state.services, state.clsServices)
   syncRuntime(state.system, state.clinicProfile)
+  // Bản state mới nhất kể cả khi React chưa render lại: mỗi dispatch chạy reducer ngay tại đây,
+  // để hai thao tác liên tiếp trong cùng một sự kiện (vd. thu tiền hai lần) không đọc state cũ
   const stateRef = useRef(state)
-  stateRef.current = state
+  const lastRendered = useRef(state)
+  if (lastRendered.current !== state) {
+    lastRendered.current = state
+    stateRef.current = state
+  }
   const [hydrated, setHydrated] = useState(false)
 
   // Hydrate trên client (an toàn khi chuyển sang Next.js SSR)
@@ -505,7 +515,13 @@ export function ClinicProvider({ children }: { children: ReactNode }) {
     }
   }, [state, hydrated])
 
-  const actions = useMemo(() => createActions(dispatch, () => stateRef.current), [])
+  const actions = useMemo(() => {
+    const syncDispatch: React.Dispatch<Action> = (action) => {
+      stateRef.current = reducer(stateRef.current, action)
+      dispatch(action)
+    }
+    return createActions(syncDispatch, () => stateRef.current)
+  }, [])
 
   return (
     <StateContext.Provider value={state}>

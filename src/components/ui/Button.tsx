@@ -54,7 +54,7 @@ export function Kbd({ children, tone = 'light' }: { children: ReactNode; tone?: 
   return (
     <kbd
       className={cn(
-        'inline-flex h-5 min-w-5 items-center justify-center rounded px-1 font-sans text-[10px] font-semibold',
+        'inline-flex h-5 min-w-5 max-sm:hidden items-center justify-center rounded px-1 font-sans text-[10px] font-semibold',
         tone === 'green' && 'bg-green-700/60 text-white',
         tone === 'blue' && 'bg-blue-800/60 text-white',
         tone === 'light' && 'border border-slate-200 bg-slate-50 text-slate-500',

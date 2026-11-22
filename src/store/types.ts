@@ -612,6 +612,8 @@ export interface UIState {
   theme?: 'system' | 'light' | 'dark'
   /** Yêu cầu mở Thêm bệnh cũ (F1) / mới (F2) khi chuyển sang Lễ tân từ màn khác */
   receptionAction?: 'existing' | 'new' | null
+  /** Mục Hệ thống cần mở khi chuyển sang màn Hệ thống (vd. từ menu tài khoản) */
+  systemSection?: string | null
 }
 
 export interface ClinicState {
