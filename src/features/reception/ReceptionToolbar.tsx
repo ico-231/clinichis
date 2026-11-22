@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ListFilter, RotateCcw, Search, SlidersHorizontal, X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DatePicker } from '@/components/ui/DatePicker'
@@ -26,9 +26,12 @@ export function ReceptionToolbar() {
   const view = ui.reception
   const { filters } = view
   const [advancedOpen, setAdvancedOpen] = useState(false)
+  // Ô tìm kiếm giữ state cục bộ khi gõ (không render lại cả ứng dụng mỗi phím), chỉ ghi vào store khi áp dụng
+  const [query, setQuery] = useState(view.searchInput)
+  useEffect(() => setQuery(view.searchInput), [view.searchInput])
 
   const setFilters = (patch: Partial<ReceptionFilters>) => setReceptionView({ filters: { ...filters, ...patch }, page: 1 })
-  const applySearch = () => setFilters({ search: view.searchInput })
+  const applySearch = () => setReceptionView({ searchInput: query, filters: { ...filters, search: query }, page: 1 })
 
   const advancedCount = (['category', 'source'] as const).filter((k) => filters[k] !== 'all').length
 
@@ -38,17 +41,20 @@ export function ReceptionToolbar() {
         <div className="relative w-[236px]">
           <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
           <input
-            value={view.searchInput}
-            onChange={(e) => setReceptionView({ searchInput: e.target.value })}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && applySearch()}
             placeholder="Tìm theo tên, số điện thoại..."
             aria-label="Tìm theo tên, số điện thoại"
             className="h-9 w-full rounded-md bg-slate-100 pr-8 pl-8 text-[13px] text-slate-900 outline-none placeholder:text-slate-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
           />
-          {view.searchInput && (
+          {query && (
             <button
               type="button"
-              onClick={() => setReceptionView({ searchInput: '', filters: { ...filters, search: '' }, page: 1 })}
+              onClick={() => {
+                setQuery('')
+                setReceptionView({ searchInput: '', filters: { ...filters, search: '' }, page: 1 })
+              }}
               className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-0.5 text-slate-400 hover:text-slate-700"
               aria-label="Xóa tìm kiếm"
             >
