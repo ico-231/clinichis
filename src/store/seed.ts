@@ -22,7 +22,7 @@ import type {
 } from './types'
 
 /** v3: thêm danh mục CLS nội bộ, lịch làm việc, cấu hình hệ thống, phiếu thu có dòng (xem migrations.ts) */
-export const STATE_VERSION = 4
+export const STATE_VERSION = 5
 
 export const DEFAULT_COLUMNS: ReceptionColumnKey[] = [
   'stt',

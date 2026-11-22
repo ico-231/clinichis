@@ -19,7 +19,7 @@ import { DocumentsEmptyIllustration } from '@/components/ui/EmptyState'
 import { useOverlayBehavior } from '@/components/ui/Modal'
 import { useToast } from '@/components/ui/Toast'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
-import { PARACLINICAL_PROVIDERS, PARACLINICAL_SERVICES, providerById } from '@/store/paraclinicalCatalog'
+import { PARACLINICAL_PROVIDERS, PARACLINICAL_SERVICES, SAMPLE_PROVIDER_ID, providerById } from '@/store/paraclinicalCatalog'
 import { formatMoney, normalizeText } from '@/lib/format'
 import { cn } from '@/lib/cn'
 import { isTypingTarget } from '@/lib/keyboard'
@@ -522,13 +522,13 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm }: Paracli
                     (activeTab === 'combo' && visibleCombos.length === 0)) && (
                     <div className="flex h-full min-h-[260px] flex-col items-center justify-center gap-2 px-6 text-center">
                       <p className="text-[13px] text-slate-500">Không tìm thấy chỉ định phù hợp.</p>
-                      {providerServices.length === 0 && !serviceQuery && providerId !== 'lab_medlatec_qn' && (
+                      {providerServices.length === 0 && !serviceQuery && providerId !== SAMPLE_PROVIDER_ID && (
                         <button
                           type="button"
-                          onClick={() => setProviderId('lab_medlatec_qn')}
+                          onClick={() => setProviderId(SAMPLE_PROVIDER_ID)}
                           className="mt-1 rounded-lg border border-blue-200 bg-blue-50/70 px-3 py-1.5 text-[12px] font-medium text-blue-700 transition hover:bg-blue-100/70"
                         >
-                          Chuyển sang MEDLATEC Quy Nhơn (có sẵn danh mục xét nghiệm & CĐHA)
+                          Chuyển sang {providerById(SAMPLE_PROVIDER_ID)?.name} (có sẵn danh mục xét nghiệm & CĐHA)
                         </button>
                       )}
                     </div>

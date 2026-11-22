@@ -519,14 +519,15 @@ Component chính: `ParaclinicalOrderModal.tsx`.
 - **Nơi thực hiện** có tìm theo tên lab/địa chỉ và nút đặt Mặc định.
 - Các đơn vị mẫu gồm:
   - Lab nội bộ.
-  - PK BS Minh Test.
-  - MEDLATEC Quy Nhơn - Bình Định số 28.
-  - Open Healthcare.
-  - Các phòng xét nghiệm ung bướu Cần Thơ.
+  - Phòng khám Đa khoa Hoa Sen.
+  - Trung tâm Xét nghiệm An Bình - Chi nhánh số 3.
+  - Phòng xét nghiệm Việt An.
+  - Trung tâm Y khoa Tân Phát, Phòng xét nghiệm chuyên khoa Minh Tâm.
+  (22/11/2026: tên đơn vị đã đổi sang tên giả.)
 - Tìm tên dịch vụ/combo.
 - Tab Tất cả / Chẩn đoán hình ảnh / Xét nghiệm / Combo kèm số đếm thực.
 - Dịch vụ có icon theo loại, nhóm, giá; chọn bằng nút `+`, đã chọn thành dấu check.
-- Lab nội bộ mặc định chưa có dịch vụ; có shortcut chuyển sang MEDLATEC
+- Lab nội bộ mặc định chưa có dịch vụ; có shortcut chuyển sang Trung tâm Xét nghiệm An Bình
   để khám phá danh mục mẫu. Đây không nhất thiết là lỗi tải dữ liệu.
 
 ### Bên phải

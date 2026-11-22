@@ -5,6 +5,26 @@ import { defaultSystem } from './systemDefaults'
 import { ROOMS } from './catalog'
 import type { ClinicState, SystemSettings } from './types'
 
+/** v4 → v5: đơn vị CLS bên ngoài đổi sang tên giả (mã, tên, địa chỉ) */
+const PROVIDER_RENAMES: [string, string][] = [
+  ['lab_medlatec_qn', 'lab_an_binh'],
+  ['Phòng xét nghiệm MEDLATEC Quy Nhơn - Bình Định số 28', 'Trung tâm Xét nghiệm An Bình - Chi nhánh số 3'],
+  ['553 Nguyễn Thái Học, Phường Quy Nhơn Nam, Tỉnh Gia Lai', '12 Đường số 7, Khu dân cư Ánh Dương, Tỉnh Gia Lai'],
+  ['Khu 2 Thanh Lũng, Xã Quảng Oai, TP Hà Nội', 'Tầng 2 - Phòng khám Nhi Khoa'],
+  ['lab_pk_minh', 'lab_hoa_sen'],
+  ['PK BS Minh Test', 'Phòng khám Đa khoa Hoa Sen'],
+  ['3/1 Thành Thái, Phường Hòa Hưng, Thành phố Hồ Chí Minh', '48 Đường số 2, Khu phố Hoa Sen, Thành phố Hồ Chí Minh'],
+  ['lab_ung_buou_ct', 'lab_tan_phat'],
+  ['Y KHOA UNG BƯỚU CẦN THƠ', 'Trung tâm Y khoa Tân Phát'],
+  ['NS10, ĐƯỜNG SỐ 5, Phường Long Tuyến, Thành phố Cần Thơ', 'Lô B5, Đường số 9, Khu đô thị Tân Phát, Thành phố Cần Thơ'],
+  ['lab_open_hc', 'lab_viet_an'],
+  ['Phòng xét nghiệm trực thuộc Công ty Cổ Phần Open Healthcare Việt Nam', 'Phòng xét nghiệm Việt An - Công ty CP Xét nghiệm Việt An'],
+  ['Tầng 2 - Toà nhà Huyndai, số 987 Tam Trinh, Phường Hoàng Mai, Thành phố Hà Nội', 'Tầng 3 - Toà nhà Việt An, số 21 Đường số 4, Thành phố Hà Nội'],
+  ['lab_ck_ung_buou_ct', 'lab_minh_tam'],
+  ['Phòng Xét Nghiệm Chuyên Khoa Ung Bướu Cần Thơ', 'Phòng xét nghiệm chuyên khoa Minh Tâm'],
+  ['Số 10 đường số 5, khu dân cư Mặt Trời Đỏ, tổ 17, khu vực Bình Thường B, TP. Cần Thơ', 'Số 7 Đường số 3, Khu dân cư Minh Tâm, Thành phố Cần Thơ'],
+]
+
 type AnyState = Record<string, unknown> & { version?: unknown }
 
 /** Mỗi bước nâng cấp từ phiên bản n lên n + 1, giữ nguyên người bệnh / lượt khám */
@@ -25,6 +45,16 @@ const STEPS: Record<number, (s: AnyState) => AnyState> = {
     const rooms = system.org.rooms.map((r) => (/^rm\d+$/.test(r.id) ? { ...r, id: `r${r.id.slice(2)}` } : r))
     for (const base of ROOMS) if (!rooms.some((r) => r.id === base.id)) rooms.push({ id: base.id, name: base.name, description: base.floor, updatedAt: '' })
     return { ...s, version: 4, system: { ...system, org: { ...system.org, rooms } } }
+  },
+  // v4 → v5: thay mã / tên / địa chỉ đơn vị CLS thật bằng tên giả ở mọi chỗ đã lưu (chỉ định, combo, cài đặt)
+  4: (s) => {
+    let json = JSON.stringify(s)
+    for (const [from, to] of PROVIDER_RENAMES) {
+      // Mã đơn vị (lab_…) chỉ thay khi khớp nguyên giá trị; tên / địa chỉ thay cả khi nằm trong chuỗi ghép (vd. mô tả phiếu)
+      const [a, b] = from.startsWith('lab_') ? [JSON.stringify(from), JSON.stringify(to)] : [JSON.stringify(from).slice(1, -1), JSON.stringify(to).slice(1, -1)]
+      json = json.split(a).join(b)
+    }
+    return { ...(JSON.parse(json) as AnyState), version: 5 }
   },
 }
 

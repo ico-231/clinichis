@@ -24,8 +24,9 @@ Tài liệu để một phiên Claude Code mới (tài khoản khác) bắt kị
 - Dev server: `.claude/launch.json` có cấu hình `clinic-dev` ở **cả** `portfolio 1/.claude/` (chạy
   `npm --prefix clinic run dev`) và `clinic/.claude/` (`npm run dev`), cổng **8443**.
   Lần đầu khởi động Vite tối ưu lại dependencies mất ~15 giây, trang trắng trong lúc đó là bình thường.
-- Kiểm tra: `npx tsc -b --noEmit` · `npx vitest run` (21 test) · `npx vite build` (bundle chính ~336 kB).
-- Dữ liệu demo nằm ở `localStorage` khoá `clinic-his:state` (STATE_VERSION = **4**). Xoá khoá rồi tải
+- Tailwind bị chặn quét `docs/` (`@source not '../docs'` trong `src/index.css`): đường dẫn Windows kiểu dấu gạch ngược + hex trong tài liệu từng làm dev server trắng trang lỗi "Invalid code point". Đổi `@source` thì phải khởi động lại dev server.
+- Kiểm tra: `npx tsc -b --noEmit` · `npx vitest run` (22 test) · `npx vite build` (bundle chính ~336 kB).
+- Dữ liệu demo nằm ở `localStorage` khoá `clinic-his:state` (STATE_VERSION = **5**). Xoá khoá rồi tải
   lại để về dữ liệu mẫu. Menu tài khoản (góc dưới Sidebar) có "Khôi phục dữ liệu mẫu".
 - `portfolio 1/CLAUDE.md` nằm **ngoài** git repo (repo chỉ là `clinic/`), chỉ có trên máy này.
 
@@ -75,7 +76,7 @@ Transcript phiên trước nằm trên máy này:
 ## 5. Kiến trúc nhanh
 
 - Store: `src/store/ClinicStore.tsx` (Context + useReducer, persist localStorage), migration
-  `src/store/migrations.ts` (v2→v3→v4; phiên bản lạ được sao lưu `clinic-his:backup-v<n>`).
+  `src/store/migrations.ts` (v2→v3→v4→v5; phiên bản lạ được sao lưu `clinic-his:backup-v<n>`).
 - Nghiệp vụ thanh toán: `src/store/billing.ts` — dòng phiếu thu, `derivePaymentStatus`
   (lượt 0đ chưa có phiếu = `none` "Không thanh toán"), `isOrderCharged`/`clsCharge`
   (chỉ định huỷ / NB không đến không tính tiền trừ khi đã thu).
@@ -92,13 +93,10 @@ Transcript phiên trước nằm trên máy này:
   Hệ thống, Thiết lập CLS); J1–J6; I1 kiểm tra toàn luồng; I2 README/INDEX.
 - K (17/11): rà soát theo vai designer / lễ tân / bác sĩ / KTV CLS / thu ngân / quản trị, sửa ~30 lỗi.
 - 21/11: bỏ 4 mục Sidebar (mục 4), Tổng quan còn 3 thẻ, checklist "Thiết lập thông tin phòng khám" trỏ sang Hệ thống.
+- 22/11 (K8): Lịch hẹn bỏ 2 thẻ tư vấn + bộ lọc Loại hình; Sidebar "Báo cáo CLS" / "Báo cáo", bỏ ô gói tài khoản Standard / Nâng cấp ngay; nơi thực hiện CĐHA giữ "Lab nội bộ" (người dùng chốt giữ nguyên). K9: đơn vị CLS bên ngoài dùng tên giả (migration v4→v5).
 
 ## 7. Việc có thể làm tiếp (chưa ai yêu cầu — hỏi người dùng trước)
 
-- Màn Lịch hẹn còn 2 thẻ "Lịch tư vấn", "Cuộc hội thoại" (thuộc tư vấn trực tuyến đã bỏ khỏi menu) —
-  hỏi có bỏ luôn không. Lịch làm việc vẫn có loại "Lịch tư vấn trực tuyến".
-- Hai mục cùng tên "Báo cáo" trên Sidebar (CLS và Quản lý) — có thể đổi tên cho dễ phân biệt.
-- Nơi thực hiện CĐHA (X-quang, siêu âm) vẫn ghi "Lab nội bộ" — tên nhà cung cấp nội bộ dùng chung.
-- Chưa có test E2E tự động; luồng chính được kiểm tra thủ công trên trình duyệt tích hợp.
+- Chưa có test E2E tự động; luồng chính được kiểm tra thủ công trên trình duyệt tích hợp (22/11 người dùng nói "để sau").
 - Nếu người dùng gửi thêm ảnh cho các trang chờ: phân loại vào `docs/reference/screenshots/<NN-module>/`,
   cập nhật INDEX, thêm giai đoạn mới vào ROADMAP rồi làm.
