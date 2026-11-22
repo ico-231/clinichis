@@ -57,10 +57,9 @@ Transcript phiên trước nằm trên máy này:
 - `c862a26` Import ClinicHIS từ Figma Make và sửa lỗi luồng Lễ tân.
 - `de9516a` (21/11) Hoàn thiện ClinicHIS theo ảnh tham chiếu (giai đoạn A–K) và tài liệu bàn giao —
   toàn bộ công việc đến lúc đổi tài khoản đã được commit, working tree sạch.
-- **22/11: nhánh `review/2026-11-22`** (tách từ `main` @ `19e005e`, chưa merge, chưa push) chứa K8, K9 và
-  giai đoạn L (tự review theo vai). Mỗi nhóm sửa một commit để rollback từng phần:
-  `git log --oneline main..review/2026-11-22` để xem; bỏ một nhóm: `git revert <commit>`;
-  bỏ hết: `git switch main` (nhánh review vẫn còn để xem lại). Người dùng chưa duyệt merge.
+- **22/11:** K8, K9 và giai đoạn L (tự review theo vai) làm trên nhánh `review/2026-11-22`, người dùng duyệt
+  và đã merge fast-forward vào `main` (chưa push). Mỗi nhóm sửa là một commit riêng — muốn bỏ nhóm nào thì
+  `git revert <commit>`; mốc trước review là `19e005e`. Nhánh review giữ lại để tham chiếu, xoá được.
 - Git có cảnh báo LF → CRLF khi commit trên Windows: vô hại, không cần xử lý.
 - Ảnh tham chiếu `docs/reference/screenshots/` (176 ảnh, 15 thư mục module, đọc theo số thứ tự) bị `.gitignore` (ảnh của bên thứ ba, có thể chứa dữ liệu
   người bệnh) — **không bao giờ commit**.
