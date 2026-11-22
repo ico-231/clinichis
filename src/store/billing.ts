@@ -59,17 +59,11 @@ export const clsUnit = (serviceId: string) => PARACLINICAL_SERVICES.find((s) => 
 /** Mọi dòng có thể thu của lượt khám: công khám + từng chỉ định CLS (bỏ chỉ định huỷ chưa thu) */
 export function billableLines(visit: Visit): ReceiptLine[] {
   const ck = visit.consultationFee ?? 0
-  const lines: ReceiptLine[] = [
-    {
-      kind: 'consultation',
-      refId: 'ck',
-      name: serviceById(visit.serviceId)?.name ?? 'Công khám',
-      unit: 'Lần',
-      quantity: 1,
-      unitPrice: ck,
-      discount: 0,
-    },
-  ]
+  // Không có công khám (0đ, vd. dịch vụ "Mặc định" khi chỉ làm CLS) => không hiện dòng 0đ trên phiếu thu
+  const lines: ReceiptLine[] =
+    ck > 0
+      ? [{ kind: 'consultation', refId: 'ck', name: serviceById(visit.serviceId)?.name ?? 'Công khám', unit: 'Lần', quantity: 1, unitPrice: ck, discount: 0 }]
+      : []
   for (const o of visit.paraclinicalOrders ?? []) {
     if (!isOrderCharged(o, visit.payments)) continue
     lines.push({ kind: 'paraclinical', refId: o.id, name: o.name, unit: clsUnit(o.serviceId), quantity: o.quantity, unitPrice: o.unitPrice, discount: 0 })

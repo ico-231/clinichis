@@ -224,7 +224,7 @@ function createActions(dispatch: React.Dispatch<Action>, getState: () => ClinicS
               lines:
                 payAmt >= totalFee
                   ? [
-                      { kind: 'consultation' as const, refId: 'ck', name: serviceById(input.serviceId)?.name ?? 'Công khám', unit: 'Lần', quantity: 1, unitPrice: ck, discount: 0 },
+                      ...(ck > 0 ? [{ kind: 'consultation' as const, refId: 'ck', name: serviceById(input.serviceId)?.name ?? 'Công khám', unit: 'Lần', quantity: 1, unitPrice: ck, discount: 0 }] : []),
                       ...(input.paraclinicalOrders ?? []).map((o) => ({ kind: 'paraclinical' as const, refId: o.id, name: o.name, unit: clsUnit(o.serviceId), quantity: o.quantity, unitPrice: o.unitPrice, discount: 0 })),
                     ]
                   : undefined,

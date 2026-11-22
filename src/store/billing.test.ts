@@ -114,3 +114,10 @@ describe('patientDeleteBlock', () => {
     expect(patientDeleteBlock([{ status: 'cancelled', payments: [pay] }])).toMatch(/1 phiếu thu/)
   })
 })
+
+describe('billableLines – công khám 0đ', () => {
+  it('không có dòng công khám 0đ, chỉ còn các dòng CLS', () => {
+    const v = { consultationFee: 0, serviceId: 's0', payments: [], paymentStatus: 'unpaid', paraclinicalOrders: [order('x', 120_000)] } as unknown as Visit
+    expect(billableLines(v).map((l) => l.refId)).toEqual(['x'])
+  })
+})
