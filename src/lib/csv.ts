@@ -1,8 +1,10 @@
 /** Tạo CSV (UTF-8 có BOM để Excel hiển thị đúng tiếng Việt) */
 export function toCsv(header: string[], rows: (string | number)[][]) {
   const esc = (v: string | number) => {
-    const s = String(v ?? '')
-    return /[",\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+    let s = String(v ?? '')
+    // Chống CSV injection: chuỗi bắt đầu bằng = + - @ (vd. tên nhập "=HYPERLINK(...)") bị Excel chạy như công thức
+    if (typeof v === 'string' && /^[=+\-@\t\r]/.test(s) && !/^-?\d[\d.,]*$/.test(s) && !/^-+$/.test(s)) s = `'${s}`
+    return /[",\r\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
   }
   return '﻿' + [header, ...rows].map((r) => r.map(esc).join(',')).join('\r\n')
 }
