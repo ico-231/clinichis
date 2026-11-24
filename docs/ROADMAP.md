@@ -126,3 +126,28 @@ truy cập, hiệu năng, an toàn. Làm trên nhánh `upgrade/2026-11-22`, mỗ
   cục bộ khi gõ (118 → 23 ms mỗi phím ở chế độ dev).
 - [x] M5. An toàn: CSV xuất báo cáo chống CSV injection (ô bắt đầu bằng = + - @); bộ làm sạch HTML kết quả bỏ hẳn
   script/style/iframe kèm nội dung.
+
+## Giai đoạn N — Chuẩn bị 2.0 (nhánh `ui/2026-11`, 23–24/11/2026)
+
+- [x] N1. Bỏ phím tắt theo yêu cầu: gỡ bắt phím F1–F10, Shift+C, Shift+T, Shift+Enter, Ctrl+Enter và nhãn phím trên nút
+  (component `Kbd`, `src/lib/keyboard.ts`); giữ Esc đóng hộp thoại, Tab, mũi tên/Enter trong ô chọn.
+- 24/11: người dùng bỏ mọi bản làm đẹp giao diện đã thử; code giao diện trả về đúng 1.0 (chỉ giữ N1). 2.0 sẽ thiết kế lại từ
+  đầu, **chưa bắt đầu**. Bản thử cũ lưu ở `docs/2.0/luu-tru/` (mẫu HTML) và `docs/2.0/backup/ui-final-24-11.patch` (code).
+
+## Giai đoạn O — Backend (Supabase + Vercel Functions, từ 24/11/2026)
+
+Kế hoạch và cách chạy: [docs/BACKEND.md](BACKEND.md). App 1.0 vẫn dùng localStorage, chưa nối API.
+
+- [x] O1. Migration `supabase/migrations/0001_init.sql` (patients, visits, catalog, settings, logs; hàm `create_patient`,
+  `next_queue_number`; bật RLS), lớp `server/` (kho bộ nhớ + kho Supabase qua REST, không thêm thư viện), API
+  `/api/patients` (danh sách/tìm, tạo, xem, sửa, xoá có chặn), 8 test.
+- [x] O2. Lượt khám: `server/visits.ts` + `/api/visits` (danh sách lọc/tìm, đăng ký bệnh cũ/mới, cấp STT/mã khám/mã phiếu thu
+  qua bộ đếm `counters`, đổi trạng thái theo luồng 1.0, huỷ có hoàn tiền), 9 test. Tổng 80 test.
+- [x] O3. Thu tiền: `server/payments.ts` + `/api/visits/:id/payments` (tổng hợp, thu theo dòng có giảm giá dòng/tổng, giá lấy từ máy chủ,
+  mã phiếu thu không trùng), hoá đơn điện tử theo phiếu; mã sinh chung ở `server/codes.ts`. 6 test. Tổng 86 test.
+- [x] O4. Khám bệnh + CLS: `server/exam.ts` + API lưu khám, chỉ định (khoá như 1.0), gửi chỉ định, gửi đơn, hoàn thành
+  (bắt buộc chiều cao/cân nặng, xác nhận khi chưa chẩn đoán), phòng CLS cập nhật/trả kết quả, `/api/orders`. 8 test. Tổng 94 test.
+- [x] O5. Danh mục, cài đặt, báo cáo: `server/catalog.ts` (danh mục sửa được + chỉ đọc, mặc định của 1.0, hàm SQL `replace_catalog`),
+  `/api/settings/:key`, `server/reports.ts` + `/api/reports/summary`; màn khám chỉ định được dịch vụ lab nội bộ thêm mới. 8 test. Tổng 102 test.
+- [ ] O6. Lên Supabase/Vercel thật · O7. Đăng nhập (để sau).
+
