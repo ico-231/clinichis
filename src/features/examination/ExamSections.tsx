@@ -380,13 +380,7 @@ export function NotesSection({ draft, update }: { draft: ExamDraft; update: Draf
           value={text}
           rows={2}
           onChange={(e) => setText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-              e.preventDefault()
-              add()
-            }
-          }}
-          placeholder="Nhập nội dung ghi chú (Ctrl + Enter để thêm)"
+          placeholder="Nhập nội dung ghi chú"
           aria-label="Nội dung ghi chú người bệnh"
           className={cn(boxInput, 'resize-y py-2')}
         />

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { ExternalLink, FileText, Image as ImageIcon, X } from 'lucide-react'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { useOverlayBehavior } from '@/components/ui/Modal'
 import { Portal } from '@/components/ui/Portal'
 import { useClinicState } from '@/store/ClinicStore'
@@ -117,7 +117,7 @@ function Viewer({ visitId, orderId, onClose }: { visitId: string; orderId: strin
           )}
 
           <div className="flex justify-end border-t border-slate-100 px-4 py-2.5">
-            <Button variant="outline" onClick={onClose} leftIcon={<Kbd>ESC</Kbd>}>
+            <Button variant="outline" onClick={onClose}>
               Đóng
             </Button>
           </div>

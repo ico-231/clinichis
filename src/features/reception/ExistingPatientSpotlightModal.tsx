@@ -15,10 +15,10 @@ interface ExistingPatientSpotlightModalProps {
 }
 
 /**
- * Spotlight modal khi bấm "Thêm bệnh cũ (F1)"
+ * Spotlight modal khi bấm "Thêm bệnh cũ"
  * - Nhập tên / số điện thoại để lọc tức thì
  * - Mũi tên Lên/Xuống chọn dòng, Enter để nhận bệnh
- * - Shift + Enter để chuyển sang Thêm bệnh mới
+ * - Nút "Thêm bệnh mới" ở chân modal để chuyển sang tạo hồ sơ mới
  */
 export function ExistingPatientSpotlightModal({
   open,
@@ -58,11 +58,6 @@ function SpotlightBody({
   }, [query])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && e.shiftKey) {
-      e.preventDefault()
-      onCreateNew(query.trim())
-      return
-    }
     if (e.key === 'ArrowDown') {
       e.preventDefault()
       setActiveIndex((i) => Math.min(i + 1, Math.max(results.length - 1, 0)))
@@ -131,9 +126,6 @@ function SpotlightBody({
                     </div>
                     {active && (
                       <span className="inline-flex shrink-0 items-center gap-1.5">
-                        <kbd className="rounded border border-slate-200 bg-white px-2 py-0.5 font-sans text-[11px] font-medium text-slate-500 shadow-2xs">
-                          Enter
-                        </kbd>
                         <span className="flex h-4.5 w-4.5 items-center justify-center rounded-full bg-slate-300/80 text-white">
                           <ArrowRight className="h-3 w-3" />
                         </span>
@@ -149,16 +141,13 @@ function SpotlightBody({
             )}
           </div>
 
-          {/* Chân modal: Shift + Enter Thêm bệnh mới */}
+          {/* Chân modal: nút Thêm bệnh mới */}
           <div className="border-t border-slate-100 px-4 py-2.5">
             <button
               type="button"
               onClick={() => onCreateNew(query.trim())}
               className="inline-flex items-center gap-2 text-[12.5px] font-semibold text-slate-800 transition hover:text-blue-600"
             >
-              <kbd className="rounded border border-slate-200 bg-slate-50 px-2 py-0.5 font-sans text-[11px] font-medium text-slate-600">
-                Shift + Enter
-              </kbd>
               <span>Thêm bệnh mới</span>
             </button>
           </div>

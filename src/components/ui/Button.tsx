@@ -49,18 +49,3 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     </button>
   )
 })
-
-export function Kbd({ children, tone = 'light' }: { children: ReactNode; tone?: 'light' | 'green' | 'blue' }) {
-  return (
-    <kbd
-      className={cn(
-        'inline-flex h-5 min-w-5 max-sm:hidden items-center justify-center rounded px-1 font-sans text-[10px] font-semibold',
-        tone === 'green' && 'bg-green-700/60 text-white',
-        tone === 'blue' && 'bg-blue-800/60 text-white',
-        tone === 'light' && 'border border-slate-200 bg-slate-50 text-slate-500',
-      )}
-    >
-      {children}
-    </kbd>
-  )
-}

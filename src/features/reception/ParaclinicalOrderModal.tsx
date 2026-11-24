@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import {
   Check,
   ChevronDown,
@@ -23,7 +23,6 @@ import { useClinicActions, useClinicState } from '@/store/ClinicStore'
 import { PARACLINICAL_PROVIDERS, PARACLINICAL_SERVICES, SAMPLE_PROVIDER_ID, providerById } from '@/store/paraclinicalCatalog'
 import { formatMoney, normalizeText } from '@/lib/format'
 import { cn } from '@/lib/cn'
-import { isTypingTarget } from '@/lib/keyboard'
 import type { ParaclinicalCombo, ParaclinicalOrderItem, ParaclinicalServiceItem } from '@/store/types'
 
 type TabKey = 'all' | 'imaging' | 'lab' | 'combo'
@@ -239,21 +238,6 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
     }
     onConfirm(draftOrders)
   }
-
-  // Phím tắt Shift + T -> Tạo chỉ định
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (confirmDiscardOpen) return
-      if (e.shiftKey && e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey && !isTypingTarget(e.target)) {
-        if (draftOrders.length > 0 || initialOrders.length > 0) {
-          e.preventDefault()
-          handleConfirm()
-        }
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  })
 
   const tabs: { key: TabKey; label: string; count: number }[] = [
     { key: 'all', label: 'Tất cả', count: providerServices.length },
@@ -745,16 +729,6 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                       )}
                     >
                       <span>Tạo chỉ định</span>
-                      <kbd
-                        className={cn(
-                          'rounded px-1.5 py-0.5 font-sans text-[11px] font-semibold',
-                          draftOrders.length > 0 || initialOrders.length > 0
-                            ? 'bg-blue-900/55 text-white'
-                            : 'bg-slate-200 text-slate-400',
-                        )}
-                      >
-                        Shift + T
-                      </kbd>
                     </button>
                   </div>
                 </div>

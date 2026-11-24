@@ -3,7 +3,7 @@ import { serviceById } from '@/store/catalog'
 import { clsCharge } from '@/store/billing'
 import type { PaymentRecord, Diagnosis, ExamRecord, ParaclinicalOrderItem, PrescriptionItem, VisitNote, Visit, VitalSigns } from '@/store/types'
 
-/** Bản nháp màn khám – chỉ ghi vào store khi bấm Lưu (F4) / Hoàn thành (F9) */
+/** Bản nháp màn khám – chỉ ghi vào store khi bấm Lưu / Hoàn thành */
 export interface ExamDraft {
   date: string
   time: string

@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { ArrowLeft, Eye, FileText, Image as ImageIcon, Plus, Trash2, UploadCloud } from 'lucide-react'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { useToast } from '@/components/ui/Toast'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
@@ -54,17 +54,6 @@ export function LabResultModal({ visitId, orderId, onClose }: { visitId: string;
     onClose()
   }, [visit, order, files, updateOrder, toast, patient, onClose])
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'F9') {
-        e.preventDefault()
-        submit()
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [submit])
-
   if (!visit || !order || !patient) return null
 
   return (
@@ -78,7 +67,7 @@ export function LabResultModal({ visitId, orderId, onClose }: { visitId: string;
           <Button variant="outline" onClick={onClose}>
             Đóng
           </Button>
-          <Button onClick={submit} disabled={busy} rightIcon={<Kbd tone="blue">F9</Kbd>}>
+          <Button onClick={submit} disabled={busy}>
             Trả kết quả
           </Button>
         </>

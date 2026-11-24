@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { AlertCircle, CalendarDays, ChevronDown, Copy, Pencil, Plus, Trash2 } from 'lucide-react'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { DatePicker } from '@/components/ui/DatePicker'
 import { formatNumber } from '@/lib/format'
@@ -128,7 +128,7 @@ export function WeeklySetupModal({ initial, onClose, onApply }: { initial: Fixed
           <Button variant="outline" onClick={onClose}>
             Đóng
           </Button>
-          <Button onClick={apply} rightIcon={<Kbd tone="blue">F2</Kbd>}>
+          <Button onClick={apply}>
             Áp dụng
           </Button>
         </>

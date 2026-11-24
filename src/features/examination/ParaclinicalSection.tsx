@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { AlertTriangle, ChevronDown, Eye, FlaskConical, MoreHorizontal, Plus, Printer, ScanLine, Send, Trash2, Wallet, Hourglass, ClipboardCheck } from 'lucide-react'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { Tabs } from '@/components/ui/Tabs'
 import { DropdownMenu, MenuItem } from '@/components/ui/DropdownMenu'
 import { DocumentsEmptyIllustration } from '@/components/ui/EmptyState'
@@ -76,7 +76,6 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
             size="sm"
             variant="soft"
             leftIcon={<Send className="h-3.5 w-3.5" />}
-            rightIcon={<Kbd tone="blue">F2</Kbd>}
             onClick={onSend}
             disabled={!orders.length}
           >
@@ -119,7 +118,7 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
         <div className="flex flex-col items-center gap-2 py-5 text-center">
           <DocumentsEmptyIllustration />
           <p className="text-[13px] text-slate-600">Chưa có chỉ định cận lâm sàng. Thêm chỉ định để bắt đầu.</p>
-          <Button size="sm" variant="soft" leftIcon={<Plus className="h-3.5 w-3.5" />} rightIcon={<Kbd tone="blue">Shift + C</Kbd>} onClick={onAdd}>
+          <Button size="sm" variant="soft" leftIcon={<Plus className="h-3.5 w-3.5" />} onClick={onAdd}>
             Thêm chỉ định
           </Button>
         </div>
@@ -234,7 +233,6 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
               <Plus className="h-3.5 w-3.5" />
             </span>
             Thêm chỉ định
-            <Kbd tone="blue">Shift + C</Kbd>
           </button>
         </>
       )}

@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Plus } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { Pagination } from '@/components/ui/Pagination'
-import { hasOpenOverlay } from '@/components/ui/Modal'
 import { useToast } from '@/components/ui/Toast'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
 import { VISIT_STATUS } from '@/store/catalog'
@@ -64,20 +63,6 @@ export function ReceptionPage() {
     setUI({ receptionAction: null })
   }, [ui.receptionAction, openIntake, setUI])
 
-  // Phím tắt F1 / F2 như hệ thống gốc
-  useEffect(() => {
-    if (intake) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'F1' && e.key !== 'F2') return
-      e.preventDefault()
-      if (hasOpenOverlay()) return
-      if (e.key === 'F1') setSpotlightOpen(true)
-      else openIntake({ mode: 'new' })
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [intake, openIntake])
-
   // Đưa dòng vừa tạo vào vùng nhìn thấy
   useEffect(() => {
     if (!highlightId) return
@@ -119,7 +104,7 @@ export function ReceptionPage() {
     })
   }
 
-  // Nếu đang mở màn hình Tiếp nhận toàn trang (F2 hoặc chọn từ F1)
+  // Nếu đang mở màn hình Tiếp nhận toàn trang (Thêm bệnh mới hoặc chọn từ Thêm bệnh cũ)
   if (intake) {
     return (
       <ReceptionIntakeView
@@ -127,7 +112,7 @@ export function ReceptionPage() {
         init={intake}
         onCancel={closeIntake}
         onSaved={(visit, status, opts) => {
-          // F9 "Khám bệnh": chuyển thẳng sang màn khám của lượt vừa tạo
+          // Nút "Khám bệnh": chuyển thẳng sang màn khám của lượt vừa tạo
           if (status === 'in_progress') {
             closeIntake()
             openExam(visit.id)
@@ -146,10 +131,10 @@ export function ReceptionPage() {
         title="Lễ tân"
         actions={
           <>
-            <Button variant="success" onClick={() => setSpotlightOpen(true)} rightIcon={<Kbd tone="green">F1</Kbd>}>
+            <Button variant="success" onClick={() => setSpotlightOpen(true)}>
               Thêm bệnh cũ
             </Button>
-            <Button onClick={() => openIntake({ mode: 'new' })} rightIcon={<Kbd tone="blue">F2</Kbd>}>
+            <Button onClick={() => openIntake({ mode: 'new' })}>
               Thêm bệnh mới
             </Button>
           </>

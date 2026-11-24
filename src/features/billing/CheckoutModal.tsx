@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ChevronUp, Pencil } from 'lucide-react'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { Select } from '@/components/ui/Select'
 import { useToast } from '@/components/ui/Toast'
@@ -76,19 +76,6 @@ function Checkout({ visitId, onClose }: { visitId: string; onClose: () => void }
     setReceiptId(record.id)
   }
 
-  useEffect(() => {
-    if (receiptId || invoiceOpen) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'F9') {
-        e.preventDefault()
-        e.stopImmediatePropagation()
-        pay()
-      }
-    }
-    window.addEventListener('keydown', onKey, true)
-    return () => window.removeEventListener('keydown', onKey, true)
-  })
-
   const groups = useMemo(
     () => [
       { title: 'Công khám', items: lines.filter((l) => l.kind === 'consultation') },
@@ -115,11 +102,11 @@ function Checkout({ visitId, onClose }: { visitId: string; onClose: () => void }
         footer={
           <>
             {error && lines.length > 0 && <span className="mr-auto text-[12.5px] text-red-600">{error}</span>}
-            <Button variant="outline" onClick={onClose} rightIcon={<Kbd>ESC</Kbd>} className="min-w-32">
+            <Button variant="outline" onClick={onClose} className="min-w-32">
               Đóng
             </Button>
             {lines.length > 0 && (
-              <Button onClick={pay} disabled={!!error} rightIcon={<Kbd tone="blue">F9</Kbd>} className="min-w-40">
+              <Button onClick={pay} disabled={!!error} className="min-w-40">
                 Thanh toán
               </Button>
             )}

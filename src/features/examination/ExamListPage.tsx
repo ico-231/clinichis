@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Search, X } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { Button, Kbd } from '@/components/ui/Button'
-import { hasOpenOverlay } from '@/components/ui/Modal'
+import { Button } from '@/components/ui/Button'
 import { DatePicker } from '@/components/ui/DatePicker'
 import { Select } from '@/components/ui/Select'
 import { Pagination } from '@/components/ui/Pagination'
@@ -27,16 +26,6 @@ export function ExamListPage() {
   const rows = useVisitRows()
   const { openExam, setVisitStatus, startReception } = useClinicActions()
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.key === 'F1' || e.key === 'F2') && !hasOpenOverlay()) {
-        e.preventDefault()
-        startReception(e.key === 'F1' ? 'existing' : 'new')
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [startReception])
   const toast = useToast()
 
   const [searchInput, setSearchInput] = useState('')
@@ -105,10 +94,10 @@ export function ExamListPage() {
         subtitle="Bấm vào dòng để khám"
         actions={
           <>
-            <Button variant="success" onClick={() => startReception('existing')} rightIcon={<Kbd tone="green">F1</Kbd>}>
+            <Button variant="success" onClick={() => startReception('existing')}>
               Thêm bệnh cũ
             </Button>
-            <Button onClick={() => startReception('new')} rightIcon={<Kbd tone="blue">F2</Kbd>}>
+            <Button onClick={() => startReception('new')}>
               Thêm bệnh mới
             </Button>
           </>

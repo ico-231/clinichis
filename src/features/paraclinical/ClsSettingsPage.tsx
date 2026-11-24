@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { ChevronDown, FileSpreadsheet, MoreHorizontal, Pause, Pencil, Play, PlusCircle, Settings2, Trash2, UploadCloud } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
 import { DropdownMenu, MenuItem } from '@/components/ui/DropdownMenu'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { Drawer, Modal, hasOpenOverlay } from '@/components/ui/Modal'
+import { Drawer, Modal } from '@/components/ui/Modal'
 import { Pagination } from '@/components/ui/Pagination'
 import { RichTextArea } from '@/components/ui/RichText'
 import { Select } from '@/components/ui/Select'
@@ -56,17 +56,6 @@ export function ClsSettingsPage() {
   const openNew = () =>
     setEdit({ s: { id: newId('cls'), providerId: INTERNAL_LAB_ID, name: '', groupLabel: '', category: 'lab', price: 0, unit: 'Lần', classification: '', room: 'Mặc định', returnsResult: false, printLayout: 'portrait' }, isNew: true })
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'F2' && tab === 'catalog' && !hasOpenOverlay()) {
-        e.preventDefault()
-        openNew()
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  })
-
   return (
     <div className="flex h-full flex-col">
       <PageHeader title="Thiết lập" />
@@ -115,7 +104,7 @@ export function ClsSettingsPage() {
               <Select label="Phân loại" value={cls} options={[{ value: 'all', label: 'Tất cả' }, ...CLASSES.map((c) => ({ value: c, label: c }))]} onChange={setCls} className="w-[150px]" />
               <Select label="Phòng CLS" value={room} options={[{ value: 'all', label: 'Tất cả' }, ...roomOptions.map((r) => ({ value: r, label: r }))]} onChange={setRoom} className="w-[150px]" />
               <Button onClick={() => (setApplied({ q, cls, room }), setPage(1))}>Tìm kiếm</Button>
-              <Button variant="success" className="ml-auto" leftIcon={<PlusCircle className="h-4 w-4" />} rightIcon={<Kbd tone="green">F2</Kbd>} onClick={openNew}>
+              <Button variant="success" className="ml-auto" leftIcon={<PlusCircle className="h-4 w-4" />} onClick={openNew}>
                 Thêm mới
               </Button>
             </div>
@@ -354,16 +343,6 @@ function ServiceDrawer({ value, isNew, onClose, onSave }: { value: ParaclinicalS
     if (Object.keys(err).length) return
     onSave({ ...s, name: s.name.trim(), groupLabel: `${(s.classification ?? 'Khác').toUpperCase()} (${s.unit})` })
   }
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'F9') {
-        e.preventDefault()
-        submit()
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  })
   return (
     <Drawer
       open
@@ -372,7 +351,7 @@ function ServiceDrawer({ value, isNew, onClose, onSave }: { value: ParaclinicalS
       width="w-[min(360px,100vw)]"
       footer={
         <div className="flex justify-end">
-          <Button onClick={submit} rightIcon={<Kbd tone="blue">F9</Kbd>}>
+          <Button onClick={submit}>
             {isNew ? 'Lưu' : 'Lưu thay đổi'}
           </Button>
         </div>
@@ -454,7 +433,7 @@ function TemplateModal({ service, onClose }: { service: ParaclinicalServiceItem;
           <Button variant="outline" onClick={onClose}>
             Đóng
           </Button>
-          <Button onClick={save} rightIcon={<Kbd tone="blue">F4</Kbd>}>
+          <Button onClick={save}>
             Lưu mẫu
           </Button>
         </>

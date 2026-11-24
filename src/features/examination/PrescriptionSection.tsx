@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { AlertTriangle, BookmarkPlus, ChevronDown, Eraser, FileText, Pill, Plus, Printer, Search, Send, Trash2 } from 'lucide-react'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { DropdownMenu, MenuItem } from '@/components/ui/DropdownMenu'
 import { DocumentsEmptyIllustration } from '@/components/ui/EmptyState'
 import { Modal } from '@/components/ui/Modal'
@@ -103,7 +103,7 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
           <Button size="sm" variant="outline" leftIcon={<Printer className="h-3.5 w-3.5" />} onClick={onPrint} disabled={!items.length}>
             In đơn thuốc
           </Button>
-          <Button size="sm" variant="soft" leftIcon={<Send className="h-3.5 w-3.5" />} rightIcon={<Kbd tone="blue">F8</Kbd>} onClick={onSend} disabled={!items.length}>
+          <Button size="sm" variant="soft" leftIcon={<Send className="h-3.5 w-3.5" />} onClick={onSend} disabled={!items.length}>
             Gửi đơn thuốc
           </Button>
         </>

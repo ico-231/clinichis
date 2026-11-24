@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CheckCircle2, ClipboardList, ListOrdered, MoreHorizontal, PanelLeft, Pill, Printer, Save, Send } from 'lucide-react'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
 import { DropdownMenu, MenuItem } from '@/components/ui/DropdownMenu'
-import { Modal, hasOpenOverlay } from '@/components/ui/Modal'
+import { Modal } from '@/components/ui/Modal'
 import { useToast } from '@/components/ui/Toast'
 import { remainingAmount, useClinicActions, useClinicState } from '@/store/ClinicStore'
 import { GENDER_LABEL } from '@/store/catalog'
 import { paidLineKeys } from '@/store/billing'
 import { ageLabel } from '@/lib/date'
 import { formatMoney, formatPhone } from '@/lib/format'
-import { isTypingTarget } from '@/lib/keyboard'
 import { cn } from '@/lib/cn'
 import { NARROW_QUERY, useMediaQuery } from '@/lib/useMediaQuery'
 import { ParaclinicalOrderModal } from '../reception/ParaclinicalOrderModal'
@@ -152,7 +151,7 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
       return
     }
     const now = new Date().toISOString()
-    // Chỉ định chưa gửi được gửi luôn khi hoàn thành – cùng trạng thái "chờ kết quả" như khi bấm Gửi (F2)
+    // Chỉ định chưa gửi được gửi luôn khi hoàn thành – cùng trạng thái "chờ kết quả" như khi bấm Gửi
     const orders = draft.orders.map((o) => (o.sentAt ? o : { ...o, sentAt: now, resultStatus: 'waiting' as const }))
     const next = { ...draft, orders }
     setDraft(next)
@@ -237,25 +236,6 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
     window.addEventListener('beforeunload', onBeforeUnload)
     return () => window.removeEventListener('beforeunload', onBeforeUnload)
   }, [dirty])
-
-  /* ------------------------- Phím tắt ------------------------- */
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (hasOpenOverlay()) return
-      const map: Record<string, () => void> = { F2: sendOrders, F3: openPay, F4: save, F8: () => !readOnly && draft.prescription.length && setSendRxOpen(true), F9: () => finish() }
-      if (map[e.key]) {
-        e.preventDefault()
-        map[e.key]()
-        return
-      }
-      if (!readOnly && e.shiftKey && e.key.toLowerCase() === 'c' && !e.ctrlKey && !e.metaKey && !e.altKey && !isTypingTarget(e.target)) {
-        e.preventDefault()
-        setClsOpen(true)
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [sendOrders, openPay, save, finish, draft.prescription.length, readOnly])
 
   /* ------------------------- Tab theo vị trí cuộn ------------------------- */
   useEffect(() => {
@@ -408,14 +388,13 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
               title={free ? 'Lượt khám miễn phí – không cần thu tiền' : fullyPaid ? 'Đã thu đủ' : `Còn lại ${formatMoney(remainingAmount({ payments: visit.payments, fee: tt }))}`}
             >
               {free ? 'Miễn phí' : fullyPaid ? 'Đã thu đủ' : 'Thu tiền'}
-              <Kbd tone="blue">F3</Kbd>
             </button>
           </div>
           <div className={cn('flex items-center gap-2', readOnly && 'hidden')}>
-            <Button variant="success" disabled={!dirty && visit.status !== 'waiting'} onClick={save} leftIcon={<Save className="h-4 w-4" />} rightIcon={<Kbd tone="green">F4</Kbd>}>
+            <Button variant="success" disabled={!dirty && visit.status !== 'waiting'} onClick={save} leftIcon={<Save className="h-4 w-4" />}>
               Lưu
             </Button>
-            <Button onClick={() => finish()} leftIcon={<CheckCircle2 className="h-4 w-4" />} rightIcon={<Kbd tone="blue">F9</Kbd>}>
+            <Button onClick={() => finish()} leftIcon={<CheckCircle2 className="h-4 w-4" />}>
               Hoàn thành
             </Button>
           </div>

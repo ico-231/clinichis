@@ -19,7 +19,7 @@ import { PageHeader } from '@/components/layout/PageHeader'
 import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
 import { findDuplicatePatients } from '@/store/patientRules'
 import { DocumentsEmptyIllustration } from '@/components/ui/EmptyState'
-import { Modal, hasOpenOverlay } from '@/components/ui/Modal'
+import { Modal } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
 import { Segmented } from '@/components/ui/Field'
 import { Popover } from '@/components/ui/Popover'
@@ -36,7 +36,6 @@ import { DOCTORS, PAYMENT_METHOD_LABEL, RELATION_LABEL, SERVICES, serviceById, t
 import { addMinutesToTime, formatDateVN, nowTime, pad, todayISO } from '@/lib/date'
 import { formatMoney, formatNumber, formatPhone, normalizeText } from '@/lib/format'
 import { cn } from '@/lib/cn'
-import { isTypingTarget } from '@/lib/keyboard'
 import { ParaclinicalOrderModal } from './ParaclinicalOrderModal'
 import {
   CardSectionHeader,
@@ -71,7 +70,7 @@ export interface IntakeInit {
 interface ReceptionIntakeViewProps {
   init: IntakeInit
   onCancel: () => void
-  /** print = true khi lưu bằng F8 (Đăng ký + in phiếu tiếp nhận) */
+  /** print = true khi bấm "In phiếu tiếp nhận" (Đăng ký + in phiếu tiếp nhận) */
   onSaved: (visit: Visit, status: VisitStatus, opts?: { print?: boolean }) => void
 }
 
@@ -469,33 +468,6 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
       patients,
     ],
   )
-
-  // Phím tắt trên màn hình Tiếp nhận: Shift+C, F3, F8, F9, F10
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (hasOpenOverlay()) return
-      if (e.shiftKey && e.key.toLowerCase() === 'c' && !e.ctrlKey && !e.metaKey && !e.altKey && !isTypingTarget(e.target)) {
-        e.preventDefault()
-        setClsModalOpen(true)
-        return
-      }
-      if (e.key === 'F3') {
-        e.preventDefault()
-        setPayModalOpen(true)
-      } else if (e.key === 'F8') {
-        e.preventDefault()
-        handleSubmit('registered', { print: true })
-      } else if (e.key === 'F9') {
-        e.preventDefault()
-        handleSubmit('in_progress')
-      } else if (e.key === 'F10') {
-        e.preventDefault()
-        handleSubmit('registered')
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [handleSubmit])
 
   const updateOrderQty = (id: string, delta: number) => {
     setOrders((list) => list.map((o) => (o.id === id ? { ...o, quantity: Math.max(1, o.quantity + delta) } : o)))
@@ -974,9 +946,6 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                 >
                   <Plus className="h-3.5 w-3.5" />
                   <span>Thêm chỉ định</span>
-                  <kbd className="rounded bg-blue-600 px-1.5 py-0.5 font-sans text-[10.5px] font-semibold text-white">
-                    Shift + C
-                  </kbd>
                 </button>
               ) : null
             }
@@ -995,9 +964,6 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
               >
                 <Plus className="h-3.5 w-3.5" />
                 <span>Thêm chỉ định</span>
-                <kbd className="rounded bg-blue-600 px-1.5 py-0.5 font-sans text-[10.5px] font-semibold text-white">
-                  Shift + C
-                </kbd>
               </button>
             </div>
           ) : (
@@ -1097,7 +1063,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
         </section>
       </div>
 
-      {/* THANH CỐ ĐỊNH BÊN DƯỚI: Th / CLS / CK / TT + Thu tiền F3 | In phiếu F8 | Khám bệnh F9 | Đăng ký khám F10 */}
+      {/* THANH CỐ ĐỊNH BÊN DƯỚI: Th / CLS / CK / TT + Thu tiền | In phiếu | Khám bệnh | Đăng ký khám */}
       <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-white px-4 py-2.5">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex flex-wrap items-center gap-4 text-[13.5px] font-semibold text-slate-900 tabular-nums">
@@ -1128,18 +1094,6 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                   ? `Đã thu (${PAYMENT_METHOD_LABEL[prepay.method]})`
                   : 'Thu tiền'}
             </span>
-            <kbd
-              className={cn(
-                'rounded px-1.5 py-0.5 font-sans text-[11px] font-semibold',
-                prepayMismatch
-                  ? 'bg-amber-200/70 text-amber-800'
-                  : prepay.paid
-                    ? 'bg-emerald-200/70 text-emerald-800'
-                    : 'bg-blue-50 text-blue-600',
-              )}
-            >
-              F3
-            </kbd>
           </button>
         </div>
 
@@ -1152,9 +1106,6 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
           >
             <Printer className="h-3.5 w-3.5" />
             <span>In phiếu tiếp nhận</span>
-            <kbd className="rounded bg-slate-100 px-1.5 py-0.5 font-sans text-[11px] text-slate-500">
-              F8
-            </kbd>
           </button>
 
           <button
@@ -1163,9 +1114,6 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
             className="inline-flex h-9 items-center gap-2 rounded-lg bg-blue-600 px-3.5 text-[13px] font-semibold text-white shadow-xs transition hover:bg-blue-700"
           >
             <span>Khám bệnh</span>
-            <kbd className="rounded bg-blue-800/70 px-1.5 py-0.5 font-sans text-[11px] font-semibold text-white">
-              F9
-            </kbd>
           </button>
 
           <button
@@ -1174,9 +1122,6 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
             className="inline-flex h-9 items-center gap-2 rounded-lg bg-emerald-500 px-3.5 text-[13px] font-semibold text-white shadow-xs transition hover:bg-emerald-600"
           >
             <span>Đăng ký khám</span>
-            <kbd className="rounded bg-emerald-700/70 px-1.5 py-0.5 font-sans text-[11px] font-semibold text-white">
-              F10
-            </kbd>
           </button>
         </div>
       </footer>
@@ -1192,7 +1137,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
         }}
       />
 
-      {/* Modal thu tiền ngay tại bước tiếp nhận (F3) */}
+      {/* Modal thu tiền ngay tại bước tiếp nhận */}
       <Modal
         open={payModalOpen}
         onClose={() => setPayModalOpen(false)}

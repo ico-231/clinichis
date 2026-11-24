@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Minus, Plus, X } from 'lucide-react'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { DatePicker } from '@/components/ui/DatePicker'
 import { useOverlayBehavior } from '@/components/ui/Modal'
 import { Portal } from '@/components/ui/Portal'
@@ -162,17 +162,6 @@ export function PatientFormDrawer({ patient, onClose, onSaved }: { patient?: Pat
     onClose()
   }
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'F4') {
-        e.preventDefault()
-        save()
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  })
-
   const age = f.dob ? (ageUnit === 'year' ? ageInYears(f.dob) : Math.max(0, Math.floor((Date.parse(todayISO()) - Date.parse(f.dob)) / (30.44 * 86_400_000)))) : ''
 
   return (
@@ -259,7 +248,7 @@ export function PatientFormDrawer({ patient, onClose, onSaved }: { patient?: Pat
             </div>
           </div>
           <div className="flex justify-end border-t border-slate-100 px-4 py-2.5">
-            <Button onClick={save} rightIcon={<Kbd tone="blue">F4</Kbd>}>
+            <Button onClick={save}>
               Lưu
             </Button>
           </div>

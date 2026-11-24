@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ArrowDown, ArrowUp, ChevronsUpDown, Eye, MoreHorizontal, Pencil, PlusCircle, Search, Trash2 } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
 import { DatePicker } from '@/components/ui/DatePicker'
 import { DropdownMenu, MenuItem } from '@/components/ui/DropdownMenu'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { hasOpenOverlay } from '@/components/ui/Modal'
 import { Pagination } from '@/components/ui/Pagination'
 import { useToast } from '@/components/ui/Toast'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
@@ -81,17 +80,6 @@ export function PatientsPage() {
     return list.sort((a, b) => String(val(a)).localeCompare(String(val(b)), 'vi') * (sort.key === 'age' ? -sort.dir : sort.dir))
   }, [patients, query, from, to, sort, lastVisit])
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'F2' && !openId && !hasOpenOverlay()) {
-        e.preventDefault()
-        setFormFor('new')
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [openId])
-
   const opened = openId ? patients.find((p) => p.id === openId) : undefined
   if (opened) return <PatientProfile patient={opened} onBack={() => setOpenId(null)} />
 
@@ -112,7 +100,7 @@ export function PatientsPage() {
       <PageHeader
         title="Quản lý người bệnh"
         actions={
-          <Button leftIcon={<PlusCircle className="h-4 w-4" />} rightIcon={<Kbd tone="blue">F2</Kbd>} onClick={() => setFormFor('new')}>
+          <Button leftIcon={<PlusCircle className="h-4 w-4" />} onClick={() => setFormFor('new')}>
             Thêm
           </Button>
         }

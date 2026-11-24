@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Info, Printer, X } from 'lucide-react'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { useOverlayBehavior } from '@/components/ui/Modal'
 import { Portal } from '@/components/ui/Portal'
 import { Tabs } from '@/components/ui/Tabs'
@@ -32,26 +32,12 @@ export function ReceiptModal({ visitId, paymentId, onClose }: { visitId: string;
   const [tab, setTab] = useState<'service' | 'drug'>('service')
   const [printOpen, setPrintOpen] = useState(false)
   const [invoiceOpen, setInvoiceOpen] = useState(false)
-  const [stackTop, setStackTop] = useState(true)
   useOverlayBehavior(true, onClose)
 
   const visit = visits.find((v) => v.id === visitId)
   const patient = visit ? patients.find((p) => p.id === visit.patientId) : undefined
   const receipt = visit?.payments.find((p) => p.id === paymentId)
 
-  useEffect(() => setStackTop(!printOpen && !invoiceOpen), [printOpen, invoiceOpen])
-  useEffect(() => {
-    if (!stackTop) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'F8') {
-        e.preventDefault()
-        e.stopImmediatePropagation()
-        setPrintOpen(true)
-      }
-    }
-    window.addEventListener('keydown', onKey, true)
-    return () => window.removeEventListener('keydown', onKey, true)
-  }, [stackTop])
 
   if (!visit || !patient || !receipt) return null
   const lines = receiptLines(receipt)
@@ -175,7 +161,7 @@ export function ReceiptModal({ visitId, paymentId, onClose }: { visitId: string;
             <Button variant="soft" onClick={issue} disabled={issued || refunded} className="min-w-36">
               {issued ? 'Đã phát hành hoá đơn' : 'Phát hành hoá đơn'}
             </Button>
-            <Button leftIcon={<Printer className="h-4 w-4" />} rightIcon={<Kbd tone="blue">F8</Kbd>} onClick={() => setPrintOpen(true)}>
+            <Button leftIcon={<Printer className="h-4 w-4" />} onClick={() => setPrintOpen(true)}>
               In phiếu bán hàng
             </Button>
           </div>

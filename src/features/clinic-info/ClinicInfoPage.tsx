@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { BadgeCheck, ImagePlus, MapPin, Plus, Trash2, Upload } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { RichTextArea, RichView } from '@/components/ui/RichText'
 import { useToast } from '@/components/ui/Toast'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
@@ -72,17 +72,6 @@ export function ClinicInfoPage() {
     const t = setTimeout(() => setClinicProfile(p), 400)
     return () => clearTimeout(t)
   }, [p, setClinicProfile])
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'F10') {
-        e.preventDefault()
-        publish()
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  })
 
   return (
     <div className="flex h-full flex-col">
@@ -192,7 +181,7 @@ export function ClinicInfoPage() {
             </Field>
           </div>
           <div className="border-t border-slate-200 px-3 py-2.5">
-            <Button onClick={publish} rightIcon={<Kbd tone="blue">F10</Kbd>}>
+            <Button onClick={publish}>
               Đăng thông tin
             </Button>
           </div>

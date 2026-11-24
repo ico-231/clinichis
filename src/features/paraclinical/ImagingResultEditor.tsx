@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Camera, CameraOff, FolderOpen, Plus, Trash2, Upload, X } from 'lucide-react'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { Modal, useOverlayBehavior } from '@/components/ui/Modal'
 import { Portal } from '@/components/ui/Portal'
 import { RichTextArea, htmlToText } from '@/components/ui/RichText'
@@ -68,18 +68,6 @@ export function ImagingResultEditor({ visitId, orderId, onClose }: { visitId: st
     },
     [visit, order, description, conclusion, recommendation, images, files, updateOrder, toast, patient, onClose],
   )
-
-  useEffect(() => {
-    if (overlay || printOpen) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'F9') {
-        e.preventDefault()
-        save(e.ctrlKey)
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [save, overlay, printOpen])
 
   useEffect(() => setOverlay(folderOpen || printOpen), [folderOpen, printOpen])
 
@@ -175,10 +163,10 @@ export function ImagingResultEditor({ visitId, orderId, onClose }: { visitId: st
               )}
               {/* Hai nút xếp dọc: cột 300px không đủ chỗ cho chữ + nhãn phím khi đặt cạnh nhau */}
               <div className="mt-auto flex flex-col gap-1.5 pt-1">
-                <Button size="sm" className="w-full" rightIcon={<Kbd tone="blue">F9</Kbd>} onClick={() => save(false)}>
+                <Button size="sm" className="w-full" onClick={() => save(false)}>
                   Lưu kết quả
                 </Button>
-                <Button size="sm" variant="outline" className="w-full" rightIcon={<Kbd>Ctrl+F9</Kbd>} onClick={() => save(true)}>
+                <Button size="sm" variant="outline" className="w-full" onClick={() => save(true)}>
                   Lưu &amp; in phiếu
                 </Button>
               </div>
@@ -202,7 +190,7 @@ export function ImagingResultEditor({ visitId, orderId, onClose }: { visitId: st
   )
 }
 
-/** Khung camera: chọn thiết bị, tỉ lệ khung hình, chụp ảnh (F8) */
+/** Khung camera: chọn thiết bị, tỉ lệ khung hình, chụp ảnh */
 function CameraPanel({ onCapture, disabled }: { onCapture: (dataUrl: string) => void; disabled: boolean }) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([])
@@ -248,17 +236,6 @@ function CameraPanel({ onCapture, disabled }: { onCapture: (dataUrl: string) => 
     onCapture(await compressImage(canvas))
   }, [state, disabled, ratio, onCapture])
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'F8') {
-        e.preventDefault()
-        capture()
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [capture])
-
   return (
     <div className="space-y-1.5">
       <div className="flex gap-1.5">
@@ -293,7 +270,7 @@ function CameraPanel({ onCapture, disabled }: { onCapture: (dataUrl: string) => 
           </button>
         )}
       </div>
-      <Button className="w-full" size="sm" disabled={state !== 'on' || disabled} onClick={capture} leftIcon={<Camera className="h-3.5 w-3.5" />} rightIcon={<Kbd tone="blue">F8</Kbd>}>
+      <Button className="w-full" size="sm" disabled={state !== 'on' || disabled} onClick={capture} leftIcon={<Camera className="h-3.5 w-3.5" />}>
         Chụp ảnh
       </Button>
     </div>

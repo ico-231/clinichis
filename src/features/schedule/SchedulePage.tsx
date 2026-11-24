@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { AlertTriangle, ChevronLeft, ChevronRight } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { Button, Kbd } from '@/components/ui/Button'
-import { hasOpenOverlay } from '@/components/ui/Modal'
+import { Button } from '@/components/ui/Button'
 import { Tabs } from '@/components/ui/Tabs'
 import { useToast } from '@/components/ui/Toast'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
@@ -55,17 +54,6 @@ export function SchedulePage() {
     else setEditFlex({ slot: { id: newSlotId(), date, kind: 'exam', start: '', end: '', perSlot: 1, slotMinutes: 30, enabled: true }, isNew: true })
   }
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'F2' && !hasOpenOverlay()) {
-        e.preventDefault()
-        openAdd()
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  })
-
   /** Ô lịch tháng: bắt đầu từ Thứ 2 */
   const cells = useMemo(() => {
     const first = new Date(month.y, month.m, 1)
@@ -95,7 +83,7 @@ export function SchedulePage() {
           ]}
         />
         <span className="ml-auto" />
-        <Button onClick={() => openAdd()} rightIcon={<Kbd tone="blue">F2</Kbd>}>
+        <Button onClick={() => openAdd()}>
           {tab === 'fixed' ? 'Điều chỉnh' : 'Thêm mới'}
         </Button>
       </div>

@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { Eye, EyeOff, Lock, MoreHorizontal, Pencil, PlusCircle, Search, Trash2, Unlock } from 'lucide-react'
-import { Button, Kbd } from '@/components/ui/Button'
+import { Button } from '@/components/ui/Button'
 import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
 import { DatePicker } from '@/components/ui/DatePicker'
 import { DropdownMenu, MenuItem } from '@/components/ui/DropdownMenu'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { Modal, hasOpenOverlay } from '@/components/ui/Modal'
+import { Modal } from '@/components/ui/Modal'
 import { Pagination } from '@/components/ui/Pagination'
 import { Select } from '@/components/ui/Select'
 import { Tabs } from '@/components/ui/Tabs'
@@ -310,7 +310,7 @@ export function GeneralSection() {
       <Field label="Mã tài khoản" required hint={`Ký tự đặt trước tên đăng nhập của nhân viên. Tên đăng nhập có dạng: ${g.accountPrefix || '[mã tài khoản]'}_admin`}>
         <input value={g.accountPrefix} onChange={(e) => setG((x) => ({ ...x, accountPrefix: e.target.value.toLowerCase() }))} className={input} />
       </Field>
-      <Field label="Bật/Tắt in phiếu khám" hint="In phiếu khám ngay sau khi nhận bệnh (Đăng ký khám F10).">
+      <Field label="Bật/Tắt in phiếu khám" hint="In phiếu khám ngay sau khi bấm Đăng ký khám.">
         <label className="flex items-center gap-2 text-[13px]">
           <input type="checkbox" checked={g.printTicketOnCheckIn} onChange={(e) => setG((x) => ({ ...x, printTicketOnCheckIn: e.target.checked }))} className="h-4 w-4 accent-blue-600" />
           Bật
@@ -427,19 +427,6 @@ function RowMenu({ items }: { items: { label: string; icon: ReactNode; onSelect:
   )
 }
 
-function useF2(open: () => void) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'F2' && !hasOpenOverlay()) {
-        e.preventDefault()
-        open()
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [open])
-}
-
 /* ------------------------------------------------------------------ */
 /* Cơ cấu tổ chức (160–167)                                            */
 /* ------------------------------------------------------------------ */
@@ -463,7 +450,6 @@ export function OrgSection() {
   const meta = ORG_TABS.find((t) => t.value === tab)!
   const list = tab === 'doctors' ? [] : sys.org[tab]
   const openNew = () => tab !== 'doctors' && setEdit({ item: { id: newId('org'), name: '', description: '', updatedAt: '' }, isNew: true })
-  useF2(openNew)
   const saveItem = (it: OrgItem) => {
     if (tab === 'doctors') return
     const items = sys.org[tab]
@@ -478,7 +464,7 @@ export function OrgSection() {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <Tabs variant="pill" value={tab} onChange={setTab} items={ORG_TABS.map((t) => ({ value: t.value, label: t.label }))} />
         {tab !== 'doctors' && (
-          <Button leftIcon={<PlusCircle className="h-4 w-4" />} rightIcon={<Kbd tone="blue">F2</Kbd>} onClick={openNew}>
+          <Button leftIcon={<PlusCircle className="h-4 w-4" />} onClick={openNew}>
             Thêm mới
           </Button>
         )}
@@ -546,16 +532,6 @@ function NameDescModal({ title, item, onClose, onSave }: { title: string; item: 
     setTouched(true)
     if (it.name.trim()) onSave(it)
   }
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'F4') {
-        e.preventDefault()
-        submit()
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  })
   return (
     <Modal
       open
@@ -563,7 +539,7 @@ function NameDescModal({ title, item, onClose, onSave }: { title: string; item: 
       size="sm"
       title={title}
       footer={
-        <Button onClick={submit} rightIcon={<Kbd tone="blue">F4</Kbd>}>
+        <Button onClick={submit}>
           Lưu
         </Button>
       }
@@ -591,11 +567,10 @@ export function FeeSection() {
   const list = services ?? SERVICES
   const [edit, setEdit] = useState<{ s: Service & { description?: string }; isNew: boolean } | null>(null)
   const openNew = () => setEdit({ s: { id: newId('s'), name: '', price: 0 }, isNew: true })
-  useF2(openNew)
   return (
     <div className="space-y-3">
       <div className="flex justify-end">
-        <Button leftIcon={<PlusCircle className="h-4 w-4" />} rightIcon={<Kbd tone="blue">F2</Kbd>} onClick={openNew}>
+        <Button leftIcon={<PlusCircle className="h-4 w-4" />} onClick={openNew}>
           Thêm mới
         </Button>
       </div>
@@ -638,7 +613,7 @@ function FeeModal({ value, onClose, onSave }: { value: Service & { description?:
       size="md"
       title="Công khám"
       footer={
-        <Button onClick={submit} rightIcon={<Kbd tone="blue">F4</Kbd>}>
+        <Button onClick={submit}>
           Lưu
         </Button>
       }
@@ -778,11 +753,10 @@ export function StaffSection() {
   const [edit, setEdit] = useState<StaffMember | 'new' | null>(null)
   const [del, setDel] = useState<StaffMember | null>(null)
   const username = (m: StaffMember) => `${sys.general.accountPrefix}_${normalizeText(m.firstName).replace(/[^a-z0-9]/g, '') || 'nv'}`
-  useF2(() => setEdit('new'))
   return (
     <div className="space-y-3">
       <div className="flex justify-end">
-        <Button leftIcon={<PlusCircle className="h-4 w-4" />} rightIcon={<Kbd tone="blue">F2</Kbd>} onClick={() => setEdit('new')}>
+        <Button leftIcon={<PlusCircle className="h-4 w-4" />} onClick={() => setEdit('new')}>
           Thêm nhân viên
         </Button>
       </div>
@@ -878,7 +852,7 @@ function StaffModal({ value, onClose, onSave }: { value?: StaffMember; onClose: 
       size="md"
       title="Thông tin nhân viên"
       footer={
-        <Button onClick={submit} rightIcon={<Kbd tone="blue">F4</Kbd>}>
+        <Button onClick={submit}>
           Lưu
         </Button>
       }
