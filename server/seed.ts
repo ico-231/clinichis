@@ -1,5 +1,5 @@
 import { createSeedState } from '../src/store/seed.js'
-import { rowIn } from './supabaseRepo.js'
+import { rowIn, supabaseAuthHeaders } from './supabaseRepo.js'
 
 /**
  * Đẩy dữ liệu mẫu của 1.0 (người bệnh, lượt khám, phiếu thu, chỉ định) lên Supabase qua REST,
@@ -14,7 +14,7 @@ export async function seedSupabase(url: string, serviceKey: string, fetchImpl: t
     for (let i = 0; i < rows.length; i += 200) {
       const res = await fetchImpl(`${base}/rest/v1/${table}?on_conflict=id`, {
         method: 'POST',
-        headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}`, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' },
+        headers: { ...supabaseAuthHeaders(serviceKey), 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' },
         body: JSON.stringify(rows.slice(i, i + 200)),
       })
       if (!res.ok) throw new Error(`Ghi ${table} lỗi ${res.status}: ${await res.text()}`)

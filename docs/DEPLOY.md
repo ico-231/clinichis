@@ -1,7 +1,15 @@
 # Đưa ClinicHIS lên Supabase + Vercel
 
-Mọi thứ phía code đã sẵn (24/11/2026, `[CC]`). Project Supabase `clinichis` (Singapore) đã được `[CC]` tạo và chạy migration ngày 24/11 —
-bước 1 bên dưới chỉ còn lấy khoá `service_role`. Khoá bí mật luôn do người dùng tự dán vào Vercel.
+## Trạng thái (24/11/2026, `[CC]`)
+
+- Supabase: project `clinichis` (Singapore, ref `wkujystomujlbfvwjrec`), đã chạy migration.
+- GitHub: repo riêng tư `ico-231/clinichis`, nhánh `ui/2026-11` (Vercel coi là nhánh production — push là tự triển khai).
+- Vercel: project `clinichis` (team ICO), địa chỉ `https://clinichis-ico18.vercel.app`. Đã đặt `SUPABASE_URL`, `CLINIC_API_KEY`,
+  `VITE_CLINIC_API_KEY`, `ALLOW_SEED=yes` (tạm). **Còn thiếu `SUPABASE_SERVICE_ROLE_KEY`** — người dùng tự dán.
+- Vercel Authentication: chỉ còn bảo vệ bản **preview**; bản production công khai (người dùng đồng ý 24/11).
+- Gói Hobby chỉ cho 12 hàm ⇒ toàn bộ API đi qua **một** hàm `api/router.ts` (handler nằm ở `server/routes/`).
+  Code máy chủ chạy Node ESM trên Vercel ⇒ **import tương đối phải có đuôi `.js`** (kể cả file trong `src/store` mà server dùng).
+
 Ước chừng 15–20 phút, đều dùng được gói miễn phí.
 
 ## 1. Supabase (cơ sở dữ liệu)
@@ -11,7 +19,8 @@ bước 1 bên dưới chỉ còn lấy khoá `service_role`. Khoá bí mật lu
    Tạo các bảng `patients`, `visits`, `catalog`, `settings`, `logs`, `counters` và các hàm `create_patient`, `bump_counter`, `replace_catalog`.
 3. Vào **Project Settings → API**, lấy:
    - `Project URL` → dùng cho `SUPABASE_URL`
-   - `service_role` key → dùng cho `SUPABASE_SERVICE_ROLE_KEY` (**bí mật**, không dán vào chat, không commit)
+   - **Secret key** mới (`sb_secret_...`) → dùng cho `SUPABASE_SERVICE_ROLE_KEY` (**bí mật**, không dán vào chat, không commit).
+     Khoá `service_role` JWT cũ (tab Legacy) vẫn chạy nhưng Supabase sẽ bỏ đầu 2027; code tự nhận loại khoá.
 
 ## 2. Nạp dữ liệu mẫu (tuỳ chọn, để bản demo có sẵn người bệnh/lượt khám)
 
@@ -37,7 +46,7 @@ Không bật `ALLOW_SEED` hoặc chưa đặt `CLINIC_API_KEY` thì API này tr�
    | Biến | Giá trị |
    |---|---|
    | `SUPABASE_URL` | Project URL ở bước 1 |
-   | `SUPABASE_SERVICE_ROLE_KEY` | service_role key ở bước 1 |
+   | `SUPABASE_SERVICE_ROLE_KEY` | Secret key `sb_secret_...` ở bước 1 |
    | `CLINIC_API_KEY` | Một chuỗi tự đặt (vd. 20 ký tự ngẫu nhiên) để khoá API bản demo |
    | `VITE_CLINIC_API_KEY` | Cùng giá trị với `CLINIC_API_KEY` (frontend gửi kèm khi gọi API) |
 

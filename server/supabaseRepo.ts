@@ -20,6 +20,14 @@ export function rowIn(obj: Record<string, unknown>) {
 }
 
 /**
+ * Header xác thực gửi Supabase. Khoá mới (`sb_secret_...`) không phải JWT nên chỉ gửi qua `apikey`;
+ * khoá cũ dạng JWT (`service_role`, sẽ bị Supabase bỏ đầu 2027) gửi thêm `Authorization: Bearer`.
+ */
+export function supabaseAuthHeaders(key: string): Record<string, string> {
+  return key.startsWith('sb_') ? { apikey: key } : { apikey: key, Authorization: `Bearer ${key}` }
+}
+
+/**
  * Kho dữ liệu thật: gọi REST của Supabase (PostgREST) bằng fetch, không cần thư viện.
  * Dùng khoá service role nên CHỈ được chạy phía máy chủ (Vercel Functions).
  */
@@ -30,8 +38,7 @@ export function createSupabaseRepos(url: string, serviceKey: string, fetchImpl: 
     const res = await fetchImpl(`${base}${path}`, {
       ...init,
       headers: {
-        apikey: serviceKey,
-        Authorization: `Bearer ${serviceKey}`,
+        ...supabaseAuthHeaders(serviceKey),
         'Content-Type': 'application/json',
         ...(init.prefer ? { Prefer: init.prefer } : {}),
         ...init.headers,

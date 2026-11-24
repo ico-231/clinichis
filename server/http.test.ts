@@ -63,5 +63,13 @@ describe('router — một hàm cho mọi /api/*', () => {
     expect((await route(new Request('http://x/api/router?__path=khong-co'))).status).toBe(404)
     expect((await route(new Request('http://x/api/router?__path=reports/summary', { method: 'DELETE' }))).status).toBe(405)
     setReposForTest(null)
+  }, 20000) // lần đầu import cả bảng route có thể chậm khi chạy song song
+})
+
+describe('supabaseAuthHeaders', () => {
+  it('khoá mới sb_secret chỉ gửi apikey; khoá JWT cũ gửi thêm Bearer', async () => {
+    const { supabaseAuthHeaders } = await import('./supabaseRepo')
+    expect(supabaseAuthHeaders('sb_secret_abc')).toEqual({ apikey: 'sb_secret_abc' })
+    expect(supabaseAuthHeaders('eyJhbGc')).toEqual({ apikey: 'eyJhbGc', Authorization: 'Bearer eyJhbGc' })
   })
 })
