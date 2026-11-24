@@ -1,11 +1,13 @@
-export type ErrorCode = 'bad_request' | 'validation' | 'not_found' | 'conflict' | 'method_not_allowed' | 'server_error'
+export type ErrorCode = 'bad_request' | 'unauthorized' | 'validation' | 'not_found' | 'conflict' | 'method_not_allowed' | 'rate_limited' | 'server_error'
 
 const STATUS: Record<ErrorCode, number> = {
   bad_request: 400,
+  unauthorized: 401,
   validation: 422,
   not_found: 404,
   conflict: 409,
   method_not_allowed: 405,
+  rate_limited: 429,
   server_error: 500,
 }
 

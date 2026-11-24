@@ -10,15 +10,40 @@ export function json(data: unknown, status = 200) {
   })
 }
 
-/** Bọc một handler: lỗi nghiệp vụ → JSON có mã HTTP; lỗi lạ → 500 (không lộ chi tiết ra ngoài) */
-export async function handle(fn: () => Promise<Response>) {
+/** Số lần gọi tối đa mỗi phút cho một địa chỉ IP (chỉ trong một máy chủ; đủ để chặn gọi dồn trong bản demo) */
+const RATE_LIMIT = 120
+const hits = new Map<string, { at: number; count: number }>()
+
+/**
+ * Chặn trước khi chạy handler:
+ * - CLINIC_API_KEY đặt trên máy chủ ⇒ mọi request phải gửi header `x-clinic-key` trùng khớp (401 nếu sai).
+ *   Đây là khoá dùng chung cho bản demo, KHÔNG thay được đăng nhập: khoá nằm trong frontend thì ai mở mã nguồn cũng thấy.
+ * - Giới hạn số lần gọi theo IP (429).
+ */
+export function guard(request: Request, env: Record<string, string | undefined> = process.env, now = Date.now()) {
+  const expected = env.CLINIC_API_KEY
+  if (expected && request.headers.get('x-clinic-key') !== expected) throw new ApiError('unauthorized', 'Thiếu hoặc sai mã truy cập API')
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'local'
+  const h = hits.get(ip)
+  if (!h || now - h.at >= 60_000) hits.set(ip, { at: now, count: 1 })
+  else if (++h.count > Number(env.CLINIC_RATE_LIMIT ?? RATE_LIMIT)) throw new ApiError('rate_limited', 'Gọi API quá nhiều, vui lòng thử lại sau một phút')
+}
+
+/** Bọc một handler: kiểm tra mã truy cập + giới hạn; lỗi nghiệp vụ → JSON có mã HTTP; lỗi lạ → 500 (không lộ chi tiết) */
+export async function handle(request: Request, fn: () => Promise<Response>) {
   try {
+    guard(request)
     return await fn()
   } catch (err) {
     if (err instanceof ApiError) return json({ error: { code: err.code, message: err.message, ...(err.fields ? { fields: err.fields } : {}) } }, err.status)
     console.error(err)
     return json({ error: { code: 'server_error', message: 'Lỗi máy chủ' } }, 500)
   }
+}
+
+/** Chỉ dùng trong test */
+export function resetRateLimitForTest() {
+  hits.clear()
 }
 
 export async function readJson(request: Request): Promise<unknown> {

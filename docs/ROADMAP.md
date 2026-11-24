@@ -149,5 +149,7 @@ Kế hoạch và cách chạy: [docs/BACKEND.md](BACKEND.md). App 1.0 vẫn dùn
   (bắt buộc chiều cao/cân nặng, xác nhận khi chưa chẩn đoán), phòng CLS cập nhật/trả kết quả, `/api/orders`. 8 test. Tổng 94 test.
 - [x] O5. Danh mục, cài đặt, báo cáo: `server/catalog.ts` (danh mục sửa được + chỉ đọc, mặc định của 1.0, hàm SQL `replace_catalog`),
   `/api/settings/:key`, `server/reports.ts` + `/api/reports/summary`; màn khám chỉ định được dịch vụ lab nội bộ thêm mới. 8 test. Tổng 102 test.
-- [ ] O6. Lên Supabase/Vercel thật · O7. Đăng nhập (để sau).
+- [x] O6a. Chuẩn bị triển khai: `vercel.json`, `env.example`, `docs/DEPLOY.md`, script nạp dữ liệu mẫu 1.0 lên Supabase
+  (`scripts/seed-supabase.script.ts`), khoá API bằng `CLINIC_API_KEY` + giới hạn 120 lần/phút/IP, lớp gọi API `src/api/client.ts`. Tổng 106 test, build ổn.
+- [ ] O6b. Lên Supabase/Vercel thật · O7. Đăng nhập (để sau).
 

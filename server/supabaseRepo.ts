@@ -11,7 +11,7 @@ function rowOut<T>(row: Record<string, unknown>): T {
   for (const [k, v] of Object.entries(row)) if (v !== null && k !== 'search_key') out[toCamel(k)] = v
   return out as T
 }
-function rowIn(obj: Record<string, unknown>) {
+export function rowIn(obj: Record<string, unknown>) {
   const out: Record<string, unknown> = {}
   for (const [k, v] of Object.entries(obj)) if (v !== undefined) out[toSnake(k)] = v
   // Cột tìm kiếm không dấu đi theo họ tên

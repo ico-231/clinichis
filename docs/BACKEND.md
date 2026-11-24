@@ -30,8 +30,12 @@ clinic/
 | `SUPABASE_URL` | `https://<project>.supabase.co` |
 | `SUPABASE_SERVICE_ROLE_KEY` | Khoá service role — **chỉ dùng phía máy chủ**, không bao giờ đưa xuống trình duyệt |
 | `CLINIC_DATA` | `memory` để chạy bằng kho trong bộ nhớ (thử nhanh, không cần Supabase) |
+| `CLINIC_API_KEY` / `VITE_CLINIC_API_KEY` | Mã truy cập dùng chung cho bản demo (header `x-clinic-key`); để trống = API mở |
+| `CLINIC_RATE_LIMIT` | Số lần gọi tối đa mỗi phút / IP (mặc định 120) |
 
-Chưa có đăng nhập nên API đang **mở**; chỉ dùng cho bản demo. Trước khi có dữ liệu thật phải làm đăng nhập + RLS.
+Hướng dẫn từng bước: [DEPLOY.md](DEPLOY.md). Lớp gọi API cho giao diện 2.0: `src/api/client.ts` (`createApiClient()`).
+
+Chưa có đăng nhập; API khoá tạm bằng mã truy cập chung + giới hạn số lần gọi, chỉ dùng cho bản demo. Trước khi có dữ liệu thật phải làm đăng nhập + RLS.
 
 ## Lộ trình
 
@@ -42,7 +46,7 @@ Chưa có đăng nhập nên API đang **mở**; chỉ dùng cho bản demo. Tr�
 | B3 | Thu tiền: phiếu thu theo dòng, giảm giá, hoá đơn điện tử (dùng `billing.ts`); hoàn tiền đi theo huỷ lượt như 1.0 | xong 24/11 (chưa chạy trên Supabase thật) |
 | B4 | Khám bệnh: sinh hiệu, chẩn đoán, đơn thuốc, hoàn thành; chỉ định & kết quả CLS | xong 24/11 (chưa chạy trên Supabase thật) |
 | B5 | Danh mục & cài đặt (dịch vụ, CLS, mẫu đơn, lịch làm việc, thông tin phòng khám), báo cáo | xong 24/11 (chưa chạy trên Supabase thật) |
-| B6 | Tạo project Supabase, chạy migration, nạp dữ liệu mẫu, cấu hình Vercel (`vercel.json`, biến môi trường) | chờ người dùng |
+| B6 | Tạo project Supabase, chạy migration, nạp dữ liệu mẫu, cấu hình Vercel (`vercel.json`, biến môi trường) | code sẵn 24/11 (`vercel.json`, `env.example`, script nạp dữ liệu, `docs/DEPLOY.md`); chờ người dùng tạo project |
 | B7 | Đăng nhập + phân quyền + RLS (người dùng: để sau) | để sau |
 
 ## API đã có
