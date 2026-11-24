@@ -4,7 +4,7 @@ import { INITIAL_PRESCRIPTION_TEMPLATES } from './drugCatalog'
 import { ICD10 } from './icd10'
 import { enrichVisits, INTERNAL_CLS_SEED, seedSchedules } from './seedExtras'
 import { defaultSystem } from './systemDefaults'
-import { addDays, addMinutesToTime, pad, todayISO } from '@/lib/date'
+import { addDays, addMinutesToTime, pad, todayISO } from '../lib/date'
 import type {
   ClinicState,
   ExamRecord,

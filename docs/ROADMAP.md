@@ -151,5 +151,5 @@ Kế hoạch và cách chạy: [docs/BACKEND.md](BACKEND.md). App 1.0 vẫn dùn
   `/api/settings/:key`, `server/reports.ts` + `/api/reports/summary`; màn khám chỉ định được dịch vụ lab nội bộ thêm mới. 8 test. Tổng 102 test.
 - [x] O6a. Chuẩn bị triển khai: `vercel.json`, `env.example`, `docs/DEPLOY.md`, script nạp dữ liệu mẫu 1.0 lên Supabase
   (`scripts/seed-supabase.script.ts`), khoá API bằng `CLINIC_API_KEY` + giới hạn 120 lần/phút/IP, lớp gọi API `src/api/client.ts`. Tổng 106 test, build ổn.
-- [ ] O6b. Lên Supabase/Vercel thật · O7. Đăng nhập (để sau).
+- [ ] O6b. Lên Supabase/Vercel thật (đang làm 24/11: Supabase `clinichis` đã tạo + migration; API nạp dữ liệu mẫu `POST /api/admin/seed`; còn repo GitHub, Vercel) · O7. Đăng nhập (để sau).
 

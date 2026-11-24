@@ -142,3 +142,8 @@ begin
   insert into settings (key, data) values ('catalog_saved:' || catalog_kind, 'true'::jsonb)
     on conflict (key) do update set updated_at = now();
 end $$;
+
+-- Các hàm trên chỉ dành cho API phía máy chủ (service role): không cho khoá công khai anon/authenticated gọi qua REST
+revoke execute on function create_patient(jsonb) from public, anon, authenticated;
+revoke execute on function bump_counter(text, int) from public, anon, authenticated;
+revoke execute on function replace_catalog(text, jsonb) from public, anon, authenticated;

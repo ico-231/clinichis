@@ -1,6 +1,7 @@
 # Đưa ClinicHIS lên Supabase + Vercel
 
-Mọi thứ phía code đã sẵn (24/11/2026, `[CC]`). Phần dưới cần **người dùng** làm vì phải đăng nhập tài khoản và giữ khoá.
+Mọi thứ phía code đã sẵn (24/11/2026, `[CC]`). Project Supabase `clinichis` (Singapore) đã được `[CC]` tạo và chạy migration ngày 24/11 —
+bước 1 bên dưới chỉ còn lấy khoá `service_role`. Khoá bí mật luôn do người dùng tự dán vào Vercel.
 Ước chừng 15–20 phút, đều dùng được gói miễn phí.
 
 ## 1. Supabase (cơ sở dữ liệu)
@@ -21,6 +22,10 @@ $env:SUPABASE_URL='https://<project-ref>.supabase.co'; $env:SUPABASE_SERVICE_ROL
 ```
 
 Không đặt `SEED_CONFIRM=yes` thì script chỉ đếm, không ghi. Chạy lại nhiều lần được (ghi đè theo id). Ngày trong dữ liệu mẫu tính theo hôm nay.
+
+**Cách khác, không cần khoá ở máy** — gọi API trên Vercel sau khi triển khai:
+đặt thêm biến `ALLOW_SEED=yes` trên Vercel, triển khai lại, rồi gửi `POST /api/admin/seed` kèm header `x-clinic-key: <CLINIC_API_KEY>`.
+Không bật `ALLOW_SEED` hoặc chưa đặt `CLINIC_API_KEY` thì API này trả 404. Nạp xong **xoá `ALLOW_SEED`**.
 
 ## 3. Vercel (web + API)
 

@@ -46,7 +46,7 @@ Chưa có đăng nhập; API khoá tạm bằng mã truy cập chung + giới h�
 | B3 | Thu tiền: phiếu thu theo dòng, giảm giá, hoá đơn điện tử (dùng `billing.ts`); hoàn tiền đi theo huỷ lượt như 1.0 | xong 24/11 (chưa chạy trên Supabase thật) |
 | B4 | Khám bệnh: sinh hiệu, chẩn đoán, đơn thuốc, hoàn thành; chỉ định & kết quả CLS | xong 24/11 (chưa chạy trên Supabase thật) |
 | B5 | Danh mục & cài đặt (dịch vụ, CLS, mẫu đơn, lịch làm việc, thông tin phòng khám), báo cáo | xong 24/11 (chưa chạy trên Supabase thật) |
-| B6 | Tạo project Supabase, chạy migration, nạp dữ liệu mẫu, cấu hình Vercel (`vercel.json`, biến môi trường) | code sẵn 24/11 (`vercel.json`, `env.example`, script nạp dữ liệu, `docs/DEPLOY.md`); chờ người dùng tạo project |
+| B6 | Tạo project Supabase, chạy migration, nạp dữ liệu mẫu, cấu hình Vercel (`vercel.json`, biến môi trường) | code sẵn 24/11 (`vercel.json`, `env.example`, script nạp dữ liệu, `docs/DEPLOY.md`); Supabase `clinichis` đã tạo + migration 24/11; API `POST /api/admin/seed` (cần `ALLOW_SEED=yes`); còn GitHub/Vercel |
 | B7 | Đăng nhập + phân quyền + RLS (người dùng: để sau) | để sau |
 
 ## API đã có

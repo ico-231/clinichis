@@ -32,3 +32,14 @@ describe('guard — mã truy cập và giới hạn số lần gọi', () => {
     expect(await res.json()).toMatchObject({ error: { code: 'unauthorized' } })
   })
 })
+
+describe('POST /api/admin/seed', () => {
+  it('ẩn (404) khi chưa bật ALLOW_SEED hoặc chưa đặt CLINIC_API_KEY', async () => {
+    const { POST } = await import('../api/admin/seed')
+    delete process.env.ALLOW_SEED
+    expect((await POST(new Request('http://x/api/admin/seed', { method: 'POST' }))).status).toBe(404)
+    process.env.ALLOW_SEED = 'yes'
+    expect((await POST(new Request('http://x/api/admin/seed', { method: 'POST' }))).status).toBe(404)
+    delete process.env.ALLOW_SEED
+  })
+})
