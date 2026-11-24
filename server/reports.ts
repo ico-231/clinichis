@@ -4,9 +4,9 @@ import { addDays } from '../src/lib/date.js'
 import type { PaymentMethod, Visit, VisitStatus } from '../src/store/types.js'
 import { ApiError } from './errors.js'
 import type { Repos } from './repo.js'
-import { todayVN } from './time.js'
+import { isISODate, todayVN } from './time.js'
 
-const isDate = (s: unknown): s is string => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(Date.parse(s))
+const isDate = isISODate
 /** Lượt "đến khám" = đã tiếp nhận trở đi, không tính huỷ (như reportData.ts của 1.0) */
 const attended = (v: Visit) => v.status === 'waiting' || v.status === 'in_progress' || v.status === 'done'
 /** Phiếu thu có thể thu sau ngày khám: quét lùi thêm chừng này ngày để không sót tiền thu trong kỳ */

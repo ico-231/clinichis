@@ -21,7 +21,8 @@
 ## 1. Supabase (cơ sở dữ liệu)
 
 1. Vào <https://supabase.com> → **New project**. Chọn vùng gần Việt Nam (Singapore), đặt mật khẩu database (tự giữ).
-2. Mở **SQL Editor** → dán toàn bộ nội dung `supabase/migrations/0001_init.sql` → **Run**.
+2. Mở **SQL Editor** → chạy lần lượt `supabase/migrations/0001_init.sql` rồi `0002_audit_fixes.sql` → **Run**.
+   (Project `clinichis` đã chạy cả hai: `init_clinichis` 24/11, `audit_fixes` 25/11.)
    Tạo các bảng `patients`, `visits`, `catalog`, `settings`, `logs`, `counters` và các hàm `create_patient`, `bump_counter`, `replace_catalog`.
 3. Vào **Project Settings → API**, lấy:
    - `Project URL` → dùng cho `SUPABASE_URL`

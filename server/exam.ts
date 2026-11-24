@@ -7,7 +7,7 @@ import type {
 } from '../src/store/types.js'
 import { ApiError } from './errors.js'
 import type { Repos } from './repo.js'
-import { todayVN } from './time.js'
+import { isISODate, todayVN } from './time.js'
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '')
@@ -158,7 +158,7 @@ export function examService(repos: Repos, opts: { doctor?: string; clock?: () =>
         const prev: Partial<ExamRecord> = visit.exam ?? {}
         const followUpEnabled = x.followUpEnabled === undefined ? (prev.followUpEnabled ?? false) : x.followUpEnabled === true
         const followUpDate = x.followUpDate === undefined ? (prev.followUpDate ?? '') : str(x.followUpDate)
-        if (followUpEnabled && (!/^\d{4}-\d{2}-\d{2}$/.test(followUpDate) || followUpDate <= visit.date)) e['exam.followUpDate'] = 'Ngày tái khám phải sau ngày khám (YYYY-MM-DD)'
+        if (followUpEnabled && (!isISODate(followUpDate) || followUpDate <= visit.date)) e['exam.followUpDate'] = 'Ngày tái khám phải sau ngày khám (YYYY-MM-DD)'
         const pick = <T,>(k: keyof ExamRecord, parse: (v: unknown) => T, fallback: T): T => (x[k] === undefined ? ((prev[k] as T) ?? fallback) : parse(x[k]))
         patch.exam = {
           medicalHistory: pick('medicalHistory', str, ''),
@@ -274,6 +274,7 @@ export function examService(repos: Repos, opts: { doctor?: string; clock?: () =>
       const today = todayVN(clock())
       const dateFrom = params.dateFrom || today
       const dateTo = params.dateTo || dateFrom
+      if (!isISODate(dateFrom) || !isISODate(dateTo) || dateFrom > dateTo) throw new ApiError('validation', 'Khoảng ngày không hợp lệ', { dateFrom: 'YYYY-MM-DD, từ ngày ≤ đến ngày' })
       if (params.category && params.category !== 'imaging' && params.category !== 'lab') throw new ApiError('validation', 'category: imaging | lab')
       if (params.performStatus && !PERFORM.includes(params.performStatus as PerformStatus)) throw new ApiError('validation', `performStatus: ${PERFORM.join(' | ')}`)
       const visits = await repos.visits.list({ dateFrom, dateTo })

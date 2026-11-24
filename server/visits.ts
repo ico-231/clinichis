@@ -10,7 +10,7 @@ import { ApiError } from './errors.js'
 import { patientService } from './patients.js'
 import type { Repos } from './repo.js'
 import { matchesPatient, normalize } from './search.js'
-import { todayVN } from './time.js'
+import { isISODate, todayVN } from './time.js'
 
 const STATUSES: VisitStatus[] = ['registered', 'waiting', 'in_progress', 'done', 'cancelled']
 const PAYMENT_STATUSES: PaymentStatus[] = ['none', 'paid', 'unpaid', 'partial', 'cancelled', 'refunded', 'failed']
@@ -30,7 +30,7 @@ export const NEXT_STATUS: Partial<Record<VisitStatus, VisitStatus>> = {
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 const uid = (prefix: string) => `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`
-const isDate = (s: unknown): s is string => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(Date.parse(s))
+const isDate = isISODate
 const isTime = (s: unknown): s is string => typeof s === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(s)
 const money = (n: unknown) => typeof n === 'number' && Number.isFinite(n) && n >= 0
 
@@ -214,8 +214,11 @@ export function visitService(repos: Repos, opts: { cashier?: string; clock?: () 
       }
       const now = clock().toISOString()
       const queue = await nextQueue(repos, input.date)
-      const payAmt = input.payNow ? (input.paidAmountNow ?? input.fee) : 0
-      const receiptCode = input.payNow && (payAmt > 0 || input.fee === 0) ? await nextReceiptCode(repos, todayVN(clock())) : undefined
+      // Cùng công thức với buildVisit, để chỉ lấy số phiếu khi thật sự tạo phiếu thu (không nhảy số)
+      const clsTotal = (input.paraclinicalOrders ?? []).reduce((s, o) => s + o.unitPrice * o.quantity, 0)
+      const totalFee = (input.consultationFee ?? Math.max(input.fee - clsTotal, 0)) + clsTotal
+      const payAmt = input.payNow ? (input.paidAmountNow ?? totalFee) : 0
+      const receiptCode = input.payNow && (payAmt > 0 || totalFee === 0) ? await nextReceiptCode(repos, todayVN(clock())) : undefined
       const visit = await repos.visits.insert(buildVisit({ patientId: patient.id, input, patientType, queue, receiptCode, now, cashier }))
       return { patient, visit }
     },

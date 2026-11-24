@@ -103,6 +103,8 @@ export function paymentService(repos: Repos, opts: { cashier?: string; clock?: (
       if (body.customerPaid !== undefined && method === 'cash' && (body.customerPaid as number) < amount) e.customerPaid = 'Tiền khách đưa ít hơn số phải thu'
       if (Object.keys(e).length) throw new ApiError('validation', 'Dữ liệu thu tiền chưa hợp lệ', e)
 
+      // Kiểm tra hoá đơn TRƯỚC khi lấy số phiếu, để dữ liệu sai không làm nhảy số phiếu thu
+      const invoice = body.invoice !== undefined ? parseInvoice(body.invoice) : undefined
       const receipt: PaymentRecord = {
         id: uid(),
         kind: 'payment',
@@ -115,7 +117,7 @@ export function paymentService(repos: Repos, opts: { cashier?: string; clock?: (
         discount: discount as number,
         customerPaid: (body.customerPaid as number | undefined) ?? amount,
         cashier,
-        invoice: body.invoice !== undefined ? parseInvoice(body.invoice) : undefined,
+        invoice,
       }
       const payments = [...visit.payments, receipt]
       const updated = (await repos.visits.update(visitId, { payments, paymentStatus: derivePaymentStatus({ payments, fee: visit.fee }, visit.paymentStatus) }))!

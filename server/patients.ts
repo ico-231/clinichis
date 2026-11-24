@@ -3,7 +3,7 @@ import { ageInYears } from '../src/lib/date.js'
 import type { Gender, GuardianRelation, Patient } from '../src/store/types.js'
 import { ApiError } from './errors.js'
 import type { NewPatient, Repos } from './repo.js'
-import { todayVN } from './time.js'
+import { isISODate, todayVN } from './time.js'
 
 const GENDERS: Gender[] = ['male', 'female']
 const RELATIONS: GuardianRelation[] = ['mother', 'father', 'grandparent', 'spouse', 'child', 'sibling', 'other']
@@ -34,7 +34,7 @@ function validate(p: Partial<NewPatient>, today = todayVN()) {
   const str = (k: keyof NewPatient) => (typeof p[k] === 'string' ? (p[k] as string) : '')
   if (str('fullName').split(' ').filter(Boolean).length < 2) e.fullName = 'Nhập đầy đủ họ và tên'
   const dob = str('dob')
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(dob) || Number.isNaN(Date.parse(dob))) e.dob = 'Ngày sinh không hợp lệ (YYYY-MM-DD)'
+  if (!isISODate(dob)) e.dob = 'Ngày sinh không hợp lệ (YYYY-MM-DD)'
   else if (dob > today) e.dob = 'Ngày sinh không hợp lệ'
   if (!GENDERS.includes(p.gender as Gender)) e.gender = 'Chọn giới tính'
   if (!/^0\d{9}$/.test(str('phone'))) e.phone = 'Số điện thoại gồm 10 chữ số, bắt đầu bằng 0'
@@ -43,6 +43,12 @@ function validate(p: Partial<NewPatient>, today = todayVN()) {
   if (str('insuranceNumber') && !/^[A-Za-z]{2}\d{13}$/.test(str('insuranceNumber'))) e.insuranceNumber = 'Mã BHYT gồm 15 ký tự (vd: TE1790123456789)'
   if (str('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str('email'))) e.email = 'Email không hợp lệ'
   if (p.notes !== undefined && !Array.isArray(p.notes)) e.notes = 'Ghi chú phải là danh sách'
+  if (p.relative !== undefined && (typeof p.relative !== 'object' || p.relative === null || Array.isArray(p.relative))) e.relative = 'Phải là đối tượng'
+  // Các trường chữ còn lại: gửi số / đối tượng vào cột text sẽ làm cơ sở dữ liệu báo lỗi 500 ⇒ chặn sớm
+  for (const k of WRITABLE) {
+    if (k === 'notes' || k === 'relative' || p[k] === undefined || p[k] === null || typeof p[k] === 'string') continue
+    e[k] ??= 'Phải là chuỗi'
+  }
   if (Object.keys(e).length) throw new ApiError('validation', 'Dữ liệu hồ sơ chưa hợp lệ', e)
 }
 

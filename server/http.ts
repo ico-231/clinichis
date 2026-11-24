@@ -21,12 +21,14 @@ const hits = new Map<string, { at: number; count: number }>()
  * - Giới hạn số lần gọi theo IP (429).
  */
 export function guard(request: Request, env: Record<string, string | undefined> = process.env, now = Date.now()) {
-  const expected = env.CLINIC_API_KEY
-  if (expected && request.headers.get('x-clinic-key') !== expected) throw new ApiError('unauthorized', 'Thiếu hoặc sai mã truy cập API')
+  // Đếm lượt gọi trước khi kiểm tra mã, để cả việc dò mã cũng bị giới hạn
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'local'
+  if (hits.size > 5000) for (const [k, v] of hits) if (now - v.at >= 60_000) hits.delete(k) // dọn IP cũ, không phình bộ nhớ
   const h = hits.get(ip)
   if (!h || now - h.at >= 60_000) hits.set(ip, { at: now, count: 1 })
   else if (++h.count > Number(env.CLINIC_RATE_LIMIT ?? RATE_LIMIT)) throw new ApiError('rate_limited', 'Gọi API quá nhiều, vui lòng thử lại sau một phút')
+  const expected = env.CLINIC_API_KEY
+  if (expected && request.headers.get('x-clinic-key') !== expected) throw new ApiError('unauthorized', 'Thiếu hoặc sai mã truy cập API')
 }
 
 /** Bọc một handler: kiểm tra mã truy cập + giới hạn; lỗi nghiệp vụ → JSON có mã HTTP; lỗi lạ → 500 (không lộ chi tiết) */
@@ -62,7 +64,11 @@ export const lastSegment = (request: Request) => segmentFromEnd(request, 0)
 /** Đoạn thứ n tính từ cuối đường dẫn, vd. /api/visits/v_1/status, n=1 → v_1 */
 export function segmentFromEnd(request: Request, n: number) {
   const parts = new URL(request.url).pathname.split('/').filter(Boolean)
-  return decodeURIComponent(parts[parts.length - 1 - n] ?? '')
+  try {
+    return decodeURIComponent(parts[parts.length - 1 - n] ?? '')
+  } catch {
+    throw new ApiError('bad_request', 'Đường dẫn không hợp lệ')
+  }
 }
 
 let cached: Repos | null = null
