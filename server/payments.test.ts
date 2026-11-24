@@ -4,8 +4,8 @@ import { createMemoryRepos } from './memoryRepo'
 import { visitService } from './visits'
 import { paymentService } from './payments'
 import { setReposForTest } from './http'
-import * as payments from '../api/visits/[id]/payments'
-import * as invoice from '../api/visits/[id]/payments/[paymentId]/invoice'
+import * as payments from './routes/visits/[id]/payments'
+import * as invoice from './routes/visits/[id]/payments/[paymentId]/invoice'
 
 const clock = () => new Date('2026-11-24T02:00:00.000Z')
 const patient: Patient = { id: 'p1', code: 'BN000001', fullName: 'Trần Thị Bình', dob: '1985-01-02', gender: 'female', phone: '0987000111', address: '', createdAt: 'x' }

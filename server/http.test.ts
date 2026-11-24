@@ -35,11 +35,33 @@ describe('guard — mã truy cập và giới hạn số lần gọi', () => {
 
 describe('POST /api/admin/seed', () => {
   it('ẩn (404) khi chưa bật ALLOW_SEED hoặc chưa đặt CLINIC_API_KEY', async () => {
-    const { POST } = await import('../api/admin/seed')
+    const { POST } = await import('./routes/admin/seed')
     delete process.env.ALLOW_SEED
     expect((await POST(new Request('http://x/api/admin/seed', { method: 'POST' }))).status).toBe(404)
     process.env.ALLOW_SEED = 'yes'
     expect((await POST(new Request('http://x/api/admin/seed', { method: 'POST' }))).status).toBe(404)
     delete process.env.ALLOW_SEED
+  })
+})
+
+describe('router — một hàm cho mọi /api/*', () => {
+  it('khớp route, giữ query gốc, 404 khi không có API, 405 khi sai phương thức', async () => {
+    const { matchRoute, route } = await import('./router')
+    const { setReposForTest } = await import('./http')
+    const { createMemoryRepos } = await import('./memoryRepo')
+    expect(matchRoute('visits/v1/orders/send')).toBe(await import('./routes/visits/[id]/orders/send'))
+    expect(matchRoute('visits/v1/orders/o1')).toBe(await import('./routes/visits/[id]/orders/[orderId]'))
+    expect(matchRoute('visits/v1/khong-co')).toBeNull()
+    setReposForTest(createMemoryRepos())
+    const viaRewrite = await route(new Request('http://x/api/router?__path=patients&q=abc&limit=5'))
+    expect(viaRewrite.status).toBe(200)
+    expect(await viaRewrite.json()).toMatchObject({ items: [] })
+    const created = await route(new Request('http://x/api/router?__path=patients', { method: 'POST', body: JSON.stringify({ fullName: 'Ngô Thị Lan', dob: '1990-01-01', gender: 'female', phone: '0912000000' }) }))
+    expect(created.status).toBe(201)
+    const id = ((await created.json()) as { id: string }).id
+    expect((await route(new Request(`http://x/api/patients/${id}`))).status).toBe(200)
+    expect((await route(new Request('http://x/api/router?__path=khong-co'))).status).toBe(404)
+    expect((await route(new Request('http://x/api/router?__path=reports/summary', { method: 'DELETE' }))).status).toBe(405)
+    setReposForTest(null)
   })
 })

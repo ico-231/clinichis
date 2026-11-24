@@ -8,9 +8,9 @@ import { paymentService } from './payments'
 import { reportService } from './reports'
 import { setReposForTest } from './http'
 import { createSupabaseRepos } from './supabaseRepo'
-import * as catalogApi from '../api/catalog/[kind]'
-import * as settingsApi from '../api/settings/[key]'
-import * as reportApi from '../api/reports/summary'
+import * as catalogApi from './routes/catalog/[kind]'
+import * as settingsApi from './routes/settings/[key]'
+import * as reportApi from './routes/reports/summary'
 
 const clock = () => new Date('2026-11-24T02:00:00.000Z')
 const patient: Patient = { id: 'p1', code: 'BN000001', fullName: 'Lê Minh Đức', dob: '2019-08-12', gender: 'male', phone: '0707400979', address: '', guardianName: 'Lê Văn Bố', createdAt: 'x' }

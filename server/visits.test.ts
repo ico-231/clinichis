@@ -3,10 +3,10 @@ import type { Patient, Visit } from '../src/store/types'
 import { createMemoryRepos } from './memoryRepo'
 import { visitService } from './visits'
 import { setReposForTest } from './http'
-import * as collection from '../api/visits/index'
-import * as one from '../api/visits/[id]'
-import * as status from '../api/visits/[id]/status'
-import * as cancel from '../api/visits/[id]/cancel'
+import * as collection from './routes/visits/index'
+import * as one from './routes/visits/[id]'
+import * as status from './routes/visits/[id]/status'
+import * as cancel from './routes/visits/[id]/cancel'
 
 // 9h sáng 24/11/2026 giờ VN = 02:00 UTC
 const clock = () => new Date('2026-11-24T02:00:00.000Z')

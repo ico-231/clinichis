@@ -5,12 +5,12 @@ import { visitService } from './visits'
 import { paymentService } from './payments'
 import { examService } from './exam'
 import { setReposForTest } from './http'
-import * as examApi from '../api/visits/[id]/exam'
-import * as finishApi from '../api/visits/[id]/finish'
-import * as ordersApi from '../api/visits/[id]/orders'
-import * as sendApi from '../api/visits/[id]/orders/send'
-import * as orderApi from '../api/visits/[id]/orders/[orderId]'
-import * as worklist from '../api/orders/index'
+import * as examApi from './routes/visits/[id]/exam'
+import * as finishApi from './routes/visits/[id]/finish'
+import * as ordersApi from './routes/visits/[id]/orders'
+import * as sendApi from './routes/visits/[id]/orders/send'
+import * as orderApi from './routes/visits/[id]/orders/[orderId]'
+import * as worklist from './routes/orders/index'
 
 const clock = () => new Date('2026-11-24T02:00:00.000Z')
 const NOW = clock().toISOString()

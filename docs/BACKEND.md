@@ -7,7 +7,9 @@ cho tới khi giao diện 2.0 (Antigravity đang thiết kế) xong mới nối 
 
 ```
 clinic/
-├── api/                 Vercel Functions (Node, chuẩn Web Request/Response) — chỉ đọc request, gọi server/, trả JSON
+├── api/router.ts        Vercel Function DUY NHẤT (gói Hobby giới hạn 12 hàm); vercel.json viết lại mọi /api/* về đây
+├── server/router.ts     Bảng định tuyến đường dẫn → handler trong server/routes/
+├── server/routes/       Handler từng API (chuẩn Web Request/Response) — chỉ đọc request, gọi server/, trả JSON
 ├── server/              Logic backend thuần TypeScript, test được không cần mạng
 │   ├── repo.ts          Giao diện kho dữ liệu (PatientRepo, VisitRepo…)
 │   ├── memoryRepo.ts    Kho trong bộ nhớ: dùng cho test và chạy thử khi chưa có Supabase

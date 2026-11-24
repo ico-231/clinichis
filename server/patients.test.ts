@@ -4,8 +4,8 @@ import { createMemoryRepos } from './memoryRepo'
 import { patientService } from './patients'
 import { setReposForTest } from './http'
 import { createSupabaseRepos } from './supabaseRepo'
-import * as collection from '../api/patients/index'
-import * as item from '../api/patients/[id]'
+import * as collection from './routes/patients/index'
+import * as item from './routes/patients/[id]'
 import { todayVN } from './time'
 
 const adult = { fullName: 'Nguyễn Văn An', dob: '1990-05-12', gender: 'male', phone: '0912 345 678', address: 'Hà Nội' }
