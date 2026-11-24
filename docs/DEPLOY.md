@@ -4,8 +4,14 @@
 
 - Supabase: project `clinichis` (Singapore, ref `wkujystomujlbfvwjrec`), đã chạy migration.
 - GitHub: repo riêng tư `ico-231/clinichis`, nhánh `ui/2026-11` (Vercel coi là nhánh production — push là tự triển khai).
-- Vercel: project `clinichis` (team ICO), địa chỉ `https://clinichis-ico18.vercel.app`. Đã đặt `SUPABASE_URL`, `CLINIC_API_KEY`,
-  `VITE_CLINIC_API_KEY`, `ALLOW_SEED=yes` (tạm). **Còn thiếu `SUPABASE_SERVICE_ROLE_KEY`** — người dùng tự dán.
+- Vercel: project `clinichis` (team ICO), địa chỉ `https://clinichis-ico18.vercel.app`, hàm chạy ở Singapore (`sin1`).
+  Biến: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (người dùng tự dán, dùng **Secret key mới `sb_secret_...`**), `CLINIC_API_KEY`,
+  `VITE_CLINIC_API_KEY`, `ALLOW_SEED=no` (đặt `yes` + triển khai lại nếu cần nạp lại dữ liệu mẫu).
+- Dữ liệu mẫu đã nạp 24/11: 41 người bệnh, 98 lượt khám, 70 phiếu thu/hoàn. Đã thử trên bản thật: đọc, tìm không dấu,
+  báo cáo, danh mục, tạo + xoá hồ sơ, kiểm tra dữ liệu (422), thiếu khoá (401), API lạ (404), seed đã tắt (404).
+- App 1.0 trên web **vẫn dùng localStorage**, chưa gọi API (để dành cho giao diện 2.0).
+- Cảnh báo "CLINIC_API_KEY looks like a secret" trên Vercel: bỏ qua được — mã này cố ý nằm cả trong frontend (`VITE_CLINIC_API_KEY`),
+  chỉ để chặn người lạ gọi bừa, không phải bí mật thật.
 - Vercel Authentication: chỉ còn bảo vệ bản **preview**; bản production công khai (người dùng đồng ý 24/11).
 - Gói Hobby chỉ cho 12 hàm ⇒ toàn bộ API đi qua **một** hàm `api/router.ts` (handler nằm ở `server/routes/`).
   Code máy chủ chạy Node ESM trên Vercel ⇒ **import tương đối phải có đuôi `.js`** (kể cả file trong `src/store` mà server dùng).
