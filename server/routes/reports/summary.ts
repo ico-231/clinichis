@@ -1,5 +1,5 @@
-import { getRepos, handle, json } from '../../http'
-import { reportService } from '../../reports'
+import { getRepos, handle, json } from '../../http.js'
+import { reportService } from '../../reports.js'
 
 /** GET /api/reports/summary?dateFrom=&dateTo= — tổng hợp kỳ báo cáo (mặc định hôm nay, giờ VN) */
 export function GET(request: Request) {

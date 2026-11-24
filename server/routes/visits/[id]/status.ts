@@ -1,5 +1,5 @@
-import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../http'
-import { visitService } from '../../../visits'
+import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../http.js'
+import { visitService } from '../../../visits.js'
 
 /** POST /api/visits/:id/status { status } — chỉ sang bước kế tiếp: registered→waiting→in_progress→done */
 export function POST(request: Request) {

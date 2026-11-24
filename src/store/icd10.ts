@@ -1,4 +1,4 @@
-import type { Diagnosis } from './types'
+import type { Diagnosis } from './types.js'
 
 /**
  * Trích danh mục ICD-10 hay gặp ở phòng khám nhi (bản rút gọn cho demo,

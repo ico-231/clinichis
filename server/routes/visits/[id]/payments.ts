@@ -1,5 +1,5 @@
-import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../http'
-import { paymentService } from '../../../payments'
+import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../http.js'
+import { paymentService } from '../../../payments.js'
 
 /** GET /api/visits/:id/payments — các dòng cần thu, đã thu, còn lại, danh sách phiếu */
 export function GET(request: Request) {

@@ -1,9 +1,9 @@
-import { patientDeleteBlock } from '../src/store/billing'
-import { ageInYears } from '../src/lib/date'
-import type { Gender, GuardianRelation, Patient } from '../src/store/types'
-import { ApiError } from './errors'
-import type { NewPatient, Repos } from './repo'
-import { todayVN } from './time'
+import { patientDeleteBlock } from '../src/store/billing.js'
+import { ageInYears } from '../src/lib/date.js'
+import type { Gender, GuardianRelation, Patient } from '../src/store/types.js'
+import { ApiError } from './errors.js'
+import type { NewPatient, Repos } from './repo.js'
+import { todayVN } from './time.js'
 
 const GENDERS: Gender[] = ['male', 'female']
 const RELATIONS: GuardianRelation[] = ['mother', 'father', 'grandparent', 'spouse', 'child', 'sibling', 'other']

@@ -1,5 +1,5 @@
-import { createSeedState } from '../src/store/seed'
-import { rowIn } from './supabaseRepo'
+import { createSeedState } from '../src/store/seed.js'
+import { rowIn } from './supabaseRepo.js'
 
 /**
  * Đẩy dữ liệu mẫu của 1.0 (người bệnh, lượt khám, phiếu thu, chỉ định) lên Supabase qua REST,

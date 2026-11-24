@@ -1,4 +1,4 @@
-import type { Patient, PaymentStatus, Visit, VisitStatus } from '../src/store/types'
+import type { Patient, PaymentStatus, Visit, VisitStatus } from '../src/store/types.js'
 
 /** Dữ liệu tạo hồ sơ: máy chủ tự cấp id, mã BN, thời điểm tạo */
 export type NewPatient = Omit<Patient, 'id' | 'code' | 'createdAt' | 'updatedAt'>

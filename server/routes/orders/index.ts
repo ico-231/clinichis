@@ -1,5 +1,5 @@
-import { getRepos, handle, json } from '../../http'
-import { examService } from '../../exam'
+import { getRepos, handle, json } from '../../http.js'
+import { examService } from '../../exam.js'
 
 /** GET /api/orders?dateFrom=&dateTo=&category=imaging|lab&performStatus=&providerId= — danh sách việc của phòng CLS */
 export function GET(request: Request) {

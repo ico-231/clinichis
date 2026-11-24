@@ -1,7 +1,7 @@
-import { ApiError } from './errors'
-import { createMemoryRepos } from './memoryRepo'
-import type { Repos } from './repo'
-import { createSupabaseRepos } from './supabaseRepo'
+import { ApiError } from './errors.js'
+import { createMemoryRepos } from './memoryRepo.js'
+import type { Repos } from './repo.js'
+import { createSupabaseRepos } from './supabaseRepo.js'
 
 export function json(data: unknown, status = 200) {
   return new Response(status === 204 ? null : JSON.stringify(data), {

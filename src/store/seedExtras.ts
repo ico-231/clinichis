@@ -1,6 +1,6 @@
-import { PARACLINICAL_PROVIDERS } from './paraclinicalCatalog'
-import type { FixedSlot, ParaclinicalOrderItem, ParaclinicalServiceItem, PaymentRecord, ReceiptLine, ResultFile, Schedules, StaffMember, Visit } from './types'
-import { SERVICES } from './catalog'
+import { PARACLINICAL_PROVIDERS } from './paraclinicalCatalog.js'
+import type { FixedSlot, ParaclinicalOrderItem, ParaclinicalServiceItem, PaymentRecord, ReceiptLine, ResultFile, Schedules, StaffMember, Visit } from './types.js'
+import { SERVICES } from './catalog.js'
 
 /** Danh mục CLS của lab nội bộ (ảnh 123) – dữ liệu mẫu */
 export const INTERNAL_CLS_SEED: ParaclinicalServiceItem[] = [

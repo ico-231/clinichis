@@ -1,5 +1,5 @@
-import { getRepos, handle, json, readJson } from '../../http'
-import { patientService } from '../../patients'
+import { getRepos, handle, json, readJson } from '../../http.js'
+import { patientService } from '../../patients.js'
 
 /** GET /api/patients?q=&limit=&offset= — danh sách / tìm kiếm */
 export function GET(request: Request) {

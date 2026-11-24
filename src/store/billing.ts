@@ -1,8 +1,8 @@
-import { serviceById } from './catalog'
-import { PARACLINICAL_SERVICES } from './paraclinicalCatalog'
-import type { ParaclinicalOrderItem, PaymentRecord, PaymentStatus, ReceiptLine, Visit } from './types'
+import { serviceById } from './catalog.js'
+import { PARACLINICAL_SERVICES } from './paraclinicalCatalog.js'
+import type { ParaclinicalOrderItem, PaymentRecord, PaymentStatus, ReceiptLine, Visit } from './types.js'
 
-import { RUNTIME } from './runtime'
+import { RUNTIME } from './runtime.js'
 
 const lineKey = (l: Pick<ReceiptLine, 'kind' | 'refId'>) => `${l.kind}:${l.refId}`
 

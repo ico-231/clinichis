@@ -1,4 +1,4 @@
-import type { Drug, PrescriptionTemplate } from './types'
+import type { Drug, PrescriptionTemplate } from './types.js'
 
 /**
  * Danh mục thuốc MẪU phục vụ kê đơn nhi khoa (demo).

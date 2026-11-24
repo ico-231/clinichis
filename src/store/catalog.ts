@@ -9,7 +9,7 @@ import type {
   VisitCategory,
   VisitSource,
   VisitStatus,
-} from './types'
+} from './types.js'
 
 export const CLINIC = {
   name: 'Phòng khám Nhi Khoa',

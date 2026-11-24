@@ -1,6 +1,6 @@
-import type { Patient, Visit } from '../src/store/types'
-import type { NewPatient, Repos } from './repo'
-import { matchesPatient } from './search'
+import type { Patient, Visit } from '../src/store/types.js'
+import type { NewPatient, Repos } from './repo.js'
+import { matchesPatient } from './search.js'
 
 /**
  * Kho dữ liệu trong bộ nhớ: dùng cho test và chạy thử khi chưa có Supabase (CLINIC_DATA=memory).

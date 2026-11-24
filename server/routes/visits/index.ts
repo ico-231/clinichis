@@ -1,5 +1,5 @@
-import { getRepos, handle, json, readJson } from '../../http'
-import { visitService } from '../../visits'
+import { getRepos, handle, json, readJson } from '../../http.js'
+import { visitService } from '../../visits.js'
 
 /** GET /api/visits?dateFrom=&dateTo=&status=&paymentStatus=&patientId=&q= — mặc định hôm nay (giờ VN) */
 export function GET(request: Request) {

@@ -1,4 +1,4 @@
-import { route } from '../server/router'
+import { route } from '../server/router.js'
 
 /** Hàm duy nhất của API (gói Hobby giới hạn 12 hàm). vercel.json viết lại mọi `/api/*` về đây. */
 export const GET = route

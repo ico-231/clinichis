@@ -1,5 +1,5 @@
-import { getRepos, handle, json, lastSegment, readJson } from '../../http'
-import { catalogService } from '../../catalog'
+import { getRepos, handle, json, lastSegment, readJson } from '../../http.js'
+import { catalogService } from '../../catalog.js'
 
 /** GET /api/settings/:key — clinic_profile | system | schedules | default_provider_id (chưa lưu thì trả mặc định của 1.0) */
 export function GET(request: Request) {

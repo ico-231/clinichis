@@ -1,13 +1,13 @@
-import { clsCharge, derivePaymentStatus, isLinePaid } from '../src/store/billing'
-import { providerById } from '../src/store/paraclinicalCatalog'
-import { orderableClsServices } from './catalog'
-import { RUNTIME } from '../src/store/runtime'
+import { clsCharge, derivePaymentStatus, isLinePaid } from '../src/store/billing.js'
+import { providerById } from '../src/store/paraclinicalCatalog.js'
+import { orderableClsServices } from './catalog.js'
+import { RUNTIME } from '../src/store/runtime.js'
 import type {
   Diagnosis, ExamRecord, ParaclinicalOrderItem, ParaclinicalResult, PerformStatus, PrescriptionItem, ResultFile, Visit, VitalSigns,
-} from '../src/store/types'
-import { ApiError } from './errors'
-import type { Repos } from './repo'
-import { todayVN } from './time'
+} from '../src/store/types.js'
+import { ApiError } from './errors.js'
+import type { Repos } from './repo.js'
+import { todayVN } from './time.js'
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
 const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '')

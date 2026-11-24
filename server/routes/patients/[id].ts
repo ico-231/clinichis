@@ -1,5 +1,5 @@
-import { getRepos, handle, json, lastSegment, readJson } from '../../http'
-import { patientService } from '../../patients'
+import { getRepos, handle, json, lastSegment, readJson } from '../../http.js'
+import { patientService } from '../../patients.js'
 
 /** GET /api/patients/:id */
 export function GET(request: Request) {

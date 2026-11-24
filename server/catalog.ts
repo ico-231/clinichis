@@ -1,11 +1,11 @@
-import { DOCTORS, ROOMS, SERVICES } from '../src/store/catalog'
-import { DRUGS, INITIAL_PRESCRIPTION_TEMPLATES } from '../src/store/drugCatalog'
-import { INITIAL_COMBOS, PARACLINICAL_PROVIDERS, PARACLINICAL_SERVICES, SAMPLE_PROVIDER_ID } from '../src/store/paraclinicalCatalog'
-import { INTERNAL_CLS_SEED, seedSchedules } from '../src/store/seedExtras'
-import { defaultSystem } from '../src/store/systemDefaults'
-import type { ParaclinicalServiceItem } from '../src/store/types'
-import { ApiError } from './errors'
-import type { Repos } from './repo'
+import { DOCTORS, ROOMS, SERVICES } from '../src/store/catalog.js'
+import { DRUGS, INITIAL_PRESCRIPTION_TEMPLATES } from '../src/store/drugCatalog.js'
+import { INITIAL_COMBOS, PARACLINICAL_PROVIDERS, PARACLINICAL_SERVICES, SAMPLE_PROVIDER_ID } from '../src/store/paraclinicalCatalog.js'
+import { INTERNAL_CLS_SEED, seedSchedules } from '../src/store/seedExtras.js'
+import { defaultSystem } from '../src/store/systemDefaults.js'
+import type { ParaclinicalServiceItem } from '../src/store/types.js'
+import { ApiError } from './errors.js'
+import type { Repos } from './repo.js'
 
 type Item = { id: string } & Record<string, unknown>
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)

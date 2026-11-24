@@ -1,6 +1,6 @@
-import type { SystemSettings } from './types'
-import { SEED_STAFF } from './seedExtras'
-import { ROOMS } from './catalog'
+import type { SystemSettings } from './types.js'
+import { SEED_STAFF } from './seedExtras.js'
+import { ROOMS } from './catalog.js'
 
 const iso = new Date().toISOString()
 const item = (id: string, name: string, description = '') => ({ id, name, description, updatedAt: iso })

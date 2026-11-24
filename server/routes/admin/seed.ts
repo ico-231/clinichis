@@ -1,6 +1,6 @@
-import { ApiError } from '../../errors'
-import { handle, json } from '../../http'
-import { seedSupabase } from '../../seed'
+import { ApiError } from '../../errors.js'
+import { handle, json } from '../../http.js'
+import { seedSupabase } from '../../seed.js'
 
 /**
  * POST /api/admin/seed — nạp dữ liệu mẫu của 1.0 lên Supabase (ghi đè theo id).

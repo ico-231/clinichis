@@ -1,5 +1,5 @@
-import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../../http'
-import { examService } from '../../../../exam'
+import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../../http.js'
+import { examService } from '../../../../exam.js'
 
 /** PATCH /api/visits/:id/orders/:orderId — phòng CLS cập nhật { performStatus?, result? } */
 export function PATCH(request: Request) {

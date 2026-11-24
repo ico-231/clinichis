@@ -1,5 +1,5 @@
-import { getRepos, handle, json, lastSegment, readJson } from '../../http'
-import { catalogService } from '../../catalog'
+import { getRepos, handle, json, lastSegment, readJson } from '../../http.js'
+import { catalogService } from '../../catalog.js'
 
 /** GET /api/catalog/:kind — services | cls_services | paraclinical_combos | prescription_templates | result_templates | drugs | providers | doctors | rooms | external_cls */
 export function GET(request: Request) {

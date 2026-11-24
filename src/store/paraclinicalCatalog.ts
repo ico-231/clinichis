@@ -1,4 +1,4 @@
-import type { ParaclinicalCombo, ParaclinicalProvider, ParaclinicalServiceItem } from './types'
+import type { ParaclinicalCombo, ParaclinicalProvider, ParaclinicalServiceItem } from './types.js'
 
 export const PARACLINICAL_PROVIDERS: ParaclinicalProvider[] = [
   {

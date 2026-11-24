@@ -1,5 +1,5 @@
-import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../http'
-import { examService } from '../../../exam'
+import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../http.js'
+import { examService } from '../../../exam.js'
 
 /** PUT /api/visits/:id/exam — lưu sinh hiệu, lý do, hỏi bệnh, chẩn đoán, đơn thuốc, hẹn tái khám (tự chuyển Đang khám) */
 export function PUT(request: Request) {

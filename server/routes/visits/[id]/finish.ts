@@ -1,5 +1,5 @@
-import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../http'
-import { examService } from '../../../exam'
+import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../http.js'
+import { examService } from '../../../exam.js'
 
 /** POST /api/visits/:id/finish — hoàn thành khám { confirmNoDiagnosis? } */
 export function POST(request: Request) {

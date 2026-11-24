@@ -1,5 +1,5 @@
-import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../http'
-import { examService } from '../../../exam'
+import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../http.js'
+import { examService } from '../../../exam.js'
 
 /** PUT /api/visits/:id/orders — thay danh sách chỉ định CLS { orders: [{ serviceId, quantity?, instruction? }] } */
 export function PUT(request: Request) {

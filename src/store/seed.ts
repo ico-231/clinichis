@@ -1,10 +1,10 @@
-import { SERVICES, DOCTORS } from './catalog'
-import { INITIAL_COMBOS } from './paraclinicalCatalog'
-import { INITIAL_PRESCRIPTION_TEMPLATES } from './drugCatalog'
-import { ICD10 } from './icd10'
-import { enrichVisits, INTERNAL_CLS_SEED, seedSchedules } from './seedExtras'
-import { defaultSystem } from './systemDefaults'
-import { addDays, addMinutesToTime, pad, todayISO } from '../lib/date'
+import { SERVICES, DOCTORS } from './catalog.js'
+import { INITIAL_COMBOS } from './paraclinicalCatalog.js'
+import { INITIAL_PRESCRIPTION_TEMPLATES } from './drugCatalog.js'
+import { ICD10 } from './icd10.js'
+import { enrichVisits, INTERNAL_CLS_SEED, seedSchedules } from './seedExtras.js'
+import { defaultSystem } from './systemDefaults.js'
+import { addDays, addMinutesToTime, pad, todayISO } from '../lib/date.js'
 import type {
   ClinicState,
   ExamRecord,
@@ -19,7 +19,7 @@ import type {
   VisitCategory,
   VisitSource,
   VisitStatus,
-} from './types'
+} from './types.js'
 
 /** v3: thêm danh mục CLS nội bộ, lịch làm việc, cấu hình hệ thống, phiếu thu có dòng (xem migrations.ts) */
 export const STATE_VERSION = 6

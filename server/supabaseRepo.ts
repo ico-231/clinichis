@@ -1,7 +1,7 @@
-import type { Patient, Visit } from '../src/store/types'
-import { ApiError } from './errors'
-import type { NewPatient, Repos } from './repo'
-import { normalize } from './search'
+import type { Patient, Visit } from '../src/store/types.js'
+import { ApiError } from './errors.js'
+import type { NewPatient, Repos } from './repo.js'
+import { normalize } from './search.js'
 
 /* Đổi tên trường giữa JS (camelCase) và Postgres (snake_case), chỉ ở cấp ngoài cùng; jsonb bên trong giữ nguyên */
 const toSnake = (k: string) => k.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`)

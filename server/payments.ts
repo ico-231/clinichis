@@ -1,10 +1,10 @@
-import { billableLines, derivePaymentStatus, discountAmount, isLinePaid, lineNet, paidAmount, remainingAmount, unpaidLines } from '../src/store/billing'
-import { RUNTIME } from '../src/store/runtime'
-import type { InvoiceInfo, PaymentMethod, PaymentRecord, ReceiptLine, Visit } from '../src/store/types'
-import { nextReceiptCode } from './codes'
-import { ApiError } from './errors'
-import type { Repos } from './repo'
-import { todayVN } from './time'
+import { billableLines, derivePaymentStatus, discountAmount, isLinePaid, lineNet, paidAmount, remainingAmount, unpaidLines } from '../src/store/billing.js'
+import { RUNTIME } from '../src/store/runtime.js'
+import type { InvoiceInfo, PaymentMethod, PaymentRecord, ReceiptLine, Visit } from '../src/store/types.js'
+import { nextReceiptCode } from './codes.js'
+import { ApiError } from './errors.js'
+import type { Repos } from './repo.js'
+import { todayVN } from './time.js'
 
 const METHODS: PaymentMethod[] = ['cash', 'transfer', 'card', 'ewallet']
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)

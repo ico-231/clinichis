@@ -1,16 +1,16 @@
-import { clsUnit, paidAmount } from '../src/store/billing'
-import { serviceById } from '../src/store/catalog'
-import { addMinutesToTime } from '../src/lib/date'
-import { RUNTIME, runtimeCode } from '../src/store/runtime'
+import { clsUnit, paidAmount } from '../src/store/billing.js'
+import { serviceById } from '../src/store/catalog.js'
+import { addMinutesToTime } from '../src/lib/date.js'
+import { RUNTIME, runtimeCode } from '../src/store/runtime.js'
 import type {
   ParaclinicalOrderItem, Patient, PaymentMethod, PaymentRecord, PaymentStatus, Visit, VisitCategory, VisitInput, VisitSource, VisitStatus,
-} from '../src/store/types'
-import { nextQueue, nextReceiptCode } from './codes'
-import { ApiError } from './errors'
-import { patientService } from './patients'
-import type { Repos } from './repo'
-import { matchesPatient, normalize } from './search'
-import { todayVN } from './time'
+} from '../src/store/types.js'
+import { nextQueue, nextReceiptCode } from './codes.js'
+import { ApiError } from './errors.js'
+import { patientService } from './patients.js'
+import type { Repos } from './repo.js'
+import { matchesPatient, normalize } from './search.js'
+import { todayVN } from './time.js'
 
 const STATUSES: VisitStatus[] = ['registered', 'waiting', 'in_progress', 'done', 'cancelled']
 const PAYMENT_STATUSES: PaymentStatus[] = ['none', 'paid', 'unpaid', 'partial', 'cancelled', 'refunded', 'failed']

@@ -1,5 +1,5 @@
-import { RUNTIME } from '../src/store/runtime'
-import type { Repos } from './repo'
+import { RUNTIME } from '../src/store/runtime.js'
+import type { Repos } from './repo.js'
 
 /** Số thứ tự tiếp theo của ngày; mức sàn = STT lớn nhất đang có (an toàn cả khi bộ đếm mới tạo) */
 export async function nextQueue(repos: Repos, date: string) {

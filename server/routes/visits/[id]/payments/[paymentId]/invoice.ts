@@ -1,5 +1,5 @@
-import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../../../http'
-import { paymentService } from '../../../../../payments'
+import { getRepos, handle, json, readJson, segmentFromEnd } from '../../../../../http.js'
+import { paymentService } from '../../../../../payments.js'
 
 /** PUT /api/visits/:id/payments/:paymentId/invoice — thông tin / trạng thái hoá đơn điện tử của phiếu thu */
 export function PUT(request: Request) {
