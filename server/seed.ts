@@ -12,12 +12,16 @@ export async function seedSupabase(url: string, serviceKey: string, fetchImpl: t
   const base = url.replace(/\/$/, '')
   async function upsert(table: string, rows: Record<string, unknown>[]) {
     for (let i = 0; i < rows.length; i += 200) {
-      const res = await fetchImpl(`${base}/rest/v1/${table}?on_conflict=id`, {
+      const chunk = rows.slice(i, i + 200)
+      // PostgREST đòi mọi dòng trong một lần ghi có cùng bộ khoá: khai báo đủ cột (?columns=),
+      // dòng nào thiếu trường tuỳ chọn thì lấy giá trị mặc định của cột (missing=default).
+      const columns = [...new Set(chunk.flatMap((r) => Object.keys(r)))].join(',')
+      const res = await fetchImpl(`${base}/rest/v1/${table}?on_conflict=id&columns=${columns}`, {
         method: 'POST',
-        headers: { ...supabaseAuthHeaders(serviceKey), 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates' },
-        body: JSON.stringify(rows.slice(i, i + 200)),
+        headers: { ...supabaseAuthHeaders(serviceKey), 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,missing=default' },
+        body: JSON.stringify(chunk),
       })
-      if (!res.ok) throw new Error(`Ghi ${table} lỗi ${res.status}: ${await res.text()}`)
+      if (!res.ok) throw new Error(`Ghi ${table} lỗi ${res.status}: ${(await res.text()).slice(0, 300)}`)
     }
   }
   await upsert('patients', patients)

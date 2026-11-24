@@ -73,3 +73,21 @@ describe('supabaseAuthHeaders', () => {
     expect(supabaseAuthHeaders('eyJhbGc')).toEqual({ apikey: 'eyJhbGc', Authorization: 'Bearer eyJhbGc' })
   })
 })
+
+describe('seedSupabase', () => {
+  it('ghi theo lô, khai báo đủ cột, cột thiếu lấy mặc định, khoá sb_ chỉ qua apikey', async () => {
+    const { seedSupabase } = await import('./seed')
+    const calls: { url: string; init: RequestInit }[] = []
+    const fake = (async (url: string, init: RequestInit) => {
+      calls.push({ url, init })
+      return new Response('', { status: 201 })
+    }) as unknown as typeof fetch
+    const r = await seedSupabase('https://demo.supabase.co/', 'sb_secret_x', fake)
+    expect(r.patients).toBeGreaterThan(0)
+    const first = calls[0]
+    expect(first.url).toMatch(/^https:\/\/demo\.supabase\.co\/rest\/v1\/patients\?on_conflict=id&columns=.*full_name/)
+    expect(first.init.headers).toMatchObject({ apikey: 'sb_secret_x', Prefer: 'resolution=merge-duplicates,missing=default' })
+    expect(first.init.headers).not.toHaveProperty('Authorization')
+    expect(calls.some((c) => c.url.includes('/rest/v1/visits?'))).toBe(true)
+  }, 20000)
+})
