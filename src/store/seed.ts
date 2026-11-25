@@ -234,9 +234,21 @@ function makeSeedExam(seq: number, serviceId: string, date: string): ExamRecord 
   }
 }
 
-export function createSeedState(): ClinicState {
-  const rand = mulberry32(20261113)
-  const today = todayISO()
+/**
+ * Tuỳ chọn cho máy chủ nạp nhiều ngày (app 1.0 gọi không tham số, dữ liệu giữ nguyên như cũ):
+ * - `today`: ngày làm mốc thay cho hôm nay
+ * - `visitSeed`: bộ sinh số riêng cho phần lượt khám (người bệnh vẫn như cũ) ⇒ mỗi ngày một bộ lượt khám khác nhau
+ * - `seqOffset`: cộng vào số thứ tự nội bộ ⇒ id lượt khám / phiếu thu / đơn thuốc không trùng giữa các lần tạo
+ */
+export interface SeedOptions {
+  today?: string
+  visitSeed?: number
+  seqOffset?: number
+}
+
+export function createSeedState(opts: SeedOptions = {}): ClinicState {
+  let rand = mulberry32(20261113)
+  const today = opts.today ?? todayISO()
 
   /* ---------- Người bệnh ---------- */
   const patients: Patient[] = CHILDREN.map((child, i) => {
@@ -305,7 +317,8 @@ export function createSeedState(): ClinicState {
   /* ---------- Lượt khám: 7 ngày trước -> 2 ngày tới ---------- */
   const visits: Visit[] = []
   const seenPatients = new Set<string>(patients.filter((_, i) => i % 2 === 0).map((p) => p.id))
-  let visitSeq = 1
+  let visitSeq = 1 + (opts.seqOffset ?? 0)
+  if (opts.visitSeed !== undefined) rand = mulberry32(opts.visitSeed)
 
   for (let offset = -7; offset <= 2; offset++) {
     const date = addDays(today, offset)

@@ -154,5 +154,6 @@ Kế hoạch và cách chạy: [docs/BACKEND.md](BACKEND.md). App 1.0 vẫn dùn
 - [x] O6b. Lên Supabase/Vercel thật (24/11): GitHub `ico-231/clinichis`, Vercel `clinichis-ico18.vercel.app`, Supabase `clinichis`, API gộp 1 hàm, đã nạp dữ liệu mẫu và thử trên bản thật
 - [x] O6c. Audit 25/11: ngày phải có thật (31/02 → 422 thay vì 500), đọc quá 1000 dòng Supabase (báo cáo dài không thiếu dữ liệu), chia lô truy vấn người bệnh, danh mục giữ thứ tự (cột `position`, migration 0002), cố định `search_path` hàm SQL, số phiếu thu không nhảy khi dữ liệu sai, trường hồ sơ sai kiểu → 422, lỗi tham chiếu không còn báo nhầm "trùng", giới hạn lượt gọi tính cả lần dò mã
 - [x] O6d. Supabase tự nạp lại dữ liệu mẫu mỗi đêm (25/11): Vercel Cron 17:00 UTC → `/api/admin/reset-demo` (cần `CRON_SECRET`), hàm SQL `reset_demo_data` (migration 0003), dữ liệu mẫu tính theo giờ VN dù máy chủ chạy UTC. App 1.0 (localStorage) không đổi
+- [x] O6e. Supabase có sẵn dữ liệu 60 ngày tới (25/11): mỗi ngày tới tạo như một ngày làm việc, khác nhau theo ngày (`buildDemoData`); `/api/admin/seed` đổi thành xoá hết rồi nạp lại; `createSeedState` thêm tuỳ chọn (app 1.0 gọi không tham số, không đổi)
 - [ ] O7. Đăng nhập (để sau).
 

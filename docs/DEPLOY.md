@@ -9,9 +9,13 @@
   `VITE_CLINIC_API_KEY`, `ALLOW_SEED=no` (đặt `yes` + triển khai lại nếu cần nạp lại dữ liệu mẫu).
 - Dữ liệu mẫu đã nạp 24/11: 41 người bệnh, 98 lượt khám, 70 phiếu thu/hoàn. Đã thử trên bản thật: đọc, tìm không dấu,
   báo cáo, danh mục, tạo + xoá hồ sơ, kiểm tra dữ liệu (422), thiếu khoá (401), API lạ (404), seed đã tắt (404).
-- **Tự làm mới mỗi đêm (25/11):** `vercel.json → crons` gọi `GET /api/admin/reset-demo` lúc 17:00 UTC (≈ 0h–1h sáng giờ VN,
+- **Dữ liệu 60 ngày tới (25/11):** Supabase có 7 ngày trước → 60 ngày tới. Ngày tới nào cũng tạo như một ngày đang làm việc
+  (18 lượt: đã khám, đang khám, chờ, hẹn, huỷ) để hôm nào mở ra cũng có dữ liệu; mỗi ngày một bộ khác nhau (`buildDemoData` trong
+  `server/seed.ts`). Đánh đổi đã chốt: xem trước ngày tới sẽ thấy ca "đã khám", báo cáo tính cả doanh thu ngày chưa tới.
+  Hết 60 ngày thì nạp lại: `ALLOW_SEED=yes` → triển khai lại → `POST /api/admin/seed` (giờ là **xoá hết rồi nạp lại**) → `ALLOW_SEED=no`.
+- **Tự làm mới mỗi đêm (25/11, chưa bật — người dùng chưa đặt `CRON_SECRET`):** `vercel.json → crons` gọi `GET /api/admin/reset-demo` lúc 17:00 UTC (≈ 0h–1h sáng giờ VN,
   gói Hobby chạy lệch trong vòng một giờ). API gọi hàm SQL `reset_demo_data` (migration 0003: xoá lượt khám, người bệnh, bộ đếm,
-  danh mục, cài đặt; giữ `logs`) rồi nạp lại dữ liệu mẫu **theo giờ VN** ⇒ hôm nào cũng có 18 lượt hôm nay, 7 ngày trước, 2 ngày sau;
+  danh mục, cài đặt; giữ `logs`) rồi nạp lại dữ liệu demo **theo giờ VN** (7 ngày trước → 60 ngày tới);
   dữ liệu người xem tự nhập bị xoá. Cần biến **`CRON_SECRET`** trên Vercel (người dùng tự đặt; Vercel tự gửi
   `Authorization: Bearer <CRON_SECRET>`). Không đặt hoặc sai mã ⇒ API trả 404. Xem lần chạy: Vercel → project → Settings → Cron Jobs.
 - App 1.0 trên web **vẫn dùng localStorage**, chưa gọi API (để dành cho giao diện 2.0).
@@ -42,10 +46,10 @@ Chạy trong thư mục `clinic/` (PowerShell):
 $env:SUPABASE_URL='https://<project-ref>.supabase.co'; $env:SUPABASE_SERVICE_ROLE_KEY='<service_role>'; $env:SEED_CONFIRM='yes'; npx vitest run --config scripts/vitest.config.ts
 ```
 
-Không đặt `SEED_CONFIRM=yes` thì script chỉ đếm, không ghi. Chạy lại nhiều lần được (ghi đè theo id). Ngày trong dữ liệu mẫu tính theo hôm nay.
+Không đặt `SEED_CONFIRM=yes` thì script chỉ đếm, không ghi. Script này chỉ nạp dữ liệu mẫu gốc (7 ngày trước → 2 ngày tới, ghi đè theo id); muốn đủ 60 ngày tới thì dùng cách dưới.
 
 **Cách khác, không cần khoá ở máy** — gọi API trên Vercel sau khi triển khai:
-đặt thêm biến `ALLOW_SEED=yes` trên Vercel, triển khai lại, rồi gửi `POST /api/admin/seed` kèm header `x-clinic-key: <CLINIC_API_KEY>`.
+đặt thêm biến `ALLOW_SEED=yes` trên Vercel, triển khai lại, rồi gửi `POST /api/admin/seed` kèm header `x-clinic-key: <CLINIC_API_KEY>` — xoá hết dữ liệu rồi nạp lại 7 ngày trước → 60 ngày tới.
 Không bật `ALLOW_SEED` hoặc chưa đặt `CLINIC_API_KEY` thì API này trả 404. Nạp xong **xoá `ALLOW_SEED`**.
 
 ## 3. Vercel (web + API)

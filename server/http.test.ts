@@ -130,7 +130,7 @@ describe('đặt lại bản demo mỗi đêm (Vercel Cron)', () => {
       const todays = visits.filter((v) => v.date === '2026-11-25')
       expect(todays.length).toBe(18)
       expect(visits.some((v) => v.date === '2026-11-18')).toBe(true) // 7 ngày trước
-      expect(visits.some((v) => v.date === '2026-11-27')).toBe(true) // 2 ngày sau
+      expect(visits.some((v) => v.date === '2027-01-24')).toBe(true) // 60 ngày sau
       expect(process.env.TZ).toBe('UTC') // trả lại múi giờ cũ
     } finally {
       vi.useRealTimers()
@@ -145,4 +145,37 @@ describe('đặt lại bản demo mỗi đêm (Vercel Cron)', () => {
     await expect(resetDemo('https://demo.supabase.co', 'k', fake)).rejects.toThrow(/404/)
     expect(calls).toHaveLength(1)
   })
+})
+
+describe('buildDemoData — dữ liệu 60 ngày tới trên Supabase', () => {
+  it('7 ngày trước → 60 ngày tới, ngày nào cũng như ngày làm việc, các ngày khác nhau, id không trùng, app 1.0 không đổi', async () => {
+    const { buildDemoData } = await import('./seed')
+    const { createSeedState } = await import('../src/store/seed')
+    const { addDays } = await import('../src/lib/date')
+    const d = buildDemoData(60)
+    const days = [...new Set(d.visits.map((v) => v.date))].sort()
+    expect(days[0]).toBe(addDays(d.today, -7))
+    expect(days.at(-1)).toBe(addDays(d.today, 60))
+    expect(days).toHaveLength(68) // không thiếu ngày nào
+    expect(new Set(d.visits.map((v) => v.id)).size).toBe(d.visits.length)
+    const pays = d.visits.flatMap((v) => v.payments.map((p) => p.id))
+    expect(new Set(pays).size).toBe(pays.length)
+    const patientIds = new Set(d.patients.map((p) => p.id))
+    expect(d.visits.every((v) => patientIds.has(v.patientId))).toBe(true)
+    for (const day of [d.today, addDays(d.today, 1), addDays(d.today, 30), addDays(d.today, 60)]) {
+      const vs = d.visits.filter((v) => v.date === day)
+      expect(vs).toHaveLength(18)
+      for (const st of ['done', 'in_progress', 'waiting', 'registered', 'cancelled']) expect(vs.some((v) => v.status === st)).toBe(true)
+      // số phiếu thu trong ngày không trùng
+      const codes = vs.flatMap((v) => v.payments.filter((p) => p.code).map((p) => p.code))
+      expect(new Set(codes).size).toBe(codes.length)
+    }
+    const sig = (day: string) => d.visits.filter((v) => v.date === day).map((v) => v.patientId).join()
+    expect(sig(addDays(d.today, 1))).not.toBe(sig(addDays(d.today, 2)))
+    // gọi không tham số (app 1.0) vẫn ra đúng dữ liệu cũ
+    const a = createSeedState()
+    const b = createSeedState({})
+    expect(a.visits.map((v) => v.id + v.patientId + v.status)).toEqual(b.visits.map((v) => v.id + v.patientId + v.status))
+    expect(a.visits[0].id).toBe('v1')
+  }, 30000)
 })
