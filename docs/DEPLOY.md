@@ -9,6 +9,11 @@
   `VITE_CLINIC_API_KEY`, `ALLOW_SEED=no` (đặt `yes` + triển khai lại nếu cần nạp lại dữ liệu mẫu).
 - Dữ liệu mẫu đã nạp 24/11: 41 người bệnh, 98 lượt khám, 70 phiếu thu/hoàn. Đã thử trên bản thật: đọc, tìm không dấu,
   báo cáo, danh mục, tạo + xoá hồ sơ, kiểm tra dữ liệu (422), thiếu khoá (401), API lạ (404), seed đã tắt (404).
+- **Tự làm mới mỗi đêm (25/11):** `vercel.json → crons` gọi `GET /api/admin/reset-demo` lúc 17:00 UTC (≈ 0h–1h sáng giờ VN,
+  gói Hobby chạy lệch trong vòng một giờ). API gọi hàm SQL `reset_demo_data` (migration 0003: xoá lượt khám, người bệnh, bộ đếm,
+  danh mục, cài đặt; giữ `logs`) rồi nạp lại dữ liệu mẫu **theo giờ VN** ⇒ hôm nào cũng có 18 lượt hôm nay, 7 ngày trước, 2 ngày sau;
+  dữ liệu người xem tự nhập bị xoá. Cần biến **`CRON_SECRET`** trên Vercel (người dùng tự đặt; Vercel tự gửi
+  `Authorization: Bearer <CRON_SECRET>`). Không đặt hoặc sai mã ⇒ API trả 404. Xem lần chạy: Vercel → project → Settings → Cron Jobs.
 - App 1.0 trên web **vẫn dùng localStorage**, chưa gọi API (để dành cho giao diện 2.0).
 - Cảnh báo "CLINIC_API_KEY looks like a secret" trên Vercel: bỏ qua được — mã này cố ý nằm cả trong frontend (`VITE_CLINIC_API_KEY`),
   chỉ để chặn người lạ gọi bừa, không phải bí mật thật.
@@ -21,8 +26,8 @@
 ## 1. Supabase (cơ sở dữ liệu)
 
 1. Vào <https://supabase.com> → **New project**. Chọn vùng gần Việt Nam (Singapore), đặt mật khẩu database (tự giữ).
-2. Mở **SQL Editor** → chạy lần lượt `supabase/migrations/0001_init.sql` rồi `0002_audit_fixes.sql` → **Run**.
-   (Project `clinichis` đã chạy cả hai: `init_clinichis` 24/11, `audit_fixes` 25/11.)
+2. Mở **SQL Editor** → chạy lần lượt `supabase/migrations/0001_init.sql`, `0002_audit_fixes.sql`, `0003_reset_demo.sql` → **Run**.
+   (Project `clinichis` đã chạy cả ba: `init_clinichis` 24/11, `audit_fixes` và `reset_demo` 25/11.)
    Tạo các bảng `patients`, `visits`, `catalog`, `settings`, `logs`, `counters` và các hàm `create_patient`, `bump_counter`, `replace_catalog`.
 3. Vào **Project Settings → API**, lấy:
    - `Project URL` → dùng cho `SUPABASE_URL`

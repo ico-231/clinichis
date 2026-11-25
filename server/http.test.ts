@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { guard, handle, json, resetRateLimitForTest } from './http'
 
 const req = (headers: Record<string, string> = {}) => new Request('http://x/api/patients', { headers })
@@ -90,4 +90,59 @@ describe('seedSupabase', () => {
     expect(first.init.headers).not.toHaveProperty('Authorization')
     expect(calls.some((c) => c.url.includes('/rest/v1/visits?'))).toBe(true)
   }, 20000)
+})
+
+describe('đặt lại bản demo mỗi đêm (Vercel Cron)', () => {
+  it('guard cron: chỉ nhận Bearer CRON_SECRET; chưa đặt hoặc sai ⇒ 404; x-clinic-key không thay được', () => {
+    const req = (h: Record<string, string> = {}) => new Request('http://x/api/admin/reset-demo', { headers: h })
+    expect(() => guard(req({ authorization: 'Bearer abc' }), {}, 0, 'cron')).toThrow(expect.objectContaining({ status: 404 }))
+    expect(() => guard(req({ authorization: 'Bearer sai' }), { CRON_SECRET: 'abc' }, 0, 'cron')).toThrow(expect.objectContaining({ status: 404 }))
+    expect(() => guard(req({ 'x-clinic-key': 'k' }), { CRON_SECRET: 'abc', CLINIC_API_KEY: 'k' }, 0, 'cron')).toThrow(expect.objectContaining({ status: 404 }))
+    expect(() => guard(req({ authorization: 'Bearer abc' }), { CRON_SECRET: 'abc', CLINIC_API_KEY: 'k' }, 0, 'cron')).not.toThrow()
+  })
+
+  it('route GET /api/admin/reset-demo có trong bảng định tuyến, không mã ⇒ 404', async () => {
+    const { route } = await import('./router')
+    delete process.env.CRON_SECRET
+    const res = await route(new Request('http://x/api/router?__path=admin/reset-demo'))
+    expect(res.status).toBe(404)
+    expect(await res.json()).toMatchObject({ error: { code: 'not_found' } })
+  }, 20000)
+
+  it('resetDemo: gọi reset_demo_data trước rồi mới nạp; dữ liệu mẫu theo giờ VN dù máy chạy UTC', async () => {
+    const { resetDemo } = await import('./seed')
+    const { todayVN } = await import('./time')
+    const prevTZ = process.env.TZ
+    process.env.TZ = 'UTC'
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-11-24T17:30:00Z')) // 0h30 sáng 25/11 giờ VN, còn là 24/11 theo UTC
+    try {
+      const calls: { url: string; body: string }[] = []
+      const fake = (async (url: string, init: RequestInit) => {
+        calls.push({ url, body: String(init.body) })
+        return url.includes('/rpc/') ? new Response(null, { status: 204 }) : new Response('', { status: 201 })
+      }) as unknown as typeof fetch
+      await resetDemo('https://demo.supabase.co', 'sb_secret_x', fake)
+      expect(calls[0].url).toBe('https://demo.supabase.co/rest/v1/rpc/reset_demo_data')
+      expect(calls.slice(1).every((c) => !c.url.includes('/rpc/'))).toBe(true)
+      expect(todayVN()).toBe('2026-11-25')
+      const visits = calls.filter((c) => c.url.includes('/visits?')).flatMap((c) => JSON.parse(c.body) as { date: string; status: string }[])
+      const todays = visits.filter((v) => v.date === '2026-11-25')
+      expect(todays.length).toBe(18)
+      expect(visits.some((v) => v.date === '2026-11-18')).toBe(true) // 7 ngày trước
+      expect(visits.some((v) => v.date === '2026-11-27')).toBe(true) // 2 ngày sau
+      expect(process.env.TZ).toBe('UTC') // trả lại múi giờ cũ
+    } finally {
+      vi.useRealTimers()
+      process.env.TZ = prevTZ || Intl.DateTimeFormat().resolvedOptions().timeZone
+    }
+  }, 20000)
+
+  it('xoá dữ liệu cũ lỗi ⇒ dừng, không nạp chồng', async () => {
+    const { resetDemo } = await import('./seed')
+    const calls: string[] = []
+    const fake = (async (url: string) => (calls.push(url), new Response('{"code":"42883"}', { status: 404 }))) as unknown as typeof fetch
+    await expect(resetDemo('https://demo.supabase.co', 'k', fake)).rejects.toThrow(/404/)
+    expect(calls).toHaveLength(1)
+  })
 })

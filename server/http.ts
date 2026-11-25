@@ -19,22 +19,28 @@ const hits = new Map<string, { at: number; count: number }>()
  * - CLINIC_API_KEY đặt trên máy chủ ⇒ mọi request phải gửi header `x-clinic-key` trùng khớp (401 nếu sai).
  *   Đây là khoá dùng chung cho bản demo, KHÔNG thay được đăng nhập: khoá nằm trong frontend thì ai mở mã nguồn cũng thấy.
  * - Giới hạn số lần gọi theo IP (429).
+ * - `auth: 'cron'`: API chỉ cho lịch chạy của Vercel (Cron). Vercel tự gửi `Authorization: Bearer <CRON_SECRET>`
+ *   và không gửi được `x-clinic-key`. Chưa đặt CRON_SECRET hoặc sai mã ⇒ 404 (giấu luôn việc có API này).
  */
-export function guard(request: Request, env: Record<string, string | undefined> = process.env, now = Date.now()) {
+export function guard(request: Request, env: Record<string, string | undefined> = process.env, now = Date.now(), auth: 'key' | 'cron' = 'key') {
   // Đếm lượt gọi trước khi kiểm tra mã, để cả việc dò mã cũng bị giới hạn
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'local'
   if (hits.size > 5000) for (const [k, v] of hits) if (now - v.at >= 60_000) hits.delete(k) // dọn IP cũ, không phình bộ nhớ
   const h = hits.get(ip)
   if (!h || now - h.at >= 60_000) hits.set(ip, { at: now, count: 1 })
   else if (++h.count > Number(env.CLINIC_RATE_LIMIT ?? RATE_LIMIT)) throw new ApiError('rate_limited', 'Gọi API quá nhiều, vui lòng thử lại sau một phút')
+  if (auth === 'cron') {
+    if (!env.CRON_SECRET || request.headers.get('authorization') !== `Bearer ${env.CRON_SECRET}`) throw new ApiError('not_found', 'Không có chức năng này')
+    return
+  }
   const expected = env.CLINIC_API_KEY
   if (expected && request.headers.get('x-clinic-key') !== expected) throw new ApiError('unauthorized', 'Thiếu hoặc sai mã truy cập API')
 }
 
 /** Bọc một handler: kiểm tra mã truy cập + giới hạn; lỗi nghiệp vụ → JSON có mã HTTP; lỗi lạ → 500 (không lộ chi tiết) */
-export async function handle(request: Request, fn: () => Promise<Response>) {
+export async function handle(request: Request, fn: () => Promise<Response>, auth: 'key' | 'cron' = 'key') {
   try {
-    guard(request)
+    guard(request, process.env, Date.now(), auth)
     return await fn()
   } catch (err) {
     if (err instanceof ApiError) return json({ error: { code: err.code, message: err.message, ...(err.fields ? { fields: err.fields } : {}) } }, err.status)
