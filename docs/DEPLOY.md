@@ -9,6 +9,10 @@
   `VITE_CLINIC_API_KEY`, `ALLOW_SEED=no` (đặt `yes` + triển khai lại nếu cần nạp lại dữ liệu mẫu).
 - Dữ liệu mẫu đã nạp 24/11: 41 người bệnh, 98 lượt khám, 70 phiếu thu/hoàn. Đã thử trên bản thật: đọc, tìm không dấu,
   báo cáo, danh mục, tạo + xoá hồ sơ, kiểm tra dữ liệu (422), thiếu khoá (401), API lạ (404), seed đã tắt (404).
+- **Giữ Supabase không tự tạm dừng (25/11):** gói miễn phí tạm dừng project sau 7 ngày không có lượt gọi, mà app 1.0 không gọi API.
+  `vercel.json → crons` gọi `GET /api/health` lúc 01:00 UTC (≈ 8h sáng VN) mỗi ngày: một lượt đọc nhẹ, không cần mã, không trả dữ liệu.
+  Mở `https://clinichis-ico18.vercel.app/api/health` để xem nhanh API còn sống không.
+- **CI (25/11):** `.github/workflows/ci.yml` chạy kiểm tra kiểu, test, build mỗi lần push (Node 22, pnpm 10.34.3, giờ VN).
 - **Dữ liệu 60 ngày tới (25/11):** Supabase có 7 ngày trước → 60 ngày tới. Ngày tới nào cũng tạo như một ngày đang làm việc
   (18 lượt: đã khám, đang khám, chờ, hẹn, huỷ) để hôm nào mở ra cũng có dữ liệu; mỗi ngày một bộ khác nhau (`buildDemoData` trong
   `server/seed.ts`). Đánh đổi đã chốt: xem trước ngày tới sẽ thấy ca "đã khám", báo cáo tính cả doanh thu ngày chưa tới.

@@ -179,3 +179,35 @@ describe('buildDemoData — dữ liệu 60 ngày tới trên Supabase', () => {
     expect(a.visits[0].id).toBe('v1')
   }, 30000)
 })
+
+describe('GET /api/health — giữ Supabase không bị tạm dừng', () => {
+  afterEach(() => resetRateLimitForTest())
+
+  it('không cần mã dù đã đặt CLINIC_API_KEY; đọc được ⇒ 200 ok, lỗi cơ sở dữ liệu ⇒ 503; không trả dữ liệu', async () => {
+    const { route } = await import('./router')
+    const { setReposForTest } = await import('./http')
+    const { createMemoryRepos } = await import('./memoryRepo')
+    const prevKey = process.env.CLINIC_API_KEY
+    process.env.CLINIC_API_KEY = 'k'
+    try {
+      setReposForTest(createMemoryRepos())
+      const ok = await route(new Request('http://x/api/router?__path=health'))
+      expect(ok.status).toBe(200)
+      const body = (await ok.json()) as Record<string, unknown>
+      expect(body).toMatchObject({ ok: true })
+      expect(Object.keys(body).sort()).toEqual(['db', 'ms', 'ok'])
+      const broken = createMemoryRepos()
+      broken.settings.get = async () => {
+        throw new Error('db down')
+      }
+      setReposForTest(broken)
+      expect((await route(new Request('http://x/api/health'))).status).toBe(503)
+      // các API khác vẫn đòi mã
+      expect((await route(new Request('http://x/api/patients'))).status).toBe(401)
+    } finally {
+      setReposForTest(null)
+      if (prevKey === undefined) delete process.env.CLINIC_API_KEY
+      else process.env.CLINIC_API_KEY = prevKey
+    }
+  }, 20000)
+})

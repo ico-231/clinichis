@@ -2,6 +2,7 @@ import { json } from './http.js'
 import * as adminResetDemo from './routes/admin/reset-demo.js'
 import * as adminSeed from './routes/admin/seed.js'
 import * as catalogKind from './routes/catalog/[kind].js'
+import * as health from './routes/health.js'
 import * as orders from './routes/orders/index.js'
 import * as patientOne from './routes/patients/[id].js'
 import * as patients from './routes/patients/index.js'
@@ -49,6 +50,7 @@ const ROUTES: [string, RouteModule][] = [
   ['reports/summary', reportSummary],
   ['admin/seed', adminSeed],
   ['admin/reset-demo', adminResetDemo],
+  ['health', health],
 ]
 
 export function matchRoute(path: string): RouteModule | null {

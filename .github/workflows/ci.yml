@@ -1,0 +1,34 @@
+# Kiểm tra mỗi lần push / mở PR: kiểu TypeScript, test, build.
+# Nhánh ui/2026-11 là production trên Vercel (push là tự triển khai) ⇒ CI đỏ thì xem lại ngay.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: Asia/Ho_Chi_Minh # dữ liệu mẫu tính "hôm nay" theo giờ VN, chạy giống máy dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Kiểm tra kiểu
+        run: pnpm exec tsc -b --noEmit
+      - name: Test
+        run: pnpm exec vitest run
+      - name: Build
+        run: pnpm build

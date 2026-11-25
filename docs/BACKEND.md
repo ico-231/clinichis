@@ -81,6 +81,9 @@ Chưa có đăng nhập; API khoá tạm bằng mã truy cập chung + giới h�
 
 | GET / PUT | `/api/catalog/:kind` | Danh mục. Sửa được: `services`, `cls_services` (lab nội bộ), `paraclinical_combos`, `prescription_templates`, `result_templates` (PUT `{ items }` thay toàn bộ). Chỉ đọc: `drugs`, `providers`, `doctors`, `rooms`, `external_cls`. Chưa lưu thì trả mặc định của 1.0 (`source: "default"`) |
 | GET / PUT | `/api/settings/:key` | Cài đặt `clinic_profile`, `system`, `schedules`, `default_provider_id` (PUT `{ data }`); chưa lưu thì trả mặc định của 1.0 |
+| GET | `/api/health` | Không cần mã: API còn sống không, cơ sở dữ liệu trả lời mất bao lâu (`{ ok, db, ms }`, lỗi ⇒ 503). Vercel gọi mỗi sáng để Supabase gói miễn phí không tự tạm dừng |
+| POST | `/api/admin/seed` | Xoá hết rồi nạp lại dữ liệu demo (7 ngày trước → 60 ngày tới); chỉ chạy khi `ALLOW_SEED=yes`, cần `x-clinic-key` |
+| GET | `/api/admin/reset-demo` | Như trên, cho lịch chạy mỗi đêm; chỉ nhận `Authorization: Bearer <CRON_SECRET>`, chưa đặt thì 404 |
 | GET | `/api/reports/summary?dateFrom=&dateTo=` | Báo cáo kỳ: lượt theo trạng thái, khách mới/cũ, doanh thu theo ngày thu và hình thức, hoàn tiền, giảm giá, còn phải thu, theo ngày, dịch vụ khám / CLS nhiều nhất (tối đa 1 năm) |
 
 Khám bệnh: quy tắc lấy từ màn khám 1.0. Dịch vụ CLS chỉ định được = danh mục đơn vị ngoài (cố định) + lab nội bộ trong `catalog` (`cls_services`).

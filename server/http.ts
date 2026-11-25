@@ -10,6 +10,8 @@ export function json(data: unknown, status = 200) {
   })
 }
 
+type Auth = 'key' | 'cron' | 'public'
+
 /** Số lần gọi tối đa mỗi phút cho một địa chỉ IP (chỉ trong một máy chủ; đủ để chặn gọi dồn trong bản demo) */
 const RATE_LIMIT = 120
 const hits = new Map<string, { at: number; count: number }>()
@@ -21,14 +23,16 @@ const hits = new Map<string, { at: number; count: number }>()
  * - Giới hạn số lần gọi theo IP (429).
  * - `auth: 'cron'`: API chỉ cho lịch chạy của Vercel (Cron). Vercel tự gửi `Authorization: Bearer <CRON_SECRET>`
  *   và không gửi được `x-clinic-key`. Chưa đặt CRON_SECRET hoặc sai mã ⇒ 404 (giấu luôn việc có API này).
+ * - `auth: 'public'`: không cần mã, chỉ giới hạn lượt gọi (dùng cho /api/health — không trả dữ liệu nào).
  */
-export function guard(request: Request, env: Record<string, string | undefined> = process.env, now = Date.now(), auth: 'key' | 'cron' = 'key') {
+export function guard(request: Request, env: Record<string, string | undefined> = process.env, now = Date.now(), auth: Auth = 'key') {
   // Đếm lượt gọi trước khi kiểm tra mã, để cả việc dò mã cũng bị giới hạn
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || 'local'
   if (hits.size > 5000) for (const [k, v] of hits) if (now - v.at >= 60_000) hits.delete(k) // dọn IP cũ, không phình bộ nhớ
   const h = hits.get(ip)
   if (!h || now - h.at >= 60_000) hits.set(ip, { at: now, count: 1 })
   else if (++h.count > Number(env.CLINIC_RATE_LIMIT ?? RATE_LIMIT)) throw new ApiError('rate_limited', 'Gọi API quá nhiều, vui lòng thử lại sau một phút')
+  if (auth === 'public') return
   if (auth === 'cron') {
     if (!env.CRON_SECRET || request.headers.get('authorization') !== `Bearer ${env.CRON_SECRET}`) throw new ApiError('not_found', 'Không có chức năng này')
     return
@@ -38,7 +42,7 @@ export function guard(request: Request, env: Record<string, string | undefined> 
 }
 
 /** Bọc một handler: kiểm tra mã truy cập + giới hạn; lỗi nghiệp vụ → JSON có mã HTTP; lỗi lạ → 500 (không lộ chi tiết) */
-export async function handle(request: Request, fn: () => Promise<Response>, auth: 'key' | 'cron' = 'key') {
+export async function handle(request: Request, fn: () => Promise<Response>, auth: Auth = 'key') {
   try {
     guard(request, process.env, Date.now(), auth)
     return await fn()
