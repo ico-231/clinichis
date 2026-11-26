@@ -92,7 +92,7 @@ export function ClsSettingsPage() {
 
         {tab !== 'catalog' ? (
           <div className="flex flex-1 items-center justify-center rounded-[16px] border border-line bg-surface">
-            <EmptyState title={`${tab === 'classes' ? 'Phân loại' : 'Combo'} sẽ có trong bản cập nhật sau`} description="Hiện thêm, sửa dịch vụ cận lâm sàng ở tab Danh mục CLS." />
+            <EmptyState title={`${tab === 'classes' ? 'Phân loại' : 'Combo'} chưa có trong bản demo`} description="Hiện thêm, sửa dịch vụ cận lâm sàng ở tab Danh mục CLS." />
           </div>
         ) : (
           <>

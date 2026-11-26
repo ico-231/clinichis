@@ -75,6 +75,7 @@ npx -y pnpm@10.34.3 dev
 | `pnpm dev` | Chạy app ở chế độ phát triển |
 | `pnpm build` | Build production vào `dist/` |
 | `pnpm test` | Chạy toàn bộ test (Vitest) |
+| `pnpm e2e` | Bấm thử trên trình duyệt (Playwright, dùng Google Chrome đã cài trên máy; tự build và chạy ở cổng 4174) |
 | `pnpm exec tsc -b --noEmit` | Kiểm tra kiểu cho cả frontend lẫn máy chủ |
 
 App chạy được ngay, không cần backend. Muốn chạy cả API thì xem [docs/DEPLOY.md](docs/DEPLOY.md) và [env.example](env.example).
@@ -100,9 +101,12 @@ Mọi thao tác đều làm bằng nút, không cần nhớ phím tắt.
 
 ## Chất lượng
 
-- **Kiểm thử:** hơn 120 test Vitest. Có luồng nghiệp vụ đầu-cuối chạy trên store thật (tiếp nhận → khám → chỉ định CLS →
+- **Kiểm thử:** gần 140 test Vitest. Có luồng nghiệp vụ đầu-cuối chạy trên store thật (tiếp nhận → khám → chỉ định CLS →
   thu tiền → huỷ, hoàn tiền), và test cho từng API: kiểm dữ liệu, chuyển trạng thái, thu tiền, phân trang Supabase, giờ VN.
-- **Tự kiểm tra trên GitHub:** mỗi lần push, CI chạy kiểm tra kiểu, test và build ([.github/workflows/ci.yml](.github/workflows/ci.yml)).
+  Thêm 12 test Playwright bấm thử trên Chrome thật ([e2e/](e2e)): mở đủ 13 màn không lỗi, menu ngăn kéo ở màn hẹp, tiếp nhận người
+  bệnh mới (và còn sau khi tải lại), chặn bỏ trống trường bắt buộc, khám → chẩn đoán ICD → kê thuốc → hoàn thành, thu tiền,
+  đổi tên / xoá đơn mẫu, dùng menu và bảng bằng bàn phím.
+- **Tự kiểm tra trên GitHub:** mỗi lần push, CI chạy kiểm tra kiểu, test, build và test trình duyệt ([.github/workflows/ci.yml](.github/workflows/ci.yml)).
 - **An toàn dữ liệu:** không xoá được hồ sơ đã có bệnh án hoặc phiếu thu; chỉ định đã thu tiền hay đã làm thì không xoá được;
   bệnh án đã ký bị khoá; cảnh báo trùng hồ sơ khi tạo người bệnh mới; lỗi ở một màn không làm trắng cả ứng dụng.
 - **Truy cập:** hộp thoại giữ focus bàn phím và trả focus khi đóng; ô nhập có nhãn cho trình đọc màn hình; lỗi nhập liệu

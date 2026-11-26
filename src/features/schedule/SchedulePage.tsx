@@ -80,15 +80,14 @@ export function SchedulePage() {
       <PendingProfileBanner />
       <div className="mx-auto flex min-h-0 w-full max-w-[1920px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 2xl:px-8 pt-1 pb-4">
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-[14px] border border-line bg-surface px-3.5 py-2.5">
-          <div role="tablist" className="flex flex-wrap items-center gap-1.5">
+          <div role="group" className="flex flex-wrap items-center gap-1.5">
             {TABS.map((t) => {
               const active = tab === t.value
               return (
                 <button
                   key={t.value}
-                  role="tab"
                   type="button"
-                  aria-selected={active}
+                  aria-pressed={active}
                   onClick={() => setTab(t.value)}
                   className={cn(
                     'rounded-full border px-3.5 py-1.5 text-[13px] font-semibold transition-colors',
@@ -103,7 +102,7 @@ export function SchedulePage() {
 
           <div className="flex flex-wrap items-center gap-3">
             {tab !== 'fixed' && (
-              <div className="flex items-center gap-1 rounded-[10px] border border-line-strong bg-canvas p-0.5">
+              <div className="flex items-center gap-1 rounded-[10px] border border-line-strong bg-canvas p-0.5 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/15">
                 <button type="button" onClick={() => shift(-1)} className="rounded-[8px] p-1.5 text-ink-2 hover:bg-surface" aria-label="Tháng trước">
                   <ChevronLeft className="h-4 w-4" />
                 </button>

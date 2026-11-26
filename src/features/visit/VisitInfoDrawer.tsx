@@ -118,7 +118,7 @@ function InfoTab({ visit, patient }: { visit: Visit; patient: Patient }) {
         <Field label="Loại hình">{visit.visitKind ?? 'Lịch khám'}</Field>
         <Field label="Phân loại">
           <span className="inline-flex items-center gap-1">
-            <span className="h-2 w-2 rounded-full bg-violet-500" />
+            <span className="h-2 w-2 rounded-full bg-aux" />
             {CATEGORY_LABEL[visit.category]}
           </span>
         </Field>
@@ -222,7 +222,7 @@ function ClsTab({ visit }: { visit: Visit }) {
               return (
                 <div key={o.id} className="grid grid-cols-[1fr_130px_110px] items-center py-1.5">
                   <span className="flex items-center gap-2">
-                    <span className={cn('flex h-7 w-7 items-center justify-center rounded-lg', o.category === 'imaging' ? 'bg-violet-50 text-violet-600' : 'bg-accent-tint text-accent-ink')}>
+                    <span className={cn('flex h-7 w-7 items-center justify-center rounded-lg', o.category === 'imaging' ? 'bg-aux-soft text-aux-ink' : 'bg-accent-tint text-accent-ink')}>
                       {o.category === 'imaging' ? <ScanLine className="h-3.5 w-3.5" /> : <FlaskConical className="h-3.5 w-3.5" />}
                     </span>
                     <span>

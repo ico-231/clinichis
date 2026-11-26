@@ -1,4 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react'
+import { RowToggle } from '@/components/ui/RowToggle'
 import { Download, Info, MoreHorizontal, Printer, Receipt, RotateCw, Search, Upload } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/Button'
@@ -79,7 +80,7 @@ export function ReportsPage() {
           {key === 'downloads' && <DownloadHistory />}
           {!item.ready && (
             <div className="flex h-full items-center justify-center rounded-[16px] border border-line bg-surface">
-              <EmptyState title={`${item.label} đang chờ thiết kế`} description="Chưa có ảnh tham chiếu cho báo cáo này – giữ trang chờ theo kế hoạch." />
+              <EmptyState title={`${item.label} chưa có trong bản demo`} description="Các báo cáo khác ở danh sách bên trái đã dùng được." />
             </div>
           )}
         </div>
@@ -368,7 +369,9 @@ function SalesReport() {
           {rows.map((r) => (
             <FragmentRows key={r.date}>
               <tr className="cursor-pointer transition-colors hover:bg-brand-wash" onClick={() => setOpen(open === r.date ? null : r.date)}>
-                <td className={cn(td, 'font-semibold text-ink-3')}>{open === r.date ? '−' : '+'}</td>
+                <td className={td}>
+                  <RowToggle open={open === r.date} onToggle={() => setOpen(open === r.date ? null : r.date)} label={`chi tiết ngày ${formatDateVN(r.date)}`} />
+                </td>
                 <td className={cn(td, 'font-medium text-ink tabular-nums')}>{formatDateVN(r.date)}</td>
                 <td className={tdR}>{r.count}</td>
                 <td className={tdR}>{formatNumber(r.gross)}</td>
@@ -541,7 +544,7 @@ function UnpaidReport() {
           list.forEach((x) => byDoctor.set(x.visit.doctorId, [...(byDoctor.get(x.visit.doctorId) ?? []), x]))
           return (
             <FragmentRows key={date}>
-              <tr className="bg-[#292524] font-semibold text-white">
+              <tr className="bg-inverse font-semibold text-on-inverse">
                 <td className="px-3 py-2" colSpan={5}>
                   – NGÀY: {formatDateVN(date)} ({new Set(list.map((x) => x.patient.id)).size})
                 </td>
@@ -772,7 +775,9 @@ function ExamReport() {
           return (
             <FragmentRows key={d}>
               <tr className="cursor-pointer bg-brand-tint font-semibold text-brand-ink transition-colors hover:bg-brand-soft" onClick={() => setOpenDay(openDay === d ? null : d)}>
-                <td className="px-3 py-2">{openDay === d ? '−' : '+'}</td>
+                <td className="px-3 py-2">
+                  <RowToggle open={openDay === d} onToggle={() => setOpenDay(openDay === d ? null : d)} label={`chi tiết ngày ${formatDateVN(d)}`} className="text-brand-ink" />
+                </td>
                 <td className="px-3 py-2 tabular-nums" colSpan={2}>
                   Ngày: {formatDateVN(d)} ({list.length})
                 </td>

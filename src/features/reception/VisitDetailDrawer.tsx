@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { Ban, Check, Pencil, Phone, Printer, ShieldAlert, Stethoscope, Wallet } from 'lucide-react'
+import { Ban, Pencil, Phone, Printer, ShieldAlert, Stethoscope, Wallet } from 'lucide-react'
 import { Drawer } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
 import { Tabs } from '@/components/ui/Tabs'
@@ -88,10 +88,10 @@ function DetailContent({ visitId, onClose, onOpenVisit, onPay, onCancel }: Props
               {formatDateVN(visit.date)} · {visit.time} · {roomById(visit.roomId)?.name}
             </p>
             <p className="text-ink-3">{doctorLabel(visit.doctorId)}</p>
+            <VisitTimes visit={visit} />
           </div>
         </div>
 
-        <Stepper visit={visit} />
 
         {/* Thao tác */}
         <div className="mt-3 flex flex-wrap gap-2">
@@ -172,32 +172,23 @@ function DetailContent({ visitId, onClose, onOpenVisit, onPay, onCancel }: Props
   )
 }
 
-function Stepper({ visit }: { visit: Visit }) {
-  const steps = [
-    { label: 'Đăng ký', at: visit.createdAt },
-    { label: 'Chờ khám', at: visit.checkedInAt },
-    { label: 'Đang khám', at: visit.startedAt },
-    { label: 'Đã khám', at: visit.finishedAt },
-  ]
-  const order = ['registered', 'waiting', 'in_progress', 'done']
-  const current = order.indexOf(visit.status)
-  const cancelled = visit.status === 'cancelled'
+/** Các mốc giờ của lượt (chỉ chữ, không vẽ thanh tiến trình: giữ 5 trạng thái như 1.0) */
+function VisitTimes({ visit }: { visit: Visit }) {
+  const times = [
+    { label: 'Tiếp nhận', at: visit.checkedInAt ?? visit.createdAt },
+    { label: 'Bắt đầu khám', at: visit.startedAt },
+    { label: 'Kết thúc', at: visit.finishedAt },
+  ].filter((t) => t.at)
+  if (!times.length) return null
   return (
-    <ol className="mt-3 grid grid-cols-4 gap-1">
-      {steps.map((s, i) => {
-        const reached = cancelled ? !!s.at : i <= current
-        return (
-          <li key={s.label} className="min-w-0">
-            <div className={cn('h-1 rounded-full', reached ? (cancelled ? 'bg-line-strong' : 'bg-brand') : 'bg-subtle')} />
-            <p className={cn('mt-1.5 flex items-center gap-1 text-[11.5px] font-medium', reached ? 'text-ink' : 'text-ink-5')}>
-              {reached && <Check className="h-3 w-3" />}
-              {s.label}
-            </p>
-            <p className="truncate text-[10.5px] text-ink-4">{s.at ? formatDateTimeVN(s.at).slice(0, 5) : '—'}</p>
-          </li>
-        )
-      })}
-    </ol>
+    <p className="mt-1 text-[12px] text-ink-4">
+      {times.map((t, i) => (
+        <span key={t.label}>
+          {i > 0 && ' · '}
+          {t.label} <span className="font-medium text-ink-2 tabular-nums">{formatDateTimeVN(t.at!).slice(0, 5)}</span>
+        </span>
+      ))}
+    </p>
   )
 }
 
@@ -247,16 +238,16 @@ function VisitTab({ visit }: { visit: Visit }) {
         <div className="rounded-lg border border-line p-3">
           <p className="mb-2 text-[11.5px] font-semibold tracking-wide text-ink-3 uppercase">Chỉ số sinh hiệu</p>
           <div className="grid grid-cols-4 gap-2 text-[12.5px]">
-            {vt?.heightCm && <div><span className="text-ink-5">Cao:</span> <span className="font-medium">{vt.heightCm} cm</span></div>}
-            {vt?.weightKg && <div><span className="text-ink-5">Nặng:</span> <span className="font-medium">{vt.weightKg} kg</span></div>}
-            {vt?.bmi && <div><span className="text-ink-5">BMI:</span> <span className="font-medium">{vt.bmi} kg/m²</span></div>}
-            {vt?.temperatureC && <div><span className="text-ink-5">Nhiệt độ:</span> <span className="font-medium">{vt.temperatureC} °C</span></div>}
+            {vt?.heightCm && <div><span className="text-ink-4">Cao:</span> <span className="font-medium">{vt.heightCm} cm</span></div>}
+            {vt?.weightKg && <div><span className="text-ink-4">Nặng:</span> <span className="font-medium">{vt.weightKg} kg</span></div>}
+            {vt?.bmi && <div><span className="text-ink-4">BMI:</span> <span className="font-medium">{vt.bmi} kg/m²</span></div>}
+            {vt?.temperatureC && <div><span className="text-ink-4">Nhiệt độ:</span> <span className="font-medium">{vt.temperatureC} °C</span></div>}
             {(vt?.bpSystolic || vt?.bpDiastolic) && (
-              <div><span className="text-ink-5">HA:</span> <span className="font-medium">{vt.bpSystolic || '—'}/{vt.bpDiastolic || '—'} mmHg</span></div>
+              <div><span className="text-ink-4">HA:</span> <span className="font-medium">{vt.bpSystolic || '—'}/{vt.bpDiastolic || '—'} mmHg</span></div>
             )}
-            {vt?.pulse && <div><span className="text-ink-5">Mạch:</span> <span className="font-medium">{vt.pulse} l/p</span></div>}
-            {vt?.respiratoryRate && <div><span className="text-ink-5">Nhịp thở:</span> <span className="font-medium">{vt.respiratoryRate} l/p</span></div>}
-            {vt?.spo2 && <div><span className="text-ink-5">SpO2:</span> <span className="font-medium">{vt.spo2}%</span></div>}
+            {vt?.pulse && <div><span className="text-ink-4">Mạch:</span> <span className="font-medium">{vt.pulse} l/p</span></div>}
+            {vt?.respiratoryRate && <div><span className="text-ink-4">Nhịp thở:</span> <span className="font-medium">{vt.respiratoryRate} l/p</span></div>}
+            {vt?.spo2 && <div><span className="text-ink-4">SpO2:</span> <span className="font-medium">{vt.spo2}%</span></div>}
           </div>
         </div>
       )}
@@ -271,7 +262,7 @@ function VisitTab({ visit }: { visit: Visit }) {
               <li key={o.id} className="flex items-start justify-between gap-2 py-1.5">
                 <div>
                   <p className="font-medium text-ink">
-                    {o.name} <span className="text-ink-5">x{o.quantity}</span>
+                    {o.name} <span className="text-ink-4">x{o.quantity}</span>
                   </p>
                   <p className="text-[11.5px] text-ink-4">{o.providerName}</p>
                   {o.instruction && <p className="text-[11.5px] text-brand-ink">HD: {o.instruction}</p>}
@@ -413,11 +404,11 @@ function PaymentTab({ visit }: { visit: Visit }) {
               <tr key={p.id} className="border-b border-line-soft">
                 <td className="py-2 text-ink-2 tabular-nums">{formatDateTimeVN(p.at)}</td>
                 <td className="py-2">
-                  <span className={p.kind === 'payment' ? 'text-brand-ink' : 'text-violet-700'}>{p.kind === 'payment' ? 'Thu tiền' : 'Hoàn tiền'}</span>
+                  <span className={p.kind === 'payment' ? 'text-brand-ink' : 'text-aux-ink'}>{p.kind === 'payment' ? 'Thu tiền' : 'Hoàn tiền'}</span>
                   {p.note && <span className="block text-[11px] text-ink-4">{p.note}</span>}
                 </td>
                 <td className="py-2 text-ink-2">{PAYMENT_METHOD_LABEL[p.method]}</td>
-                <td className={cn('py-2 text-right font-medium tabular-nums', p.kind === 'refund' ? 'text-violet-700' : 'text-ink')}>
+                <td className={cn('py-2 text-right font-medium tabular-nums', p.kind === 'refund' ? 'text-aux-ink' : 'text-ink')}>
                   {p.kind === 'refund' ? '−' : ''}
                   {formatMoney(p.amount)}
                 </td>

@@ -51,7 +51,7 @@ export function ConfirmDiscardModal({
               type="button"
               autoFocus
               onClick={onConfirm}
-              className={`inline-flex h-9 items-center justify-center rounded-[10px] px-5 text-[13px] font-semibold text-white shadow-xs transition ${danger ? 'bg-danger hover:bg-danger-strong' : 'bg-brand hover:bg-brand-strong'}`}
+              className={`inline-flex h-9 items-center justify-center rounded-[10px] px-5 text-[13px] font-semibold text-white shadow-xs transition ${danger ? 'bg-danger hover:bg-danger-hover' : 'bg-brand hover:bg-brand-strong'}`}
             >
               {confirmLabel}
             </button>

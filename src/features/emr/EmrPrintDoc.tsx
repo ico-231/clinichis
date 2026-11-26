@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { CLINIC, doctorLabel, RELATION_LABEL } from '@/store/catalog'
 import { formatDiagnosis } from '@/store/icd10'
-import { ageInYears, formatDateTimeVN, formatDateVN } from '@/lib/date'
+import { ageLabel, formatDateTimeVN, formatDateVN } from '@/lib/date'
 import { formatPhone } from '@/lib/format'
 import { emrCodeOf, SUBJECT_LABEL } from './emrData'
 import type { EmrRecord, Patient, Visit } from '@/store/types'
@@ -38,7 +38,7 @@ export function EmrPrintDoc({ visit, patient, emr }: { visit: Visit; patient: Pa
           Họ và tên (in hoa): <b className="uppercase">{patient.fullName}</b>
         </li>
         <li>
-          Sinh ngày: {formatDateVN(patient.dob)} &nbsp; Tuổi: {ageInYears(patient.dob, visit.date)}
+          Sinh ngày: {formatDateVN(patient.dob)} &nbsp; Tuổi: {ageLabel(patient.dob, visit.date)}
         </li>
         <li>Giới: {patient.gender === 'male' ? '☒ Nam ☐ Nữ' : '☐ Nam ☒ Nữ'}</li>
         <li>Nghề nghiệp: {dotted(patient.occupation)}</li>

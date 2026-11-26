@@ -38,7 +38,7 @@ export const PARACLINICAL_SERVICES: ParaclinicalServiceItem[] = [
   // Danh mục Trung tâm Xét nghiệm An Bình (tên đơn vị là tên giả)
   { id: 'cls_m1', providerId: 'lab_an_binh', name: 'Normetanephrine/Plasma', groupLabel: 'MIỄN DỊCH (lần)', category: 'lab', price: 700_000 },
   { id: 'cls_m2', providerId: 'lab_an_binh', name: 'NSE', groupLabel: 'TẦM SOÁT UNG THƯ (lần)', category: 'lab', price: 210_000 },
-  { id: 'cls_m3', providerId: 'lab_an_binh', name: 'NT-proBNP', groupLabel: 'SINH HÓA (lần)', category: 'lab', price: 600_000 },
+  { id: 'cls_m3', providerId: 'lab_an_binh', name: 'NT-proBNP', groupLabel: 'SINH HOÁ (lần)', category: 'lab', price: 600_000 },
   { id: 'cls_m4', providerId: 'lab_an_binh', name: 'Nhiễm sắc thể đồ', groupLabel: 'TẾ BÀO HỌC (lần)', category: 'lab', price: 1_000_000 },
   { id: 'cls_m5', providerId: 'lab_an_binh', name: 'Nhóm máu Gelcard', groupLabel: 'HUYẾT HỌC (lần)', category: 'lab', price: 145_000 },
   { id: 'cls_m6', providerId: 'lab_an_binh', name: 'Osteocalcin', groupLabel: 'MIỄN DỊCH (lần)', category: 'lab', price: 225_000 },
@@ -46,10 +46,10 @@ export const PARACLINICAL_SERVICES: ParaclinicalServiceItem[] = [
   { id: 'cls_m8', providerId: 'lab_an_binh', name: 'Panel dị ứng 60', groupLabel: 'HUYẾT HỌC (lần)', category: 'lab', price: 1_660_000 },
   { id: 'cls_m9', providerId: 'lab_an_binh', name: 'Paragonimus IgG (Sán lá phổi)', groupLabel: 'KÝ SINH TRÙNG (lần)', category: 'lab', price: 110_000 },
   { id: 'cls_m10', providerId: 'lab_an_binh', name: 'Tổng phân tích tế bào máu ngoại vi (24 thông số)', groupLabel: 'HUYẾT HỌC (lần)', category: 'lab', price: 85_000 },
-  { id: 'cls_m11', providerId: 'lab_an_binh', name: 'CRP định lượng (hs-CRP)', groupLabel: 'SINH HÓA (lần)', category: 'lab', price: 95_000 },
+  { id: 'cls_m11', providerId: 'lab_an_binh', name: 'CRP định lượng (hs-CRP)', groupLabel: 'SINH HOÁ (lần)', category: 'lab', price: 95_000 },
   { id: 'cls_m12', providerId: 'lab_an_binh', name: 'Test nhanh Cúm A/B (Influenza A/B)', groupLabel: 'VI SINH (lần)', category: 'lab', price: 180_000 },
   { id: 'cls_m13', providerId: 'lab_an_binh', name: 'Dengue NS1 + IgM/IgG combo', groupLabel: 'VI SINH (lần)', category: 'lab', price: 240_000 },
-  { id: 'cls_m14', providerId: 'lab_an_binh', name: 'Ferritin huyết thanh', groupLabel: 'SINH HÓA (lần)', category: 'lab', price: 160_000 },
+  { id: 'cls_m14', providerId: 'lab_an_binh', name: 'Ferritin huyết thanh', groupLabel: 'SINH HOÁ (lần)', category: 'lab', price: 160_000 },
   { id: 'cls_m15', providerId: 'lab_an_binh', name: '25-OH Vitamin D tổng', groupLabel: 'MIỄN DỊCH (lần)', category: 'lab', price: 320_000 },
   { id: 'cls_m16', providerId: 'lab_an_binh', name: 'Tổng phân tích nước tiểu 10 thông số', groupLabel: 'NƯỚC TIỂU (lần)', category: 'lab', price: 60_000 },
   { id: 'cls_m17', providerId: 'lab_an_binh', name: 'Soi phân tìm hồng cầu, bạch cầu, ký sinh trùng', groupLabel: 'VI SINH (lần)', category: 'lab', price: 75_000 },
@@ -61,7 +61,7 @@ export const PARACLINICAL_SERVICES: ParaclinicalServiceItem[] = [
 
   // Danh mục Phòng xét nghiệm Việt An (một số dịch vụ nhi khoa)
   { id: 'cls_o1', providerId: 'lab_viet_an', name: 'Công thức máu 18 thông số', groupLabel: 'HUYẾT HỌC (lần)', category: 'lab', price: 80_000 },
-  { id: 'cls_o2', providerId: 'lab_viet_an', name: 'AST (GOT) & ALT (GPT)', groupLabel: 'SINH HÓA (lần)', category: 'lab', price: 90_000 },
+  { id: 'cls_o2', providerId: 'lab_viet_an', name: 'AST (GOT) & ALT (GPT)', groupLabel: 'SINH HOÁ (lần)', category: 'lab', price: 90_000 },
   { id: 'cls_o3', providerId: 'lab_viet_an', name: 'Test nhanh RSV dịch tỵ hầu', groupLabel: 'VI SINH (lần)', category: 'lab', price: 220_000 },
   { id: 'cls_o4', providerId: 'lab_viet_an', name: 'Siêu âm bụng nhi khoa', groupLabel: 'SIÊU ÂM (lần)', category: 'imaging', price: 160_000 },
   { id: 'cls_o5', providerId: 'lab_viet_an', name: 'X-quang tim phổi thẳng', groupLabel: 'X-QUANG (lần)', category: 'imaging', price: 140_000 },

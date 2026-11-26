@@ -4,7 +4,7 @@
  */
 import type { Dispatch } from 'react'
 import { createSeedState } from './seed'
-import { clsCharge, clsUnit, derivePaymentStatus, nextReceiptCode, paidAmount, patientDeleteBlock } from './billing'
+import { clsCharge, clsUnit, derivePaymentStatus, nextReceiptCode, paidAmount, patientDeleteBlock, prepaidCredit } from './billing'
 import { currentUser, runtimeCode } from './runtime'
 import { addMinutesToTime, todayISO } from '@/lib/date'
 import { serviceById } from './catalog'
@@ -385,13 +385,15 @@ export function createActions(dispatch: Dispatch<Action>, getState: () => Clinic
      */
     checkout: (
       id: string,
-      input: { lines: ReceiptLine[]; discount: number; customerPaid: number; method: PaymentMethod; invoice?: InvoiceInfo; note?: string },
+      input: { lines: ReceiptLine[]; discount: number; customerPaid: number; method: PaymentMethod; invoice?: InvoiceInfo; note?: string; prepaid?: number },
     ): PaymentRecord | null => {
       const state = getState()
       const visit = state.visits.find((v) => v.id === id)
       if (!visit || input.lines.length === 0) return null
       const gross = input.lines.reduce((s, l) => s + Math.max(l.unitPrice * l.quantity - l.discount, 0), 0)
-      const amount = Math.max(gross - input.discount, 0)
+      // Trừ phần đã tạm thu trước (không vượt quá số của phiếu này) để không thu trùng
+      const prepaid = Math.min(Math.max(input.prepaid ?? 0, 0), Math.max(gross - input.discount, 0), prepaidCredit(visit))
+      const amount = Math.max(gross - input.discount - prepaid, 0)
       const at = now()
       const record: PaymentRecord = {
         id: uid('pay'),
@@ -404,6 +406,7 @@ export function createActions(dispatch: Dispatch<Action>, getState: () => Clinic
         lines: input.lines,
         discount: input.discount,
         customerPaid: input.customerPaid,
+        ...(prepaid > 0 ? { prepaid } : {}),
         cashier: currentUser(),
         invoice: input.invoice,
       }

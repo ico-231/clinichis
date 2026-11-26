@@ -6,7 +6,7 @@ import { Modal } from '@/components/ui/Modal'
 import { Popover } from '@/components/ui/Popover'
 import { useToast } from '@/components/ui/Toast'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
-import { DOSE_UNITS, DRUGS } from '@/store/drugCatalog'
+import { DOSE_UNITS, DRUGS, allergyConflict, defaultDoseUnit, isContainerUnit } from '@/store/drugCatalog'
 import { normalizeText } from '@/lib/format'
 import { formatDateTimeVN } from '@/lib/date'
 import { cn } from '@/lib/cn'
@@ -26,6 +26,7 @@ interface Props {
 const newId = () => `rx_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`
 
 function itemFromDrug(d: Drug): PrescriptionItem {
+  const container = isContainerUnit(d.unit)
   return {
     id: newId(),
     drugId: d.id,
@@ -33,12 +34,13 @@ function itemFromDrug(d: Drug): PrescriptionItem {
     activeIngredient: d.activeIngredient,
     strength: d.strength,
     days: 3,
-    doseUnit: d.unit,
-    morning: 1,
+    // Lọ nhỏ mũi / tuýp kem: liều tính bằng giọt / lần, cấp 1 lọ (không nhân liều × ngày)
+    doseUnit: defaultDoseUnit(d),
+    morning: container ? 2 : 1,
     noon: 0,
-    afternoon: 1,
+    afternoon: container ? 2 : 1,
     evening: 0,
-    quantity: 6,
+    quantity: container ? 1 : 6,
     quantityUnit: d.unit,
     usage: d.route === 'Uống' ? 'Uống sau ăn' : d.route,
   }
@@ -52,13 +54,14 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
   const [saveTplOpen, setSaveTplOpen] = useState(false)
 
   const setItems = (next: PrescriptionItem[]) => update({ prescription: next })
+  const allergyNote = draft.allergy ? draft.allergyNote : ''
   const patchItem = (id: string, patch: Partial<PrescriptionItem>) =>
     setItems(
       items.map((it) => {
         if (it.id !== id) return it
         const merged = { ...it, ...patch }
-        // tự tính lại số lượng khi đổi số ngày / liều (trừ khi sửa trực tiếp số lượng)
-        if (!('quantity' in patch)) merged.quantity = computeQuantity(merged)
+        // tự tính lại số lượng khi đổi số ngày / liều (trừ khi sửa trực tiếp số lượng, hoặc cấp theo lọ / tuýp)
+        if (!('quantity' in patch) && !isContainerUnit(merged.quantityUnit)) merged.quantity = computeQuantity(merged)
         return merged
       }),
     )
@@ -69,13 +72,17 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
       return
     }
     setItems([...items, itemFromDrug(d)])
+    if (allergyConflict(d, allergyNote)) toast({ title: `Cảnh báo dị ứng: ${d.name}`, description: `Người bệnh có ghi chú dị ứng "${allergyNote}". Kiểm tra lại trước khi kê.`, tone: 'warning' })
   }
 
   const applyTemplate = (tpl: PrescriptionTemplate) => {
     const existing = new Set(items.map((it) => it.drugId))
     const added = tpl.items.filter((it) => !existing.has(it.drugId)).map((it) => ({ ...it, id: newId() }))
     update({ prescription: [...items, ...added], advice: draft.advice || tpl.advice })
-    toast({ title: `Đã áp dụng đơn mẫu "${tpl.name}"`, description: `${added.length} thuốc được thêm vào đơn`, tone: 'success' })
+    const risky = added.filter((it) => allergyConflict(it, allergyNote))
+    if (risky.length)
+      toast({ title: 'Cảnh báo dị ứng trong đơn mẫu', description: `${risky.map((it) => it.name).join(', ')} trùng ghi chú dị ứng "${allergyNote}". Kiểm tra lại trước khi kê.`, tone: 'warning' })
+    else toast({ title: `Đã áp dụng đơn mẫu "${tpl.name}"`, description: `${added.length} thuốc được thêm vào đơn`, tone: 'success' })
   }
 
   return (
@@ -148,8 +155,10 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
               </tr>
             </thead>
             <tbody>
-              {items.map((it) => (
-                <tr key={it.id} className="border-t border-line-soft align-top">
+              {items.map((it) => {
+                const allergic = allergyConflict(it, allergyNote)
+                return (
+                <tr key={it.id} className={cn('border-t border-line-soft align-top', allergic && 'bg-danger-soft')}>
                   <td className="px-1 pt-2.5 text-center">
                     <button type="button" onClick={() => setItems(items.filter((x) => x.id !== it.id))} className="text-danger-ink hover:text-danger-ink" aria-label={`Xoá ${it.name}`}>
                       <Trash2 className="h-4 w-4" />
@@ -158,12 +167,22 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
                   <td className="px-2 py-2">
                     <p className="font-semibold text-ink">{it.name}</p>
                     <p className="text-xs text-ink-4">{it.activeIngredient}</p>
+                    {allergic && (
+                      <p className="mt-0.5 flex items-center gap-1 text-xs font-semibold text-danger-ink">
+                        <AlertTriangle className="h-3 w-3 shrink-0" /> Trùng ghi chú dị ứng
+                      </p>
+                    )}
                   </td>
                   <td className="px-2 py-1.5">
                     <NumberCell label={`Số ngày dùng ${it.name}`} value={it.days} min={1} onChange={(days) => patchItem(it.id, { days: Math.max(1, Math.round(days)) })} />
                   </td>
                   <td className="px-2 py-1.5">
-                    <UnitSelect label={`Đơn vị liều ${it.name}`} value={it.doseUnit} onChange={(doseUnit) => patchItem(it.id, { doseUnit, quantityUnit: doseUnit })} />
+                    <UnitSelect
+                      label={`Đơn vị liều ${it.name}`}
+                      value={it.doseUnit}
+                      // Đơn vị cấp theo lọ / tuýp giữ nguyên khi đổi đơn vị liều (giọt, lần)
+                      onChange={(doseUnit) => patchItem(it.id, isContainerUnit(it.quantityUnit) ? { doseUnit } : { doseUnit, quantityUnit: doseUnit })}
+                    />
                   </td>
                   {(['morning', 'noon', 'afternoon', 'evening'] as const).map((k, i) => (
                     <td key={k} className="px-1 py-1.5">
@@ -187,7 +206,8 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
                     />
                   </td>
                 </tr>
-              ))}
+                )
+              })}
             </tbody>
           </table>
         </div>
@@ -217,7 +237,7 @@ function NumberCell({ label, value, onChange, step = 1, min = 0 }: { label: stri
       min={min}
       onChange={(e) => onChange(Number(e.target.value.replace(',', '.')) || 0)}
       onFocus={(e) => e.target.select()}
-      className="h-8 w-full px-1.5 text-center tabular-nums rounded-[10px] border border-line-strong bg-surface text-[13px] text-ink outline-none transition placeholder:text-ink-5 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
+      className="h-8 w-full px-1.5 text-center tabular-nums rounded-[10px] border border-line-strong bg-surface text-[13px] text-ink outline-none transition placeholder:text-ink-4 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
     />
   )
 }
@@ -225,7 +245,7 @@ function NumberCell({ label, value, onChange, step = 1, min = 0 }: { label: stri
 function UnitSelect({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   const options = DOSE_UNITS.includes(value) ? DOSE_UNITS : [value, ...DOSE_UNITS]
   return (
-    <select aria-label={label} value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full pl-2 rounded-[10px] border border-line-strong bg-surface text-[13px] text-ink outline-none transition placeholder:text-ink-5 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15">
+    <select aria-label={label} value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full pl-2 rounded-[10px] border border-line-strong bg-surface text-[13px] text-ink outline-none transition placeholder:text-ink-4 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15">
       {options.map((u) => (
         <option key={u}>{u}</option>
       ))}

@@ -16,7 +16,7 @@ export const emptyInvoice = (patient: Patient): InvoiceInfo => ({
 })
 
 const input =
-  'h-9 w-full rounded-md border border-line bg-surface px-3 text-[13px] outline-none placeholder:text-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15'
+  'h-9 w-full rounded-md border border-line bg-surface px-3 text-[13px] outline-none placeholder:text-ink-4 focus:border-brand focus:ring-2 focus:ring-brand/15'
 
 /** Thông tin phát hành hoá đơn điện tử: Cá nhân / Doanh nghiệp (ảnh 032, 033) */
 export function InvoiceInfoModal({ initial, onClose, onSave }: { initial: InvoiceInfo; onClose: () => void; onSave: (inv: InvoiceInfo) => void }) {

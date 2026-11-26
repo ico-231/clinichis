@@ -1,6 +1,6 @@
 import { SERVICES, DOCTORS } from './catalog.js'
 import { INITIAL_COMBOS } from './paraclinicalCatalog.js'
-import { INITIAL_PRESCRIPTION_TEMPLATES } from './drugCatalog.js'
+import { INITIAL_PRESCRIPTION_TEMPLATES, allergyConflict, drugById } from './drugCatalog.js'
 import { ICD10 } from './icd10.js'
 import { enrichVisits, INTERNAL_CLS_SEED, seedSchedules } from './seedExtras.js'
 import { defaultSystem } from './systemDefaults.js'
@@ -19,6 +19,7 @@ import type {
   VisitCategory,
   VisitSource,
   VisitStatus,
+  VitalSigns,
 } from './types.js'
 
 /** v3: thêm danh mục CLS nội bộ, lịch làm việc, cấu hình hệ thống, phiếu thu có dòng (xem migrations.ts) */
@@ -205,7 +206,7 @@ export function formatVisitCode(date: string, seq: number) {
 }
 
 /** Bệnh án mẫu cho lượt đã khám (dùng bộ sinh số riêng để không đổi dữ liệu lượt khám) */
-function makeSeedExam(seq: number, serviceId: string, date: string): ExamRecord {
+function makeSeedExam(seq: number, serviceId: string, date: string, allergies = ''): ExamRecord {
   const rand = mulberry32(seq * 7919 + 17)
   const icd = (code: string) => ICD10.find((d) => d.code === code)!
   const tpl = (id: string) => INITIAL_PRESCRIPTION_TEMPLATES.find((t) => t.id === id)!
@@ -213,8 +214,8 @@ function makeSeedExam(seq: number, serviceId: string, date: string): ExamRecord 
   if (serviceId === 's7') plan = { codes: ['Z23.8'], history: 'Đến tiêm chủng theo lịch, không sốt, ăn bú tốt.' }
   else if (serviceId === 's5') plan = { codes: [pick(rand, ['E44.0', 'Z71.3', 'D50.9'])], history: 'Biếng ăn, chậm tăng cân 2 tháng gần đây.' }
   else if (serviceId === 's4') plan = pick(rand, [
-    { codes: ['J20.9'], tplId: 'tpl_pharyngitis', history: 'Ho đờm 4 ngày, sốt nhẹ, không khó thở.' },
-    { codes: ['J21.9'], tplId: 'tpl_fever', history: 'Ho, khò khè 3 ngày, bú kém hơn.' },
+    { codes: ['J20.9'], tplId: 'tpl_cough', history: 'Ho đờm 4 ngày, sốt nhẹ, không khó thở.' },
+    { codes: ['J21.9'], tplId: 'tpl_cough', history: 'Ho, khò khè 3 ngày, bú kém hơn.' },
     { codes: ['J45.9'], history: 'Khò khè tái phát khi thay đổi thời tiết.' },
   ])
   else plan = pick(rand, [
@@ -225,22 +226,58 @@ function makeSeedExam(seq: number, serviceId: string, date: string): ExamRecord 
     { codes: ['L20.9'], history: 'Ngứa, nổi mẩn đỏ vùng má và khuỷu tay tái đi tái lại.' },
   ])
   const t = plan.tplId ? tpl(plan.tplId) : undefined
+  // Không kê thuốc bé đã dị ứng: dị ứng Amoxicillin (nhóm penicillin) đổi sang Azithromycin, thuốc khác thì bỏ
+  const azi = drugById('dr09')!
+  const prescription = (t?.items ?? []).flatMap((it) => {
+    if (!allergyConflict(it, allergies)) return [it]
+    if (/amoxicillin/i.test(it.activeIngredient ?? '') && !allergyConflict(azi, allergies))
+      return [{ ...it, drugId: azi.id, name: azi.name, activeIngredient: azi.activeIngredient, strength: azi.strength, days: 3, doseUnit: 'ml', morning: 2.5, noon: 0, afternoon: 0, evening: 0, quantity: 8, quantityUnit: 'ml', usage: 'Uống 1 lần/ngày, xa bữa ăn, đủ 3 ngày' }]
+    return []
+  })
   const followUp = rand() < 0.55
   const followUpDays = pick(rand, [3, 5, 7])
   return {
     medicalHistory: plan.history,
-    allergy: false,
-    allergyNote: '',
+    allergy: !!allergies,
+    allergyNote: allergies,
     otherRisk: false,
     otherRiskNote: '',
     labNote: '',
     diagnoses: plan.codes.map(icd),
-    prescription: (t?.items ?? []).map((it, i) => ({ ...it, id: `rx${seq}_${i}` })),
+    prescription: prescription.map((it, i) => ({ ...it, id: `rx${seq}_${i}` })),
     advice: t?.advice ?? '',
     followUpEnabled: followUp,
     followUpDays,
     followUpDate: followUp ? addDays(date, followUpDays) : '',
     notes: [],
+  }
+}
+
+/**
+ * Sinh hiệu mẫu hợp tuổi (bộ sinh số riêng theo lượt ⇒ không đổi phần còn lại của dữ liệu mẫu).
+ * Chiều cao / cân nặng xấp xỉ trung vị theo tuổi, có dao động nhỏ.
+ */
+function seedVitals(seq: number, dob: string, date: string): VitalSigns {
+  const rand = mulberry32(seq * 104729 + 31)
+  const months = Math.max(0, (new Date(`${date}T00:00:00`).getTime() - new Date(`${dob}T00:00:00`).getTime()) / (30.44 * 86_400_000))
+  const years = months / 12
+  const jitter = (n: number, pct: number) => n * (1 + (rand() * 2 - 1) * pct)
+  const height = jitter(months < 12 ? 50 + months * 2.1 : months < 24 ? 75 + (months - 12) * 1 : 87 + (years - 2) * 6.3, 0.04)
+  const weight = jitter(months < 12 ? 3.3 + months * 0.55 : years < 10 ? 2 * years + 8 : 3 * years, 0.08)
+  const fever = rand() < 0.35
+  const temp = fever ? 37.8 + rand() * 1.2 : 36.6 + rand() * 0.6
+  const pulse = Math.round(jitter(months < 12 ? 130 : years < 5 ? 110 : years < 10 ? 95 : 85, 0.08) + (fever ? 10 : 0))
+  const rr = Math.round(jitter(months < 12 ? 40 : years < 5 ? 30 : years < 10 ? 22 : 18, 0.1))
+  const h = Math.round(height)
+  const w = Math.round(weight * 10) / 10
+  return {
+    heightCm: String(h),
+    weightKg: String(w),
+    temperatureC: temp.toFixed(1),
+    pulse: String(pulse),
+    respiratoryRate: String(rr),
+    spo2: String(97 + Math.floor(rand() * 3)),
+    bmi: (w / (h / 100) ** 2).toFixed(1),
   }
 }
 
@@ -430,7 +467,8 @@ export function createSeedState(opts: SeedOptions = {}): ClinicState {
         source,
         reason: pick(rand, REASONS_BY_SERVICE[serviceId] ?? REASONS_BY_SERVICE.s1),
         note: fitNote(patient.allergies && rand() < 0.5 ? `Dị ứng ${patient.allergies}` : pick(rand, NOTES), patient, date),
-        exam: status === 'done' ? makeSeedExam(visitSeq, serviceId, date) : undefined,
+        exam: status === 'done' ? makeSeedExam(visitSeq, serviceId, date, patient.allergies) : undefined,
+        vitals: status === 'done' || status === 'in_progress' ? seedVitals(visitSeq, patient.dob, date) : undefined,
         cancelReason: status === 'cancelled' ? pick(rand, ['Người nhà báo bận', 'Bé đã hết sốt', 'Đổi sang ngày khác', 'Không liên lạc được']) : undefined,
         createdAt: isoAt(category === 'booked' ? addDays(date, -1) : date, time, -10),
         checkedInAt: ['waiting', 'in_progress', 'done'].includes(status) ? isoAt(date, time, -5) : undefined,

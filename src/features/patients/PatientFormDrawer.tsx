@@ -183,7 +183,7 @@ export function PatientFormDrawer({ patient, onClose, onSaved }: { patient?: Pat
               <DatePicker label="Ngày sinh" required value={f.dob} max={todayISO()} onChange={(dob) => set({ dob })} error={errors.dob} />
               <div>
                 <span className="mb-1.5 block text-[12.5px] font-medium text-ink-3">Tuổi</span>
-                <div className="flex h-9 overflow-hidden rounded-md border border-line">
+                <div className="flex h-9 overflow-hidden rounded-md border border-line focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/15">
                   <input
                     value={age}
                     inputMode="numeric"
@@ -300,7 +300,7 @@ function Input({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label={label}
-        className={cn('h-9 w-full rounded-md border px-3 text-[13px] outline-none placeholder:text-ink-5 focus:ring-2 focus:ring-brand/15', error ? 'border-danger' : 'border-line focus:border-brand')}
+        className={cn('h-9 w-full rounded-md border px-3 text-[13px] outline-none placeholder:text-ink-4 focus:ring-2 focus:ring-brand/15', error ? 'border-danger' : 'border-line focus:border-brand')}
       />
     </Field>
   )

@@ -81,7 +81,7 @@ export function SystemPage() {
           {key === 'emrlog' && <EmrLogSection />}
           {key === 'einvoice' && (
             <div className="flex h-full items-center justify-center">
-              <EmptyState title="Hoá đơn điện tử đang chờ thiết kế" description="Chưa có ảnh tham chiếu cho mục này – giữ trang chờ theo kế hoạch." />
+              <EmptyState title="Cài đặt hoá đơn điện tử chưa có trong bản demo" description="Thông tin hoá đơn vẫn nhập được khi thu tiền (bật “Phát hành hoá đơn”)." />
             </div>
           )}
         </div>

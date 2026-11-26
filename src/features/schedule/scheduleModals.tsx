@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react'
+import { Switch as SwitchControl } from '@/components/ui/Switch'
 import { TimeInput } from '@/components/ui/TimeInput'
 import { AlertCircle, CalendarDays, ChevronDown, Copy, Pencil, Plus, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -46,9 +47,7 @@ export function Toggle({ checked, onChange, label }: { checked: boolean; onChang
   return (
     <label className="flex cursor-pointer items-center gap-2 text-[13px] text-ink-2">
       {label}
-      <button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)} className={cn('relative h-5 w-9 rounded-full transition', checked ? 'bg-brand' : 'bg-line-strong')}>
-        <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-surface shadow transition-all', checked ? 'left-[18px]' : 'left-0.5')} />
-      </button>
+      <SwitchControl checked={checked} onChange={onChange} />
     </label>
   )
 }
@@ -149,16 +148,11 @@ export function WeeklySetupModal({ initial, onClose, onApply }: { initial: Fixed
           return (
             <div key={wd} className={cn('rounded-[14px] border px-3.5 py-2.5 transition-colors', on ? 'border-brand/40 bg-surface' : 'border-line bg-surface')}>
               <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={on}
+                <SwitchControl
+                  checked={on}
                   aria-label={`Bật lịch ${label}`}
-                  onClick={() => (list.length ? setSlots((l) => l.map((s) => (s.weekday === wd && s.kind === kind ? { ...s, enabled: !on } : s))) : addSlot(wd))}
-                  className={cn('relative h-5 w-9 shrink-0 rounded-full transition', on ? 'bg-brand' : 'bg-line-strong')}
-                >
-                  <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-surface shadow transition-all', on ? 'left-[18px]' : 'left-0.5')} />
-                </button>
+                  onChange={() => (list.length ? setSlots((l) => l.map((s) => (s.weekday === wd && s.kind === kind ? { ...s, enabled: !on } : s))) : addSlot(wd))}
+                />
                 <CalendarDays className="h-4 w-4 text-ink-3" />
                 <div className="flex-1">
                   <p className="text-[13.5px] font-semibold text-ink">{label}</p>
@@ -394,7 +388,7 @@ export function LeaveModal({ leave, onClose, onSave, onDelete }: { leave: LeaveS
         <span>
           <b>Lưu ý</b>
           <br />
-          Khách hàng sẽ không thể đặt lịch khám hoặc tư vấn vào khung giờ nghỉ. Các lịch đã được người bệnh đặt trước đó cũng sẽ bị huỷ.
+          Khung giờ nghỉ được đánh dấu trên lịch làm việc. Các lịch hẹn đã đặt trước trong khung giờ này không tự huỷ: hãy kiểm tra và báo lại người bệnh.
         </span>
       </p>
       <div className="space-y-3">

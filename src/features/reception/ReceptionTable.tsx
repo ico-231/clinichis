@@ -134,37 +134,51 @@ export function ReceptionTable({
 
                 {/* Cột Mã KB */}
                 <td className={cn(td, stickyTd(1))} style={{ left: FIXED_LEFT[1].left }}>
-                  <span className="font-medium text-info-ink tabular-nums group-hover:underline">
+                  {/* Nút thật để mở lượt bằng bàn phím (cả dòng vẫn bấm được bằng chuột) */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onOpen(visit.id)
+                    }}
+                    aria-label={`Mở lượt khám ${visit.code}`}
+                    className="rounded-sm font-medium text-info-ink tabular-nums group-hover:underline hover:underline"
+                  >
                     {visit.code}
-                  </span>
+                  </button>
                 </td>
 
-                {columns.map((c) => (
-                  <td
-                    key={c.key}
-                    onClick={
-                      c.key === 'payment' && visit.status !== 'cancelled' && (visit.paymentStatus === 'unpaid' || visit.paymentStatus === 'partial')
-                        ? (e) => {
+                {columns.map((c) => {
+                  const payable = c.key === 'payment' && visit.status !== 'cancelled' && (visit.paymentStatus === 'unpaid' || visit.paymentStatus === 'partial')
+                  return (
+                    <td
+                      key={c.key}
+                      className={cn(
+                        td,
+                        c.align === 'right' && 'text-right',
+                        c.align === 'center' && 'text-center',
+                        visit.status === 'cancelled' && 'opacity-60',
+                      )}
+                    >
+                      {payable ? (
+                        <button
+                          type="button"
+                          onClick={(e) => {
                             e.stopPropagation()
                             onPay(visit.id)
-                          }
-                        : undefined
-                    }
-                    title={
-                      c.key === 'payment' && visit.status !== 'cancelled' && (visit.paymentStatus === 'unpaid' || visit.paymentStatus === 'partial')
-                        ? 'Bấm để thu tiền'
-                        : undefined
-                    }
-                    className={cn(
-                      td,
-                      c.align === 'right' && 'text-right',
-                      c.align === 'center' && 'text-center',
-                      visit.status === 'cancelled' && 'opacity-60',
-                    )}
-                  >
-                    {c.render(row)}
-                  </td>
-                ))}
+                          }}
+                          title="Bấm để thu tiền"
+                          aria-label={`Thu tiền lượt ${visit.code}`}
+                          className="-mx-1 rounded-md px-1 py-0.5 text-left hover:bg-subtle"
+                        >
+                          {c.render(row)}
+                        </button>
+                      ) : (
+                        c.render(row)
+                      )}
+                    </td>
+                  )
+                })}
               </tr>
             )
           })}

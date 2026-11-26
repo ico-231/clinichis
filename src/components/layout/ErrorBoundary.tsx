@@ -56,7 +56,7 @@ export class ErrorBoundary extends Component<Props, State> {
                   this.props.onResetData()
                   this.setState({ error: null, confirmReset: false })
                 }}
-                className={`${btn} bg-rose-600 text-white hover:bg-rose-700`}
+                className={`${btn} bg-danger text-white hover:bg-danger-hover`}
               >
                 <RotateCcw className="h-4 w-4" /> Xác nhận xoá & dùng dữ liệu mẫu
               </button>

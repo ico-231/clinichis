@@ -461,6 +461,8 @@ export interface PaymentRecord {
   discount?: number
   /** Tiền khách đưa (để tính tiền thừa) */
   customerPaid?: number
+  /** Phần tiền đã tạm thu trước (phiếu cũ không ghi dòng) được trừ vào phiếu này (VNĐ) */
+  prepaid?: number
   cashier?: string
   /** Yêu cầu xuất hoá đơn điện tử */
   invoice?: InvoiceInfo

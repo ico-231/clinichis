@@ -38,6 +38,50 @@ export const drugById = (id: string) => DRUGS.find((d) => d.id === id)
 /** Đơn vị liều thường dùng khi kê */
 export const DOSE_UNITS = ['Viên', 'Gói', 'ml', 'Ống', 'Giọt', 'Lọ', 'Tuýp', 'Lần', 'Nhát xịt']
 
+/**
+ * Đơn vị cấp phát dạng "cả hộp/lọ" (lọ nhỏ mũi, tuýp kem…): liều tính bằng giọt / lần bôi,
+ * số lượng cấp là số lọ/tuýp (mặc định 1), không nhân theo liều × ngày.
+ */
+export const CONTAINER_UNITS = ['Lọ', 'Tuýp', 'Chai']
+export const isContainerUnit = (unit: string) => CONTAINER_UNITS.includes(unit)
+
+/** Đơn vị liều mặc định theo đường dùng: nhỏ mũi/mắt tính giọt, bôi da tính lần */
+export function defaultDoseUnit(d: Pick<Drug, 'unit' | 'route'>) {
+  if (!isContainerUnit(d.unit)) return d.unit
+  if (/nhỏ/i.test(d.route)) return 'Giọt'
+  return 'Lần'
+}
+
+const fold = (s: string) =>
+  s
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase()
+
+/** Hoạt chất cùng nhóm dị ứng chéo hay gặp (ghi "Penicillin" thì Amoxicillin cũng phải cảnh báo) */
+const ALLERGY_GROUPS: Record<string, string[]> = {
+  penicillin: ['amoxicillin', 'ampicillin'],
+  'beta-lactam': ['amoxicillin', 'ampicillin', 'cefuroxim'],
+  nsaid: ['ibuprofen'],
+}
+
+/**
+ * Thuốc có trùng chất người bệnh bị dị ứng không (so ghi chú dị ứng với hoạt chất / tên thuốc, bỏ dấu).
+ * Chỉ để cảnh báo bác sĩ, không chặn kê.
+ */
+export function allergyConflict(drug: { name: string; activeIngredient?: string }, allergyNote?: string): boolean {
+  if (!allergyNote?.trim()) return false
+  const note = fold(allergyNote)
+  const ingredients = fold(`${drug.activeIngredient ?? ''};${drug.name}`)
+    .split(/[;,+/()]/)
+    .map((s) => s.trim().split(/\s+/)[0])
+    .filter((w) => w.length >= 4)
+  if (ingredients.some((w) => note.includes(w))) return true
+  return Object.entries(ALLERGY_GROUPS).some(([group, members]) => note.includes(group) && members.some((m) => ingredients.includes(m)))
+}
+
 const item = (
   drugId: string,
   days: number,
@@ -52,12 +96,13 @@ const item = (
     activeIngredient: d.activeIngredient,
     strength: d.strength,
     days,
-    doseUnit: d.unit,
+    doseUnit: defaultDoseUnit(d),
     morning: dose[0],
     noon: dose[1],
     afternoon: dose[2],
     evening: dose[3],
-    quantity: Math.ceil(days * perDay),
+    // Lọ / tuýp: cấp 1 đơn vị, không nhân liều (2 giọt × 3 lần × 5 ngày không phải 30 lọ)
+    quantity: isContainerUnit(d.unit) ? 1 : Math.ceil(days * perDay),
     quantityUnit: d.unit,
     usage,
   }
@@ -72,9 +117,15 @@ export const INITIAL_PRESCRIPTION_TEMPLATES: PrescriptionTemplate[] = [
   },
   {
     id: 'tpl_pharyngitis',
-    name: 'Viêm họng cấp',
-    advice: 'Súc họng / vệ sinh mũi bằng nước muối sinh lý. Ăn thức ăn mềm, dễ nuốt.',
-    items: [item('dr06', 5, [1, 0, 1, 0], 'Uống sau ăn'), item('dr02', 3, [1, 0, 1, 0], 'Uống khi sốt ≥ 38,5°C'), item('dr21', 5, [1, 1, 1, 0], 'Nhỏ mũi 2–3 giọt mỗi bên')],
+    name: 'Viêm họng cấp do liên cầu (trẻ 10–15kg)',
+    advice: 'Uống đủ 10 ngày kháng sinh kể cả khi đã hết sốt. Súc họng / vệ sinh mũi bằng nước muối sinh lý. Ăn thức ăn mềm, dễ nuốt.',
+    items: [item('dr06', 10, [1, 0, 1, 0], 'Uống sau ăn, đủ 10 ngày'), item('dr02', 3, [1, 0, 1, 0], 'Uống khi sốt ≥ 38,5°C'), item('dr21', 5, [2, 2, 2, 0], 'Nhỏ mũi 2–3 giọt mỗi bên')],
+  },
+  {
+    id: 'tpl_cough',
+    name: 'Ho, sổ mũi do virus (trẻ 10–15kg)',
+    advice: 'Không cần kháng sinh. Vệ sinh mũi bằng nước muối sinh lý, cho uống ấm, nằm cao đầu. Tái khám ngay nếu thở nhanh, rút lõm ngực, tím tái, bỏ bú.',
+    items: [item('dr21', 5, [2, 2, 2, 0], 'Nhỏ mũi 2–3 giọt mỗi bên'), item('dr02', 3, [1, 0, 1, 0], 'Uống khi sốt ≥ 38,5°C')],
   },
   {
     id: 'tpl_diarrhea',

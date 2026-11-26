@@ -40,7 +40,7 @@ const PAYMENT_TONE: Record<PaymentStatus, { dot: string; text: string }> = {
   partial: { dot: 'bg-warn', text: 'text-warn-ink' },
   none: { dot: 'bg-ink-5', text: 'text-ink-3' },
   cancelled: { dot: 'bg-ink-5', text: 'text-ink-4' },
-  refunded: { dot: 'bg-violet-500', text: 'text-violet-700' },
+  refunded: { dot: 'bg-aux', text: 'text-aux-ink' },
   failed: { dot: 'bg-danger', text: 'text-danger-ink' },
 }
 

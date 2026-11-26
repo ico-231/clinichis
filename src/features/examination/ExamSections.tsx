@@ -160,7 +160,7 @@ export function InfoSection({ draft, update, patient }: { draft: ExamDraft; upda
             label="Lý do khám"
             value={draft.reason}
             onChange={(reason) => update({ reason })}
-            placeholder="Vấn đề sức khỏe hoặc triệu chứng khiến người bệnh đến khám."
+            placeholder="Vấn đề sức khoẻ hoặc triệu chứng khiến người bệnh đến khám."
           />
           <TextBox label="Ghi chú lượt khám" value={draft.note} onChange={(note) => update({ note })} placeholder="Ghi chú" />
         </div>
@@ -202,12 +202,13 @@ export function ClinicalSections({ draft, update, vitalErrors }: { draft: ExamDr
     if (key === 'heightCm' || key === 'weightKg') vitals.bmi = computeBmi(vitals.heightCm, vitals.weightKg)
     update({ vitals })
   }
-  const vitalInput = (key: keyof ExamDraft['vitals'], unit: string, extra?: string) => (
+  // Tên đọc cho trình đọc màn hình gồm cả tên chỉ số lẫn đơn vị ("Mạch (lần/phút)"), không chỉ đơn vị
+  const vitalInput = (key: keyof ExamDraft['vitals'], label: string, unit: string, extra?: string, placeholder = unit) => (
     <input
       value={draft.vitals[key]}
       inputMode="decimal"
-      placeholder={unit}
-      aria-label={unit}
+      placeholder={placeholder}
+      aria-label={`${label} (${unit})`}
       onChange={(e) => setVital(key, e.target.value)}
       className={cn(boxInput, 'h-9 border-b-2 tabular-nums', vitalErrors.has(key) && 'border-danger! bg-danger-soft/60', extra)}
     />
@@ -220,21 +221,21 @@ export function ClinicalSections({ draft, update, vitalErrors }: { draft: ExamDr
           {VITALS.map((v) => (
             <label key={v.key} className="block">
               <Label required={v.required}>{v.label}</Label>
-              {vitalInput(v.key, v.unit)}
+              {vitalInput(v.key, v.label, v.unit)}
             </label>
           ))}
           <div>
             <Label>Huyết áp (mmHg)</Label>
             <div className="flex items-center gap-1">
-              {vitalInput('bpSystolic', 'Tâm thu', 'px-2')}
+              {vitalInput('bpSystolic', 'Huyết áp tâm thu', 'mmHg', 'px-2', 'Tâm thu')}
               <span className="text-ink-5">/</span>
-              {vitalInput('bpDiastolic', 'Tâm trương', 'px-2')}
+              {vitalInput('bpDiastolic', 'Huyết áp tâm trương', 'mmHg', 'px-2', 'T.trương')}
             </div>
           </div>
           {VITALS_2.map((v) => (
             <label key={v.key} className="block">
               <Label>{v.label}</Label>
-              {vitalInput(v.key, v.unit)}
+              {vitalInput(v.key, v.label, v.unit)}
             </label>
           ))}
           <label className="block">
@@ -295,7 +296,7 @@ function RiskRow({
         onChange={(e) => onNote(e.target.value)}
         placeholder="Ghi chú"
         aria-label={`Ghi chú ${label.toLowerCase()}`}
-        className="h-8 w-full px-3 rounded-[10px] border border-line-strong bg-surface text-[13px] text-ink outline-none transition placeholder:text-ink-5 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
+        className="h-8 w-full px-3 rounded-[10px] border border-line-strong bg-surface text-[13px] text-ink outline-none transition placeholder:text-ink-4 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
       />
     </div>
   )

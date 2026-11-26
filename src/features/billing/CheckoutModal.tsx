@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react'
+import { Switch as SwitchControl } from '@/components/ui/Switch'
 import { ChevronUp, Pencil } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { Select } from '@/components/ui/Select'
 import { useToast } from '@/components/ui/Toast'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
-import { lineNet, receiptsOf, unpaidLines } from '@/store/billing'
+import { lineNet, prepaidCredit, receiptsOf, unpaidLines } from '@/store/billing'
 import { PAYMENT_METHOD_LABEL } from '@/store/catalog'
 import { formatDateTimeVN } from '@/lib/date'
 import { formatMoney, formatNumber } from '@/lib/format'
@@ -54,7 +55,9 @@ function Checkout({ visitId, onClose }: { visitId: string; onClose: () => void }
   const lineTotals = chosen.map((l) => ({ ...l, discount: toVnd(l.unitPrice * l.quantity, l.mode, l.input) }))
   const serviceTotal = lineTotals.reduce((s, l) => s + lineNet(l), 0)
   const overallDiscount = toVnd(serviceTotal, discountMode, discountInput)
-  const due = serviceTotal - overallDiscount
+  // Đã tạm thu trước nhưng chưa gắn dòng (vd. thu trước khi thêm CLS): trừ đi để không thu trùng
+  const prepaid = visit && visit.status !== 'cancelled' ? Math.min(prepaidCredit(visit), serviceTotal - overallDiscount) : 0
+  const due = serviceTotal - overallDiscount - prepaid
   const [customerPaid, setCustomerPaid] = useState<number | null>(null)
   // Chỉ tiền mặt mới có tiền thừa; chuyển khoản / thẻ / ví thu đúng số khách cần trả
   const paidInput = method === 'cash' ? (customerPaid ?? due) : due
@@ -68,6 +71,7 @@ function Checkout({ visitId, onClose }: { visitId: string; onClose: () => void }
       lines: lineTotals.map(({ selected: _s, mode: _m, input: _i, ...l }) => l),
       discount: overallDiscount,
       customerPaid: paidInput,
+      prepaid,
       method,
       invoice: issueInvoice && invoice ? invoice : undefined,
     })
@@ -169,7 +173,7 @@ function Checkout({ visitId, onClose }: { visitId: string; onClose: () => void }
                               const base = l.unitPrice * l.quantity
                               const disc = toVnd(base, l.mode, l.input)
                               return (
-                                <tr key={key} className={cn('border-t border-line-soft', !l.selected && 'text-ink-5')}>
+                                <tr key={key} className={cn('border-t border-line-soft', !l.selected && 'text-ink-4')}>
                                   <td className="py-2 pl-3">
                                     <CheckBox checked={l.selected} onChange={(selected) => patch(key, { selected })} label={l.name} />
                                   </td>
@@ -206,6 +210,7 @@ function Checkout({ visitId, onClose }: { visitId: string; onClose: () => void }
                   label="Giảm giá dịch vụ"
                   value={<DiscountInput mode={discountMode} value={discountInput} onMode={(m) => (setDiscountMode(m), setDiscountInput(0))} onValue={setDiscountInput} wide />}
                 />
+                {prepaid > 0 && <Row label="Đã tạm thu trước" value={<span className="tabular-nums">-{formatNumber(prepaid)}</span>} />}
                 <div className="border-t border-line-soft" />
                 <Row label={<b className="text-ink">Khách cần trả</b>} value={<b className="text-[15px] text-brand-ink">{formatNumber(due)}</b>} />
                 <Row
@@ -331,14 +336,6 @@ function CheckBox({ checked, onChange, label }: { checked: boolean; onChange: (v
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onChange(!checked)}
-      className={cn('relative h-5 w-9 shrink-0 rounded-full transition', checked ? 'bg-brand' : 'bg-line-strong')}
-    >
-      <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-surface shadow transition-all', checked ? 'left-[18px]' : 'left-0.5')} />
-    </button>
+    <SwitchControl checked={checked} onChange={onChange} />
   )
 }

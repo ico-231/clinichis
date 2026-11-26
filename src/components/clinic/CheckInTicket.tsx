@@ -61,7 +61,7 @@ function Ticket({ visitId, onClose }: { visitId: string; onClose: () => void }) 
       <div className="fixed inset-0 z-[60] flex animate-fade-in items-center justify-center bg-overlay/50 p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
         <div role="dialog" aria-modal="true" aria-label="Phiếu tiếp nhận" className="w-[240px] animate-pop-in rounded-xl bg-surface p-1.5 shadow-pop">
           <div className="flex justify-end">
-            <button type="button" onClick={onClose} className="rounded p-0.5 text-ink-4 hover:bg-subtle" aria-label="Đóng">
+            <button type="button" onClick={onClose} className="grid h-6 w-6 place-items-center rounded-md text-ink-4 hover:bg-subtle hover:text-ink" aria-label="Đóng">
               <X className="h-3.5 w-3.5" />
             </button>
           </div>

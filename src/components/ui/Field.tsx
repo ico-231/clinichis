@@ -4,7 +4,7 @@ import { useControlLabel } from '@/lib/useControlLabel'
 import { formatNumber } from '@/lib/format'
 
 export const inputBase =
-  'h-9 w-full rounded-[10px] border border-line-strong bg-surface px-3 text-[13.5px] text-ink placeholder:text-ink-3/60 outline-none transition hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15 disabled:bg-subtle disabled:text-ink-3'
+  'h-9 w-full rounded-[10px] border border-line-strong bg-surface px-3 text-[13.5px] text-ink placeholder:text-ink-4 outline-none transition hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15 disabled:bg-subtle disabled:text-ink-3'
 
 export const inputError = 'border-danger hover:border-danger focus:border-danger focus:ring-danger/15'
 
@@ -58,7 +58,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
     <FieldShell label={label} required={required} error={error} hint={hint} className={wrapperClassName}>
       <div className="relative">
         {leftIcon && <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-ink-5">{leftIcon}</span>}
-        <input ref={ref} className={cn(inputBase, !!leftIcon && 'pl-9', error && inputError, className)} {...props} />
+        <input ref={ref} required={required} aria-required={required || undefined} className={cn(inputBase, !!leftIcon && 'pl-9', error && inputError, className)} {...props} />
       </div>
     </FieldShell>
   )
@@ -73,7 +73,7 @@ interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 export function TextArea({ label, error, required, wrapperClassName, className, ...props }: TextAreaProps) {
   return (
     <FieldShell label={label} required={required} error={error} className={wrapperClassName}>
-      <textarea className={cn(inputBase, 'h-auto min-h-[64px] resize-none py-2 leading-5', error && inputError, className)} {...props} />
+      <textarea required={required} aria-required={required || undefined} className={cn(inputBase, 'h-auto min-h-[64px] resize-none py-2 leading-5', error && inputError, className)} {...props} />
     </FieldShell>
   )
 }
@@ -119,11 +119,13 @@ interface SegmentedProps<T extends string> {
 export function Segmented<T extends string>({ label, required, value, options, onChange, error, className }: SegmentedProps<T>) {
   return (
     <FieldShell label={label} required={required} error={error} className={className}>
-      <div className={cn('flex h-9 rounded-[10px] border border-line-strong bg-subtle p-0.5', error && 'border-danger')}>
+      <div role="radiogroup" aria-label={label} aria-required={required || undefined} className={cn('flex h-9 rounded-[10px] border border-line-strong bg-subtle p-0.5', error && 'border-danger')}>
         {options.map((o) => (
           <button
             key={o.value}
             type="button"
+            role="radio"
+            aria-checked={value === o.value}
             onClick={() => onChange(o.value)}
             className={cn(
               'flex flex-1 items-center justify-center gap-1.5 rounded-[7px] text-[13px] font-semibold transition',
@@ -150,10 +152,12 @@ interface CheckboxProps {
 export function Checkbox({ checked, onChange, label, description, className }: CheckboxProps) {
   return (
     <label className={cn('flex cursor-pointer items-start gap-2.5 select-none', className)}>
+      {/* Ô thật đứng trước để ô vẽ (peer) hiện viền khi focus bằng bàn phím */}
+      <input type="checkbox" className="peer sr-only" checked={checked} onChange={(e) => onChange(e.target.checked)} />
       <span
         className={cn(
-          'mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border transition',
-          checked ? 'border-brand bg-brand' : 'border-line-strong bg-surface',
+          'mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border transition peer-focus-visible:ring-2 peer-focus-visible:ring-brand peer-focus-visible:ring-offset-1 peer-focus-visible:ring-offset-surface',
+          checked ? 'border-brand bg-brand' : 'border-control bg-surface',
         )}
       >
         {checked && (
@@ -162,7 +166,6 @@ export function Checkbox({ checked, onChange, label, description, className }: C
           </svg>
         )}
       </span>
-      <input type="checkbox" className="sr-only" checked={checked} onChange={(e) => onChange(e.target.checked)} />
       <span className="text-[13px] leading-5">
         <span className="font-medium text-ink">{label}</span>
         {description && <span className="block text-xs text-ink-3">{description}</span>}

@@ -25,7 +25,7 @@ Tài liệu để một phiên Claude Code hoặc Antigravity mới bắt kịp 
   `npm --prefix clinic run dev`) và `clinic/.claude/` (`npm run dev`), cổng **8443** cho Claude Code (`[CC]`) và **8444** cho Antigravity (`[AG]`, PowerShell: `$env:PORT=8444; npm --prefix clinic run dev`).
   Lần đầu khởi động Vite tối ưu lại dependencies mất ~15 giây, trang trắng trong lúc đó là bình thường.
 - Tailwind bị chặn quét `docs/` (`@source not '../docs'` trong `src/index.css`): đường dẫn Windows kiểu dấu gạch ngược + hex trong tài liệu từng làm dev server trắng trang lỗi "Invalid code point". Đổi `@source` thì phải khởi động lại dev server.
-- Kiểm tra: `npx tsc -b --noEmit` (bật `noUnusedLocals`/`noUnusedParameters`) · `npx vitest run` (**128 test** / 17 file) · `npx vite build` (bundle chính ~342 kB).
+- Kiểm tra: `npx tsc -b --noEmit` (bật `noUnusedLocals`/`noUnusedParameters`) · `npx vitest run` (**139 test** / 19 file) · `npx vite build` (bundle chính ~342 kB) · `pnpm e2e` (**12 test Playwright** trên Chrome có sẵn, tự build + chạy cổng 4174, ~1 phút; 26/11 `[CC]`). Sửa nhãn nút / tiêu đề màn thì chạy lại `pnpm e2e` vì test tìm theo chữ trên màn.
 - Dữ liệu demo nằm ở `localStorage` khoá `clinic-his:state` (STATE_VERSION = **6**), tách biệt theo từng cổng (`8443` / `8444`). Xoá khoá rồi tải
   lại để về dữ liệu mẫu. Menu tài khoản (góc phải thanh `TopNav`) có "Khôi phục dữ liệu mẫu".
 - `portfolio 1/CLAUDE.md` và `portfolio 1/GEMINI.md` nằm **ngoài** git repo (repo chỉ là `clinic/`), chỉ có trên máy này.
@@ -92,6 +92,13 @@ Transcript phiên trước nằm trên máy này:
   Dùng token trong `src/index.css`: nền `canvas` / `surface` / `subtle`, đường kẻ `line-soft` / `line` / `line-strong`, chữ `ink` → `ink-5`,
   màu `brand` / `accent` / `info` / `warn` / `danger` (nền, viền) và bản `-ink` cho chữ (vd. `text-brand-ink`), nền nhạt `-soft` / `-tint`,
   viền nhạt `-line`, khối đảo màu `inverse` + `on-inverse`, lớp phủ `overlay`. Giao diện tối chỉ đổi giá trị token trong `.dark`.
+  Thêm (26/11 P11): `aux` (tím: hoàn tiền, chẩn đoán hình ảnh), `control` (viền ô tích / radio / công tắc tắt, ≥ 3:1),
+  `danger-hover` (nền nút đỏ khi rê chuột – **không** dùng `danger-strong` làm nền vì ở giao diện tối nó là màu chữ sáng), `viewer`.
+  `ink-5` chỉ cho biểu tượng / trạng thái tắt, **không** cho chữ (chỉ 2,5:1). Công tắc dùng `ui/Switch`, dòng mở rộng dùng `ui/RowToggle`.
+- **Bàn phím (26/11 P11):** mọi thao tác bấm-cả-dòng phải có nút thật tương đương trong dòng (Mã KB, ô thanh toán…). Menu thả xuống
+  và Tabs đã có điều hướng mũi tên (điều hướng trong menu, không phải phím tắt).
+- **Dữ liệu demo tự dời ngày (26/11 P11):** khoá `clinic-his:demo-day` ghi ngày của bộ dữ liệu; mở lại sau N ngày thì `shiftDemoDates`
+  dời mọi ngày ISO + phần ngày trong mã khám / mã phiếu đi N ngày (tuổi các bé giữ nguyên, thao tác người xem không mất).
   SVG/biểu đồ: class `fill-*`/`stroke-*` hoặc `style={{ fill: 'var(--chart-new)' }}`. Tờ giấy xem trước bản in: thêm class `paper`.
   Ô giờ: dùng `TimeInput` (`src/components/ui/TimeInput.tsx`, luôn 24 giờ), không dùng `<input type="time">`.
 - Trang chờ còn lại (không có ảnh): Đối soát thanh toán, Báo cáo khám mới, cài đặt Hoá đơn

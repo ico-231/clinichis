@@ -8,6 +8,9 @@ vite.config.*.timestamp-*
 *.tsbuildinfo
 *-debug.log*
 logs/
+# Kết quả test trình duyệt (Playwright)
+/test-results/
+/playwright-report/
 *.log
 .claude-replay.*
 .tmp-*

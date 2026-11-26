@@ -1,4 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react'
+import { Switch as SwitchControl } from '@/components/ui/Switch'
 import { Eye, EyeOff, Lock, MoreHorizontal, Pencil, PlusCircle, Trash2, Unlock } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
@@ -52,16 +53,7 @@ function Field({ label, required, hint, error, children }: { label: string; requ
 function Switch({ checked, onChange, label, disabled }: { checked: boolean; onChange: (v: boolean) => void; label: string; disabled?: boolean }) {
   return (
     <label className={cn('flex items-center gap-2.5 text-[13px] text-ink-2', disabled && 'opacity-50')}>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        disabled={disabled}
-        onClick={() => onChange(!checked)}
-        className={cn('relative h-5 w-9 shrink-0 rounded-full transition', checked ? 'bg-brand' : 'bg-line-strong')}
-      >
-        <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-surface shadow transition-all', checked ? 'left-[18px]' : 'left-0.5')} />
-      </button>
+      <SwitchControl checked={checked} onChange={onChange} disabled={disabled} />
       {label}
     </label>
   )

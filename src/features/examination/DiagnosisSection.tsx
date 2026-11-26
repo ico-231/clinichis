@@ -94,7 +94,7 @@ export function DiagnosisInput({
             }
           }}
           placeholder={placeholder}
-          className="h-9 w-full pr-3 pl-9 rounded-[10px] border border-line-strong bg-surface text-[13px] text-ink outline-none transition placeholder:text-ink-5 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
+          className="h-9 w-full pr-3 pl-9 rounded-[10px] border border-line-strong bg-surface text-[13px] text-ink outline-none transition placeholder:text-ink-4 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
         />
         <Popover
           open={open}
@@ -160,7 +160,7 @@ export function DiagnosisInput({
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="flex w-full items-center justify-center gap-1.5 text-[13px] text-ink-5"
+            className="flex w-full items-center justify-center gap-1.5 text-[13px] text-ink-4"
           >
             <PlusCircle className="h-3.5 w-3.5" />
             Thêm chẩn đoán
@@ -187,7 +187,7 @@ export function DiagnosisInput({
               <button
                 type="button"
                 onClick={() => toggle(d)}
-                className="text-ink-5 hover:text-danger-ink"
+                className="-my-1 grid h-6 w-6 place-items-center rounded-md text-ink-4 hover:bg-danger-soft hover:text-danger-ink"
                 aria-label={`Bỏ ${d.name}`}
               >
                 <X className="h-3.5 w-3.5" />

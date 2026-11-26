@@ -42,7 +42,7 @@ export function FieldLabel({ label, required }: { label: string; required?: bool
 }
 
 export const underlineBase =
-  'h-9 w-full rounded-[10px] border border-line-strong bg-surface px-3 text-[13px] text-ink outline-none transition placeholder:text-ink-5 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/15 disabled:bg-subtle disabled:text-ink-4'
+  'h-9 w-full rounded-[10px] border border-line-strong bg-surface px-3 text-[13px] text-ink outline-none transition placeholder:text-ink-4 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/15 disabled:bg-subtle disabled:text-ink-4'
 
 interface UnderlineInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string
@@ -105,20 +105,22 @@ export function UnderlineRadioGender({
   return (
     <div className={className}>
       <FieldLabel label={label} />
-      <div className="mt-0.5 flex h-8 items-center gap-5">
+      <div role="radiogroup" aria-label={label} className="mt-0.5 flex h-8 items-center gap-5">
         {items.map((it) => {
           const checked = value === it.v
           return (
             <button
               key={it.v}
               type="button"
+              role="radio"
+              aria-checked={checked}
               onClick={() => onChange(it.v)}
               className="inline-flex items-center gap-1.5 text-[13px] text-ink select-none"
             >
               <span
                 className={cn(
                   'flex h-4 w-4 items-center justify-center rounded-full border transition',
-                  checked ? 'border-brand' : 'border-line-strong',
+                  checked ? 'border-brand' : 'border-control',
                 )}
               >
                 {checked && <span className="h-2 w-2 rounded-full bg-brand" />}
@@ -216,7 +218,7 @@ export function UnderlineSelect<T extends string>({
           error && 'border-danger',
         )}
       >
-        <span className={cn('truncate', !selected && 'text-ink-5')}>
+        <span className={cn('truncate', !selected && 'text-ink-4')}>
           {selected ? selected.label : placeholder}
         </span>
         <Icon className="h-3.5 w-3.5 shrink-0 text-ink-5" />
@@ -243,7 +245,7 @@ export function UnderlineSelect<T extends string>({
               onKeyDown={onSearchKey}
               placeholder="Tìm nhanh..."
               aria-label="Tìm nhanh"
-              className="w-full bg-transparent text-[12.5px] text-ink outline-none placeholder:text-ink-5"
+              className="w-full bg-transparent text-[12.5px] text-ink outline-none placeholder:text-ink-4"
             />
             {query && (
               <button type="button" onClick={() => setQuery('')} className="text-ink-5 hover:text-ink-3" aria-label="Xoá từ khoá">
@@ -373,7 +375,7 @@ export function UnderlineDateField({
           onBlur={() => setText(isoToDisplay(value))}
           placeholder="dd / mm / yyyy"
           inputMode="numeric"
-          className="w-full bg-transparent text-[13px] text-ink tabular-nums outline-none placeholder:text-ink-5"
+          className="w-full bg-transparent text-[13px] text-ink tabular-nums outline-none placeholder:text-ink-4"
         />
         <button
           type="button"
@@ -544,7 +546,7 @@ export function VitalUnderlineInput({
           placeholder={unit}
           onChange={(e) => onChange?.(e.target.value.replace(/[^\d.,]/g, ''))}
           className={cn(
-            'w-full bg-transparent text-[13px] text-ink tabular-nums outline-none placeholder:text-ink-5',
+            'w-full bg-transparent text-[13px] text-ink tabular-nums outline-none placeholder:text-ink-4',
             readOnly && 'text-ink-2',
           )}
         />

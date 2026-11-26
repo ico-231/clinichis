@@ -99,6 +99,15 @@ export function paidLineKeys(visit: Visit): Set<string> {
   return keys
 }
 
+/**
+ * Tiền đã tạm thu nhưng chưa gắn được vào dòng nào (thu trước khi phát sinh thêm CLS, phiếu cũ không ghi dòng):
+ * = tổng giá các dòng chưa thu − số còn phải thu. Hộp Thu tiền trừ khoản này để không thu trùng.
+ */
+export function prepaidCredit(visit: Visit) {
+  const unpaidGross = unpaidLines(visit).reduce((s, l) => s + l.unitPrice * l.quantity, 0)
+  return Math.max(unpaidGross - remainingAmount(visit), 0)
+}
+
 export const isLinePaid = (visit: Visit, line: Pick<ReceiptLine, 'kind' | 'refId'>) => paidLineKeys(visit).has(lineKey(line))
 
 export function unpaidLines(visit: Visit) {

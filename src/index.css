@@ -24,6 +24,8 @@
   --color-line-soft: #f0efea;
   --color-line: #e7e5e4;
   --color-line-strong: #d6d3d1;
+  /* Viền điều khiển nhỏ (ô tích, radio, công tắc đang tắt): cần tương phản ≥ 3:1 để nhận ra */
+  --color-control: #8a847e;
   /* Chữ: ink (đậm nhất) → ink-5 (chỉ cho biểu tượng / gợi ý) */
   --color-ink: #1c1917;
   --color-ink-2: #44403c;
@@ -34,6 +36,8 @@
   --color-inverse: #1c1917;
   --color-on-inverse: #ffffff;
   --color-overlay: #1c1917;
+  /* Nền khung xem ảnh kết quả (luôn tối, cả hai giao diện) */
+  --color-viewer: #292524;
 
   /* Thương hiệu: xanh ngọc */
   --color-brand: #0f766e;
@@ -75,6 +79,14 @@
   --color-danger-ink: #c81e1e;
   --color-danger-soft: #fef2f2;
   --color-danger-line: #fecaca;
+  /* Nền nút đỏ khi rê chuột (chữ trắng): -strong ở giao diện tối là màu chữ sáng nên không dùng làm nền */
+  --color-danger-hover: #9b1c1c;
+
+  /* Phụ: tím (hoàn tiền, chẩn đoán hình ảnh) */
+  --color-aux: #7c3aed;
+  --color-aux-ink: #6d28d9;
+  --color-aux-soft: #f5f3ff;
+  --color-aux-line: #ddd6fe;
 
   --shadow-card: 0 1px 2px rgb(28 25 23 / 0.04);
   --shadow-pop: 0 12px 32px -8px rgb(28 25 23 / 0.18), 0 2px 6px rgb(28 25 23 / 0.06);
@@ -157,6 +169,7 @@
   --color-line-soft: #292723;
   --color-line: #33302b;
   --color-line-strong: #46423c;
+  --color-control: #7d766d;
   --color-ink: #f4f2ee;
   --color-ink-2: #dcd8d1;
   --color-ink-3: #c1bbb3;
@@ -196,32 +209,20 @@
   --color-warn-tint: #2b2413;
   --color-warn-line: #5c4813;
 
-  --color-danger: #dc3a3a;
+  --color-danger: #cf3232;
   --color-danger-strong: #fecaca;
   --color-danger-ink: #fca5a5;
   --color-danger-soft: #3b1a19;
   --color-danger-line: #6b2522;
+  --color-danger-hover: #a92626;
+
+  --color-aux: #8b5cf6;
+  --color-aux-ink: #c4b5fd;
+  --color-aux-soft: #251c3d;
+  --color-aux-line: #3d2f66;
 
   --shadow-card: 0 0 0 transparent;
   --shadow-pop: 0 16px 40px -8px rgb(0 0 0 / 0.6), 0 2px 8px rgb(0 0 0 / 0.4);
-
-  /* Màu phụ còn dùng trực tiếp (hoàn tiền, nhãn phụ): nền nhạt ⇒ nền tối */
-  --color-violet-50: #251c3d;
-  --color-violet-200: #3d2f66;
-  --color-violet-600: #c4b5fd;
-  --color-violet-700: #c4b5fd;
-  --color-sky-50: #10283a;
-  --color-sky-600: #7dd3fc;
-  --color-sky-700: #7dd3fc;
-  --color-rose-50: #3a1622;
-  --color-rose-200: #6b2638;
-  --color-rose-700: #fda4af;
-  --color-yellow-50: #2f2a0f;
-  --color-yellow-200: #5c5013;
-  --color-yellow-800: #fde047;
-  --color-indigo-50: #1d1f45;
-  --color-indigo-500: #a5b4fc;
-  --color-green-700: #86efac;
 }
 
 @layer base {
@@ -243,11 +244,6 @@
   ::selection {
     background: color-mix(in oklab, var(--color-brand) 22%, transparent);
   }
-  input[type='time']::-webkit-calendar-picker-indicator {
-    opacity: 0.55;
-    cursor: pointer;
-  }
-  .dark input[type='time']::-webkit-calendar-picker-indicator,
   .dark input[type='date']::-webkit-calendar-picker-indicator {
     filter: invert(0.85);
   }
@@ -378,5 +374,10 @@ select:disabled {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  /* Vòng xoay "đang tải" vẫn quay (chậm) để người dùng biết app chưa treo */
+  .animate-spin {
+    animation-duration: 1.5s !important;
+    animation-iteration-count: infinite !important;
   }
 }

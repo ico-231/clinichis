@@ -1,4 +1,5 @@
 import { Fragment, useMemo, useState } from 'react'
+import { RowToggle } from '@/components/ui/RowToggle'
 import { Info, ListFilter, Search, Upload } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/Button'
@@ -179,7 +180,9 @@ export function ClsReportPage() {
                   {pageRows.map((g) => (
                     <Fragment key={g.key}>
                       <tr className="cursor-pointer transition-colors hover:bg-brand-wash" onClick={() => setOpen(open === g.key ? null : g.key)}>
-                        <td className={cn(td, 'font-semibold text-ink-3')}>{open === g.key ? '−' : '+'}</td>
+                        <td className={td}>
+                          <RowToggle open={open === g.key} onToggle={() => setOpen(open === g.key ? null : g.key)} label={`chi tiết ${g.code}`} />
+                        </td>
                         <td className={cn(td, 'font-semibold text-info-ink tabular-nums')}>{g.code}</td>
                         <td className={cn(td, 'font-semibold text-ink uppercase')}>{g.patient.fullName}</td>
                         <td className={cn(td, 'text-ink-2')}>Nội bộ</td>

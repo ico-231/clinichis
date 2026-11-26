@@ -52,7 +52,8 @@ function DocHeader({ title, codeLabel, code }: { title: string; codeLabel: strin
   )
 }
 
-function PatientBlock({ patient, draft }: { patient: Patient; draft: ExamDraft }) {
+/** Tuổi tính theo ngày khám (in lại đơn cũ vẫn đúng tuổi lúc khám) */
+function PatientBlock({ patient, draft, date }: { patient: Patient; draft: ExamDraft; date: string }) {
   const v = draft.vitals
   return (
     <div className="grid grid-cols-3 gap-x-4 text-[13px]">
@@ -61,7 +62,7 @@ function PatientBlock({ patient, draft }: { patient: Patient; draft: ExamDraft }
       </p>
       <p>Giới tính: {GENDER_LABEL[patient.gender]}</p>
       <p className="col-span-2">
-        Ngày sinh: {formatDateVN(patient.dob)} ({ageLabel(patient.dob)})
+        Ngày sinh: {formatDateVN(patient.dob)} ({ageLabel(patient.dob, date)})
       </p>
       <p>Cân nặng: {v.weightKg ? `${v.weightKg} kg` : '—'}</p>
       <p className="col-span-2">Điện thoại: {formatPhone(patient.phone)}</p>
@@ -90,7 +91,7 @@ export function PrescriptionDoc({ visit, patient, draft }: { visit: Visit; patie
   return (
     <>
       <DocHeader title="Đơn thuốc" codeLabel="Mã đơn thuốc" code={visit.code} />
-      <PatientBlock patient={patient} draft={draft} />
+      <PatientBlock patient={patient} draft={draft} date={visit.date} />
       <p className="mt-1 text-[13px]">
         Chẩn đoán: <b>{draft.diagnoses.length ? draft.diagnoses.map(formatDiagnosis).join('; ') : '—'}</b>
       </p>
@@ -136,7 +137,7 @@ export function OrderSheetDoc({ visit, patient, draft }: { visit: Visit; patient
   return (
     <>
       <DocHeader title="Phiếu chỉ định" codeLabel="Mã chỉ định" code={visit.code} />
-      <PatientBlock patient={patient} draft={draft} />
+      <PatientBlock patient={patient} draft={draft} date={visit.date} />
       <p className="mt-1 text-[13px]">Chẩn đoán: {draft.diagnoses.length ? draft.diagnoses.map(formatDiagnosis).join('; ') : '—'}</p>
       <table className="mt-4 w-full text-[13px]">
         <thead>

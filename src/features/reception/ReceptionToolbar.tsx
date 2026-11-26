@@ -49,8 +49,8 @@ export function ReceptionToolbar({ mode = 'list' }: { mode?: 'list' | 'board' })
                 setQuery('')
                 setReceptionView({ searchInput: '', filters: { ...filters, search: '' }, page: 1 })
               }}
-              className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-0.5 text-ink-3 hover:text-ink"
-              aria-label="Xóa tìm kiếm"
+              className="absolute top-1/2 right-1.5 grid h-6 w-6 -translate-y-1/2 place-items-center rounded-md text-ink-3 hover:bg-subtle hover:text-ink"
+              aria-label="Xoá tìm kiếm"
             >
               <X className="h-3.5 w-3.5" />
             </button>

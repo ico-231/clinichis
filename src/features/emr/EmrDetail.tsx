@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { Switch as SwitchControl } from '@/components/ui/Switch'
 import { TimeInput } from '@/components/ui/TimeInput'
 import { ChevronDown, ChevronLeft, ChevronRight, Download, FileText, FlaskConical, Printer, Save } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -450,9 +451,7 @@ function Switch({ label, checked, onChange }: { label: string; checked: boolean;
   return (
     <label className="flex cursor-pointer items-center gap-2 text-[13px] font-medium text-ink-2">
       {label}
-      <button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)} className={cn('relative h-5 w-9 rounded-full transition', checked ? 'bg-brand' : 'bg-line-strong')}>
-        <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-surface shadow transition-all', checked ? 'left-[18px]' : 'left-0.5')} />
-      </button>
+      <SwitchControl checked={checked} onChange={onChange} />
     </label>
   )
 }

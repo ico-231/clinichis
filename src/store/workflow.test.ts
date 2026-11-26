@@ -5,7 +5,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { createActions, reducer, type Action, type ClinicActions } from './storeLogic'
 import { createSeedState } from './seed'
-import { paidAmount, remainingAmount, unpaidLines } from './billing'
+import { paidAmount, prepaidCredit, remainingAmount, unpaidLines } from './billing'
 import { todayISO } from '@/lib/date'
 import type { ClinicState, ParaclinicalOrderItem, PatientInput, VisitInput } from './types'
 
@@ -187,6 +187,29 @@ describe('Khám → chỉ định → thu tiền', () => {
     actions.updateOrder(visit.id, 'a', { performStatus: 'no_show' })
     v = visitOf(visit.id)
     expect(v.fee).toBe(350_000)
+  })
+
+  it('đã tạm thu một phần (phiếu không ghi dòng) rồi thêm CLS: hộp Thu tiền không thu trùng phần đã thu', () => {
+    // CK 150k + CLS a 200k + CLS b 200k = 550k; thu trước 300k không ghi dòng ⇒ phủ CK, dư 150k chưa gắn dòng nào
+    const { visit } = actions.registerNewPatient(patientInput(), visitInput({ paraclinicalOrders: [order('a', 200_000), order('b', 200_000)], fee: 550_000 }))
+    actions.collectPayment(visit.id, 300_000, 'cash')
+    let v = visitOf(visit.id)
+    expect(remainingAmount(v)).toBe(250_000)
+    expect(prepaidCredit(v)).toBe(150_000)
+    const r = actions.checkout(visit.id, { lines: unpaidLines(v), discount: 0, customerPaid: 250_000, method: 'cash', prepaid: prepaidCredit(v) })!
+    expect(r.amount).toBe(250_000)
+    expect(r.prepaid).toBe(150_000)
+    v = visitOf(visit.id)
+    expect(paidAmount(v)).toBe(550_000)
+    expect(v.paymentStatus).toBe('paid')
+    expect(remainingAmount(v)).toBe(0)
+  })
+
+  it('không cho trừ "tạm thu" nhiều hơn số thực có', () => {
+    const { visit } = actions.registerNewPatient(patientInput(), visitInput())
+    const r = actions.checkout(visit.id, { lines: unpaidLines(visitOf(visit.id)), discount: 0, customerPaid: 150_000, method: 'cash', prepaid: 999_999 })!
+    expect(r.amount).toBe(150_000)
+    expect(r.prepaid).toBeUndefined()
   })
 
   it('KTV trả kết quả rồi bác sĩ kết thúc khám: có giờ kết thúc', () => {

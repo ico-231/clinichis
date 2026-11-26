@@ -127,6 +127,7 @@ export function ExamListPage() {
           <button
             type="button"
             onClick={() => resetPage(setStatus)('all')}
+            aria-pressed={status === 'all'}
             className={cn(
               'inline-flex h-[33px] items-center gap-1.5 rounded-full border px-3 text-[13px] font-semibold transition',
               status === 'all' ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong bg-surface text-ink-2 hover:bg-subtle',
@@ -143,6 +144,7 @@ export function ExamListPage() {
                 key={s}
                 type="button"
                 onClick={() => resetPage(setStatus)(s)}
+                aria-pressed={active}
                 className={cn(
                   'inline-flex h-[33px] items-center gap-1.5 rounded-full border px-3 text-[13px] font-semibold transition',
                   active ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong bg-surface text-ink-2 hover:bg-subtle',
@@ -172,8 +174,8 @@ export function ExamListPage() {
               <button
                 type="button"
                 onClick={() => (setSearchInput(''), setSearch(''), setPage(1))}
-                className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-0.5 text-ink-3 hover:text-ink"
-                aria-label="Xóa tìm kiếm"
+                className="absolute top-1/2 right-1.5 grid h-6 w-6 -translate-y-1/2 place-items-center rounded-md text-ink-3 hover:bg-subtle hover:text-ink"
+                aria-label="Xoá tìm kiếm"
               >
                 <X className="h-3.5 w-3.5" />
               </button>

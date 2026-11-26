@@ -1,4 +1,5 @@
-import { doctorLabel, VISIT_STATUS } from '@/store/catalog'
+import { doctorLabel, PAYMENT_STATUS, VISIT_STATUS } from '@/store/catalog'
+import { remainingAmount } from '@/store/billing'
 import { ageLabel, formatTimeRange } from '@/lib/date'
 import { formatNumber } from '@/lib/format'
 import { cn } from '@/lib/cn'
@@ -56,8 +57,9 @@ export function ReceptionBoard({ rows, onOpen, onChangeStatus, onPay, onOpenExam
                 ) : (
                   list.map((row) => {
                     const { visit, patient } = row
-                    const isUnpaid = visit.paymentStatus === 'unpaid' || visit.paymentStatus === 'partial'
-                    const payText = visit.paymentStatus === 'paid' ? 'Đã thanh toán' : isUnpaid ? 'Chưa thanh toán' : 'Miễn phí'
+                    // Còn nợ: chưa thu, thu một phần, hoặc thanh toán online thất bại (vẫn phải thu tại quầy)
+                    const isUnpaid = visit.status !== 'cancelled' && (visit.paymentStatus === 'unpaid' || visit.paymentStatus === 'partial' || visit.paymentStatus === 'failed')
+                    const payText = PAYMENT_STATUS[visit.paymentStatus].short
                     return (
                       <article
                         key={visit.id}
@@ -68,12 +70,27 @@ export function ReceptionBoard({ rows, onOpen, onChangeStatus, onPay, onOpenExam
                           <span className="font-bold text-accent-ink tabular-nums">STT {visit.queueNumber}</span>
                           <span className="text-ink-3 tabular-nums">{formatTimeRange(visit.time, visit.endTime)}</span>
                         </div>
-                        <p className="truncate text-[14px] font-bold text-ink uppercase">{patient.fullName}</p>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onOpen(visit.id)
+                          }}
+                          className="block w-full truncate rounded-sm text-left text-[14px] font-bold text-ink uppercase hover:underline"
+                        >
+                          {patient.fullName}
+                        </button>
                         <p className="mt-0.5 truncate text-[12.5px] text-ink-2">
                           {ageLabel(patient.dob, visit.date)} · {doctorLabel(visit.doctorId)}
                         </p>
                         <div className="mt-2 flex items-center justify-between gap-2 text-[13px]">
-                          <b className="text-ink tabular-nums">{formatNumber(visit.fee)} đ</b>
+                          {isUnpaid && visit.paymentStatus !== 'unpaid' ? (
+                            <b className="text-ink tabular-nums" title={`Tổng phí ${formatNumber(visit.fee)} đ`}>
+                              Còn {formatNumber(remainingAmount(visit))} đ
+                            </b>
+                          ) : (
+                            <b className="text-ink tabular-nums">{formatNumber(visit.fee)} đ</b>
+                          )}
                           {isUnpaid ? (
                             <button
                               type="button"
@@ -86,7 +103,7 @@ export function ReceptionBoard({ rows, onOpen, onChangeStatus, onPay, onOpenExam
                               {payText}
                             </button>
                           ) : (
-                            <span className={cn('font-semibold', visit.paymentStatus === 'paid' ? 'text-brand-ink' : 'text-ink-3')}>
+                            <span className={cn('font-semibold', visit.paymentStatus === 'paid' ? 'text-brand-ink' : visit.paymentStatus === 'refunded' ? 'text-ink-2' : 'text-ink-3')}>
                               {payText}
                             </span>
                           )}

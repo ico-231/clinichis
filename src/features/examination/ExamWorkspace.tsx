@@ -101,7 +101,7 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
   const lockedOrders = useMemo(() => {
     const m = new Map<string, string>()
     for (const o of liveDraft.orders) {
-      if (paidKeys.has(`paraclinical:${o.id}`)) m.set(o.id, 'Đã thu tiền – cần hoàn tiền trước khi bỏ')
+      if (paidKeys.has(`paraclinical:${o.id}`)) m.set(o.id, 'Đã thu tiền nên không bỏ được chỉ định này')
       else if (o.resultStatus === 'has_result') m.set(o.id, 'Đã có kết quả')
       else if (o.performStatus === 'in_progress' || o.performStatus === 'done') m.set(o.id, 'Phòng CLS đang / đã thực hiện')
     }

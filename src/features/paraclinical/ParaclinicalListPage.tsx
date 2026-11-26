@@ -1,4 +1,5 @@
 import { Fragment, useMemo, useState } from 'react'
+import { RowToggle } from '@/components/ui/RowToggle'
 import { Check, ChevronDown, ClipboardCheck, Hourglass, ListFilter, Pencil, Printer, ReceiptText, Search, SlidersHorizontal, Upload } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/Button'
@@ -14,7 +15,7 @@ import { useClinicActions } from '@/store/ClinicStore'
 import { CLINIC, GENDER_LABEL } from '@/store/catalog'
 import { PARACLINICAL_PROVIDERS } from '@/store/paraclinicalCatalog'
 import { isLinePaid } from '@/store/billing'
-import { ageInYears, ageLabel, formatDateTimeVN, formatDateVN } from '@/lib/date'
+import { ageLabel, formatDateTimeVN, formatDateVN } from '@/lib/date'
 import { formatNumber, formatPhone, normalizeText } from '@/lib/format'
 import { cn } from '@/lib/cn'
 import { OrderSheetDoc, PrintPreviewModal } from '../examination/PrintDocs'
@@ -203,8 +204,8 @@ export function ParaclinicalListPage({ category }: { category: 'imaging' | 'lab'
                   return (
                     <Fragment key={g.key}>
                       <tr onClick={() => setExpanded(open ? null : g.key)} className={cn('cursor-pointer transition-colors hover:bg-brand-wash', open && 'bg-brand-tint/70 hover:bg-brand-tint/70')}>
-                        <td className="pl-3">
-                          <ChevronDown className={cn('h-4 w-4 text-ink-3 transition-transform', !open && '-rotate-90')} />
+                        <td className="pl-2">
+                          <RowToggle open={open} onToggle={() => setExpanded(open ? null : g.key)} label={`chỉ định ${g.code}`} />
                         </td>
                         <td className="px-3 py-2.5 font-semibold text-info-ink tabular-nums">{g.code}</td>
                         <td className="px-3 py-2.5" onClick={(e) => e.stopPropagation()}>
@@ -388,7 +389,7 @@ function GroupDetail({
           {[
             ['Họ và tên', <b className="uppercase">{p.fullName}</b>],
             ['Mã người bệnh', <span className="font-semibold text-info-ink tabular-nums">{p.code}</span>],
-            ['Ngày sinh', <span className="tabular-nums">{`${formatDateVN(p.dob)} (${ageInYears(p.dob, g.visit.date)} tuổi)`}</span>],
+            ['Ngày sinh', <span className="tabular-nums">{`${formatDateVN(p.dob)} (${ageLabel(p.dob, g.visit.date)})`}</span>],
             ['Giới tính', GENDER_LABEL[p.gender]],
             ['Điện thoại', <span className="tabular-nums">{formatPhone(p.phone)}</span>],
             ['Địa chỉ', p.address],

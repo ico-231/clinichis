@@ -149,6 +149,7 @@ export function ReceiptModal({ visitId, paymentId, onClose }: { visitId: string;
                   }
                   value={formatNumber(receipt.discount ?? 0)}
                 />
+                {(receipt.prepaid ?? 0) > 0 && <Info2 label="Đã tạm thu trước" value={`-${formatNumber(receipt.prepaid ?? 0)}`} />}
                 <Info2 label={<b className="text-ink">Tổng tiền</b>} value={<b>{formatNumber(receipt.amount)}</b>} />
                 {receipt.customerPaid !== undefined && receipt.customerPaid > receipt.amount && (
                   <Info2 label="Tiền thừa trả khách" value={formatNumber(receipt.customerPaid - receipt.amount)} />
@@ -214,7 +215,7 @@ function Chip({ tone, children }: { tone: 'green' | 'gray' | 'violet'; children:
     <span
       className={cn(
         'whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium',
-        tone === 'green' ? 'bg-brand-soft text-brand-ink' : tone === 'violet' ? 'bg-violet-50 text-violet-700' : 'bg-subtle text-ink-3',
+        tone === 'green' ? 'bg-brand-soft text-brand-ink' : tone === 'violet' ? 'bg-aux-soft text-aux-ink' : 'bg-subtle text-ink-3',
       )}
     >
       {children}
@@ -242,7 +243,7 @@ export function SalesReceiptDoc({ visit, patient, receipt }: { visit: Visit; pat
         </p>
         <p className="text-right">Giới tính: {GENDER_LABEL[patient.gender]}</p>
         <p>
-          Năm sinh: {patient.dob.slice(0, 4)} ({ageLabel(patient.dob)})
+          Năm sinh: {patient.dob.slice(0, 4)} ({ageLabel(patient.dob, visit.date)})
         </p>
         <p className="text-right">Điện thoại: {formatPhone(patient.phone)}</p>
         <p className="col-span-2">Địa chỉ: {patient.address || '—'}</p>
@@ -282,6 +283,14 @@ export function SalesReceiptDoc({ visit, patient, receipt }: { visit: Visit; pat
                 Giảm giá dịch vụ
               </td>
               <td className={cn(cell, 'text-right')}>-{formatNumber(receipt.discount ?? 0)}</td>
+            </tr>
+          )}
+          {(receipt.prepaid ?? 0) > 0 && (
+            <tr>
+              <td colSpan={6} className={cn(cell, 'text-right')}>
+                Đã tạm thu trước
+              </td>
+              <td className={cn(cell, 'text-right')}>-{formatNumber(receipt.prepaid ?? 0)}</td>
             </tr>
           )}
           <tr>

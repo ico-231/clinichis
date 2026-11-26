@@ -77,7 +77,7 @@ function Viewer({ visitId, orderId, onClose }: { visitId: string; orderId: strin
                     </a>
                   )}
                 </div>
-                <div className="thin-scroll min-h-0 flex-1 overflow-auto rounded-[12px] bg-[#292524] p-4">
+                <div className="thin-scroll min-h-0 flex-1 overflow-auto rounded-[12px] bg-viewer p-4">
                   {active.kind === 'report' ? (
                     <div className="paper mx-auto max-w-[620px] rounded-[6px] bg-surface px-8 py-6 font-doc text-[13px] leading-6 text-black">
                       <ResultReportDoc visit={visit} patient={patient} order={order} />

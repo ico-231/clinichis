@@ -8,6 +8,7 @@ import { syncCatalogs, syncRuntime } from './catalogSync'
 import { todayISO } from '@/lib/date'
 import { isNavRoute } from '@/navigation'
 import { createActions, reducer, type Action } from './storeLogic'
+import { DEMO_DAY_KEY, daysBetweenISO, shiftDemoDates } from './demoShift'
 import type { ClinicState } from './types'
 
 export type { ClinicActions } from './storeLogic'
@@ -16,11 +17,27 @@ export { paidAmount, remainingAmount } from './billing'
 const STORAGE_KEY = 'clinic-his:state'
 const SAVE_DELAY_MS = 400
 
-/** Khôi phục state đã lưu; bộ lọc ngày luôn quay về hôm nay khi mở lại ứng dụng */
+/** Ghi "ngày của bộ dữ liệu mẫu" (nạp mẫu mới / khôi phục / sau khi dời ngày) */
+function markDemoDay(day = todayISO()) {
+  try {
+    window.localStorage.setItem(DEMO_DAY_KEY, day)
+  } catch {
+    /* bỏ qua */
+  }
+}
+
+/**
+ * Khôi phục state đã lưu; bộ lọc ngày luôn quay về hôm nay khi mở lại ứng dụng.
+ * Mở lại bản demo sau vài ngày: dời mọi mốc ngày cho khớp hôm nay (không thì Lễ tân / Khám bệnh hôm nay trống).
+ */
 function loadPersisted(): ClinicState | null {
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
+    let raw = window.localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
+    const today = todayISO()
+    const demoDay = window.localStorage.getItem(DEMO_DAY_KEY)
+    const lag = demoDay && /^\d{4}-\d{2}-\d{2}$/.test(demoDay) ? daysBetweenISO(demoDay, today) : 0
+    if (lag > 0) raw = shiftDemoDates(raw, lag)
     const parsed = migrateState(JSON.parse(raw), (key, value) => {
       try {
         window.localStorage.setItem(key, value)
@@ -29,7 +46,7 @@ function loadPersisted(): ClinicState | null {
       }
     })
     if (!parsed) return null
-    const today = todayISO()
+    if (!demoDay || lag > 0) markDemoDay(today)
     const defaults = defaultReceptionView()
     return {
       ...parsed,
@@ -59,6 +76,13 @@ function loadPersisted(): ClinicState | null {
       },
     }
   } catch {
+    // Dữ liệu lưu bị hỏng: sao lưu bản gốc trước khi app nạp mẫu mới và ghi đè
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY)
+      if (raw) window.localStorage.setItem(`${STORAGE_KEY}:broken-backup`, raw)
+    } catch {
+      /* không đủ chỗ sao lưu – bỏ qua */
+    }
     return null
   }
 }
@@ -85,6 +109,7 @@ export function ClinicProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const persisted = loadPersisted()
     if (persisted) dispatch({ type: 'HYDRATE', state: persisted })
+    else markDemoDay()
     setHydrated(true)
   }, [])
 
@@ -131,6 +156,7 @@ export function ClinicProvider({ children }: { children: ReactNode }) {
 
   const actions = useMemo(() => {
     const syncDispatch: React.Dispatch<Action> = (action) => {
+      if (action.type === 'RESET_DEMO') markDemoDay()
       stateRef.current = reducer(stateRef.current, action)
       dispatch(action)
     }

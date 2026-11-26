@@ -158,6 +158,7 @@ export function ReceptionPage() {
               <button
                 type="button"
                 onClick={() => selectStatus('all')}
+                aria-pressed={view.filters.status === 'all'}
                 className={cn(
                   'inline-flex h-[33px] items-center gap-1.5 rounded-full border px-3 text-[13px] font-semibold transition',
                   view.filters.status === 'all'
@@ -176,6 +177,7 @@ export function ReceptionPage() {
                     key={s.value}
                     type="button"
                     onClick={() => selectStatus(s.value)}
+                    aria-pressed={active}
                     className={cn(
                       'inline-flex h-[33px] items-center gap-1.5 rounded-full border px-3 text-[13px] font-semibold transition',
                       active
@@ -192,11 +194,10 @@ export function ReceptionPage() {
             </div>
           )}
 
-          <div role="tablist" aria-label="Kiểu hiển thị lễ tân" className="ml-auto inline-flex rounded-[10px] border border-line-strong bg-surface p-[3px]">
+          <div role="group" aria-label="Kiểu hiển thị lễ tân" className="ml-auto inline-flex rounded-[10px] border border-line-strong bg-surface p-[3px]">
             <button
               type="button"
-              role="tab"
-              aria-selected={recMode === 'list'}
+              aria-pressed={recMode === 'list'}
               onClick={() => setRecMode('list')}
               className={cn(
                 'rounded-[7px] px-3 py-1 text-[13px] font-semibold transition',
@@ -207,8 +208,7 @@ export function ReceptionPage() {
             </button>
             <button
               type="button"
-              role="tab"
-              aria-selected={recMode === 'board'}
+              aria-pressed={recMode === 'board'}
               onClick={() => setRecMode('board')}
               className={cn(
                 'rounded-[7px] px-3 py-1 text-[13px] font-semibold transition',

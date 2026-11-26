@@ -10,10 +10,10 @@ const tones: Record<BadgeTone, { box: string; dot: string }> = {
   amber: { box: 'bg-warn-soft text-warn-strong ring-warn-line', dot: 'bg-warn' },
   orange: { box: 'bg-accent-soft text-accent-strong ring-accent-line', dot: 'bg-accent' },
   red: { box: 'bg-danger-soft text-danger-ink ring-danger-line', dot: 'bg-danger' },
-  violet: { box: 'bg-violet-50 text-violet-700 ring-violet-200', dot: 'bg-violet-500' },
+  violet: { box: 'bg-aux-soft text-aux-ink ring-aux-line', dot: 'bg-aux' },
   sky: { box: 'bg-brand-soft text-brand-ink ring-brand-line', dot: 'bg-brand' },
-  yellow: { box: 'bg-yellow-50 text-yellow-800 ring-yellow-200', dot: 'bg-yellow-500' },
-  rose: { box: 'bg-rose-50 text-rose-700 ring-rose-200', dot: 'bg-rose-500' },
+  yellow: { box: 'bg-warn-tint text-warn-ink ring-warn-line', dot: 'bg-warn' },
+  rose: { box: 'bg-danger-soft text-danger-ink ring-danger-line', dot: 'bg-danger' },
 }
 
 export function Badge({ tone = 'gray', dot, children, className }: { tone?: BadgeTone; dot?: boolean; children: ReactNode; className?: string }) {

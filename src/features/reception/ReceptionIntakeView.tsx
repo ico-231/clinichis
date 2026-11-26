@@ -987,7 +987,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                             className={cn(
                               'flex h-7 w-7 shrink-0 items-center justify-center rounded-md',
                               item.category === 'imaging'
-                                ? 'bg-sky-50 text-sky-600'
+                                ? 'bg-aux-soft text-aux-ink'
                                 : 'bg-accent-tint text-accent-ink',
                             )}
                           >
@@ -1013,7 +1013,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                             )
                           }
                           placeholder="Thêm hướng dẫn..."
-                          className="h-7 w-full rounded border border-transparent bg-transparent px-2 text-[12.5px] text-ink-2 outline-none placeholder:text-ink-5 hover:border-line focus:border-brand focus:bg-surface"
+                          className="h-7 w-full rounded border border-transparent bg-transparent px-2 text-[12.5px] text-ink-2 outline-none placeholder:text-ink-4 hover:border-line focus:border-brand focus:bg-surface"
                         />
                       </td>
                       <td className="px-3 py-2.5 text-center">
@@ -1156,6 +1156,9 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
             </Button>
             <Button
               variant="success"
+              // Tổng 0đ: không có gì để thu, không sinh phiếu thu 0đ (lượt sẽ là "Không thanh toán")
+              disabled={grandTotal <= 0}
+              title={grandTotal <= 0 ? 'Tổng chi phí 0đ, không cần thu' : undefined}
               onClick={() => {
                 setPrepay((p) => ({ ...p, paid: true, amount: grandTotal }))
                 setPayModalOpen(false)

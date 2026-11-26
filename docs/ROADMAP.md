@@ -188,3 +188,28 @@ Giữ nguyên nghiệp vụ, trường và luồng của 1.0; chỉ thay lớp n
 - [x] P9. `[CC]` (26/11) Bỏ mục **Kê đơn** khỏi menu (còn 13 mục; route cũ đã lưu tự về Lễ tân) — phòng khám một bác sĩ không đủ việc cho
   một màn riêng. Thay vào đó: nút ⚙ ở góc ô "Chọn đơn mẫu" (màn khám) mở hộp thoại **Quản lý đơn mẫu**: tìm, xem thuốc + lời dặn từng đơn,
   đổi tên (chặn rỗng/trùng), xoá có hỏi lại; không rời phiếu khám. Store thêm `renamePrescriptionTemplate`, `deletePrescriptionTemplate` + test. Tổng 129 test.
+- [x] P10. `[CC]` (26/11) Test bấm thử trên trình duyệt (Playwright, `pnpm e2e`): dùng Google Chrome có sẵn (không tải trình duyệt riêng),
+  chạy trên bản build ở cổng 4174 (không đụng 8443/8444). 8 test: 13 màn mở không lỗi console, menu ngăn kéo < 1024px, không còn Kê đơn,
+  tiếp nhận người bệnh mới + còn sau khi tải lại, chặn trường bắt buộc, khám (sinh hiệu, ICD, kê thuốc, hoàn thành), thu tiền, đổi tên/xoá
+  đơn mẫu; + 4 test bàn phím (P11). Tổng 12 test E2E. Đã thêm vào CI (lỗi thì lưu báo cáo + trace 7 ngày).
+- [x] P11. `[CC]` (26/11) Sửa theo 2 báo cáo rà soát (audit giao diện impeccable 14/20 + rà soát sản phẩm/chuyên gia 5 góc nhìn):
+  - **Bàn phím / trình đọc màn hình:** Mã KB và ô "Chưa thanh toán" trong bảng Lễ tân / Khám bệnh là nút thật; tên trên thẻ Bảng điều phối
+    bấm được; dòng mở rộng (Báo cáo, CLS) có nút `RowToggle`; menu thả xuống theo mẫu ARIA (mở thì focus mục đầu, mũi tên/Home/End,
+    Esc/chọn trả focus về nút mở, Tab đóng); Tabs có mũi tên trái/phải; Giới tính / Segmented là radio, nút lọc trạng thái có `aria-pressed`;
+    ô sinh hiệu đọc "Chiều cao (cm)" thay vì "cm"; checkbox hiện viền focus; vòng focus nút đậm; `aria-required`; nút đóng / xoá ≥ 24px.
+  - **Màu:** chữ `ink-5` → `ink-4`, placeholder `ink-4` (≥ 4,5:1); token mới `control` (viền ô tích/radio/công tắc), `danger-hover`
+    (sửa nút đỏ ở giao diện tối bị nền hồng nhạt khi rê chuột), `aux` (tím: hoàn tiền + chẩn đoán hình ảnh, thống nhất một màu),
+    `viewer`; bỏ hết class màu Tailwind thô và khối đè bảng màu Tailwind trong `.dark`. 5 bản công tắc gom thành `ui/Switch`.
+  - **Nghiệp vụ:** không thu trùng khi đã tạm thu một phần rồi phát sinh thêm CLS (`prepaidCredit`, phiếu ghi "Đã tạm thu trước");
+    cảnh báo khi kê thuốc / áp đơn mẫu trùng ghi chú dị ứng (`allergyConflict`, có nhóm penicillin), dòng thuốc tô đỏ; lọ nhỏ mũi / tuýp kem
+    cấp 1 lọ, liều tính giọt / lần; Bảng điều phối hiện đúng trạng thái thanh toán (thất bại = còn nợ, hiện số còn phải thu);
+    bỏ thanh 4 bước trong ngăn chi tiết lượt (thay bằng mốc giờ, đúng luật không vẽ hành trình); kiểm trùng hồ sơ so cả SĐT người thân;
+    chặn "Xác nhận thu 0đ"; tuổi trên bản in tính theo ngày khám ("9 tháng" thay vì "Tuổi: 0"); toast cảnh báo hiện 10 giây, rê chuột thì dừng.
+  - **Dữ liệu mẫu:** mở lại bản demo sau vài ngày thì tự dời mọi mốc ngày về hôm nay (`demoShift`, khoá `clinic-his:demo-day`);
+    không kê thuốc bé đã dị ứng (Amoxicillin ⇒ Azithromycin); lượt đã khám có sinh hiệu hợp tuổi; ho do virus không kê kháng sinh
+    (đơn mẫu mới "Ho, sổ mũi do virus"); đơn mẫu viêm họng do liên cầu 10 ngày; dữ liệu lưu hỏng được sao lưu trước khi nạp mẫu.
+  - **Câu chữ:** bỏ chữ nội bộ "chưa có ảnh tham chiếu…" trên giao diện; lịch nghỉ không còn hứa "tự huỷ lịch đã đặt"; Xóa→Xoá, SINH HÓA→SINH HOÁ.
+  - Tổng 139 test Vitest + 12 test E2E; bộ dò impeccable 0 phát hiện.
+  - **Chưa làm (cần người dùng quyết):** gán bác sĩ theo dịch vụ hay rút còn 1 bác sĩ; mã phiếu thu trùng dạng mã khám (đối chiếu ảnh 042);
+    danh mục địa giới cũ/mới lẫn lộn; quy tắc huỷ lượt "Đang khám" và hoàn tiền theo dòng CLS; cảnh báo bé đã có lượt mở trong ngày,
+    giới hạn ngày khám ở form tiếp nhận; ô Dị ứng ở form tiếp nhận; không ghi đè hồ sơ (tên IN HOA) khi nhận bệnh cũ; khoảng tham chiếu XN theo tuổi.
