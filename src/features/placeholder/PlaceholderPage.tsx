@@ -36,9 +36,7 @@ export function PlaceholderPage({ route }: { route: RouteKey }) {
           <h2 className="mt-4 text-[19px] font-bold text-ink">Phân hệ “{nav.label}”</h2>
           <p className="mt-1.5 text-[14px] leading-relaxed text-ink-2">{nav.description}</p>
           <p className="mt-2 text-[13px] text-ink-3">
-            {route === 'prescriptions'
-              ? 'Kê đơn và gửi đơn thuốc điện tử làm ngay trong phiếu khám, ở màn Khám bệnh.'
-              : 'Phân hệ này đang được hoàn thiện. Các việc hằng ngày vẫn làm ở Lễ tân và Khám bệnh.'}
+            Phân hệ này đang được hoàn thiện. Các việc hằng ngày vẫn làm ở Lễ tân và Khám bệnh.
           </p>
 
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">

@@ -53,6 +53,8 @@ export type Action =
   | { type: 'UPDATE_VISIT'; id: string; patch: Partial<Visit> }
   | { type: 'ADD_COMBO'; combo: ParaclinicalCombo }
   | { type: 'ADD_PRESCRIPTION_TEMPLATE'; template: PrescriptionTemplate }
+  | { type: 'UPDATE_PRESCRIPTION_TEMPLATE'; id: string; patch: Partial<Omit<PrescriptionTemplate, 'id'>> }
+  | { type: 'DELETE_PRESCRIPTION_TEMPLATE'; id: string }
   | { type: 'ADD_EMR_LOG'; log: EmrAccessLog }
   | { type: 'ADD_DOWNLOAD'; item: ReportDownload }
   | { type: 'SET_SCHEDULES'; schedules: Schedules }
@@ -115,6 +117,10 @@ export function reducer(state: ClinicState, action: Action): ClinicState {
       return { ...state, emrLogs: [action.log, ...(state.emrLogs ?? [])].slice(0, 500) }
     case 'ADD_PRESCRIPTION_TEMPLATE':
       return { ...state, prescriptionTemplates: [action.template, ...(state.prescriptionTemplates ?? [])] }
+    case 'UPDATE_PRESCRIPTION_TEMPLATE':
+      return { ...state, prescriptionTemplates: (state.prescriptionTemplates ?? []).map((t) => (t.id === action.id ? { ...t, ...action.patch } : t)) }
+    case 'DELETE_PRESCRIPTION_TEMPLATE':
+      return { ...state, prescriptionTemplates: (state.prescriptionTemplates ?? []).filter((t) => t.id !== action.id) }
     case 'SET_DEFAULT_PROVIDER':
       return { ...state, defaultProviderId: action.providerId }
     default:
@@ -290,6 +296,18 @@ export function createActions(dispatch: Dispatch<Action>, getState: () => Clinic
       dispatch({ type: 'ADD_PRESCRIPTION_TEMPLATE', template: full })
       return full
     },
+
+    /** Đổi tên đơn mẫu; tên rỗng hoặc trùng (không phân biệt hoa thường) ⇒ trả lỗi, không đổi */
+    renamePrescriptionTemplate: (id: string, name: string): string | null => {
+      const clean = name.trim().replace(/\s+/g, ' ')
+      if (!clean) return 'Tên đơn mẫu không được để trống'
+      const list = getState().prescriptionTemplates ?? []
+      if (list.some((t) => t.id !== id && t.name.toLocaleLowerCase('vi') === clean.toLocaleLowerCase('vi'))) return 'Đã có đơn mẫu cùng tên'
+      dispatch({ type: 'UPDATE_PRESCRIPTION_TEMPLATE', id, patch: { name: clean } })
+      return null
+    },
+
+    deletePrescriptionTemplate: (id: string) => dispatch({ type: 'DELETE_PRESCRIPTION_TEMPLATE', id }),
 
     /** Cập nhật một chỉ định CLS (trạng thái thực hiện, kết quả...) – dùng ở phòng CĐHA / Xét nghiệm */
     updateOrder: (visitId: string, orderId: string, patch: Partial<ParaclinicalOrderItem>) => {

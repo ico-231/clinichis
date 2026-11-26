@@ -121,7 +121,7 @@ export function ExamListPage() {
         }
       />
 
-      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col px-4 pb-4 sm:px-6">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1920px] flex-1 flex-col px-4 pb-4 sm:px-6">
         {/* Thanh trạng thái dạng pill 6C */}
         <div className="mb-2.5 flex flex-wrap gap-1.5">
           <button
@@ -198,6 +198,7 @@ export function ExamListPage() {
             <ReceptionTable
               rows={pageRows}
               visibleColumns={COLUMNS}
+              singleDay={dateFrom === dateTo}
               sort={sort}
               onSort={onSort}
               highlightId={null}

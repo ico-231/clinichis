@@ -178,3 +178,13 @@ Giữ nguyên nghiệp vụ, trường và luồng của 1.0; chỉ thay lớp n
   `CostSummary` (Thuốc · CLS · Công khám · Tổng) ở Tiếp nhận và Khám bệnh; hàng Ngày/Giờ/Công khám ở màn khám thẳng hàng.
 - [x] P6. `[CC]` Sửa logic: "Lịch sử bệnh" ở màn khám không còn hiện lịch hẹn tương lai / lượt chưa đến; tìm "Thêm bệnh cũ"
   xếp người trùng tên lên trước người chỉ trùng địa chỉ; ô chọn gốc của trình duyệt cùng kiểu với ô chọn tự viết.
+- [x] P7. `[CC]` Sửa tiếp (26/11): ô giờ tự viết `TimeInput` luôn 24 giờ (gõ "1330", "13:30", "9" đều được; nút đồng hồ mở mốc 15 phút) thay 9 ô
+  giờ của trình duyệt; ô kiểu gạch chân ở Tiếp nhận / Khám bệnh / Kê đơn đổi sang ô có khung như các màn khác; bấm cả dòng ở Bệnh án điện tử
+  và lịch sử khám trong hồ sơ người bệnh để mở chi tiết; bảng Lễ tân, Khám bệnh, Lịch hẹn vừa màn 1440px (xem một ngày thì ẩn cột Ngày khám,
+  cột Ghi chú co giãn); ghi chú mẫu hợp tuổi / dị ứng của bé (không còn "trẻ dưới 6 tháng" cho bé 7 tuổi). Tổng 128 test.
+- [x] P8. `[CC]` (26/11) Bỏ hình minh hoạ / biểu tượng ở mọi trạng thái trống (chỉ còn chữ). Bố cục tự giãn theo màn PC: khung nội dung
+  rộng tới 1920px (trước 1440px), lề lớn hơn từ 1536px, màn khám rộng tới 1400px, Tổng quan cao tối đa 980px; đã thử 1280×720, 1366×768,
+  1920×1080, 2560×1440 không tràn trang.
+- [x] P9. `[CC]` (26/11) Bỏ mục **Kê đơn** khỏi menu (còn 13 mục; route cũ đã lưu tự về Lễ tân) — phòng khám một bác sĩ không đủ việc cho
+  một màn riêng. Thay vào đó: nút ⚙ ở góc ô "Chọn đơn mẫu" (màn khám) mở hộp thoại **Quản lý đơn mẫu**: tìm, xem thuốc + lời dặn từng đơn,
+  đổi tên (chặn rỗng/trùng), xoá có hỏi lại; không rời phiếu khám. Store thêm `renamePrescriptionTemplate`, `deletePrescriptionTemplate` + test. Tổng 129 test.

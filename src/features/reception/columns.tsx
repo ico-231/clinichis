@@ -12,6 +12,8 @@ export interface ReceptionColumn {
   /** Nhãn trong menu ẩn/hiện cột */
   menuLabel: string
   width: number
+  /** Cột co giãn lấp chỗ trống (width là độ rộng tối thiểu) */
+  flex?: boolean
   sortable?: boolean
   align?: 'left' | 'center' | 'right'
   render: (row: VisitRow) => ReactNode
@@ -82,7 +84,7 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'phone',
     label: 'Điện thoại',
     menuLabel: 'Điện Thoại',
-    width: 110,
+    width: 104,
     render: (r) => <span className="whitespace-nowrap text-ink tabular-nums">{formatPhone(r.patient.phone)}</span>,
   },
   {
@@ -141,7 +143,7 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'payment',
     label: 'Thanh toán',
     menuLabel: 'Thanh Toán',
-    width: 140,
+    width: 134,
     sortable: true,
     render: (r) => <PaymentStatusInline status={r.visit.paymentStatus} />,
     sortValue: (r) => PAYMENT_STATUS_ORDER.indexOf(r.visit.paymentStatus),
@@ -150,7 +152,8 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'note',
     label: 'Ghi chú',
     menuLabel: 'Ghi Chú',
-    width: 150,
+    width: 100,
+    flex: true,
     sortable: true,
     render: (r) =>
       r.visit.note ? (

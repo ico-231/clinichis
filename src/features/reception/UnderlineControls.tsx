@@ -42,7 +42,7 @@ export function FieldLabel({ label, required }: { label: string; required?: bool
 }
 
 export const underlineBase =
-  'h-8 w-full border-b border-line bg-transparent text-[13px] text-ink outline-none transition-colors placeholder:text-ink-5 hover:border-line-strong focus:border-brand disabled:text-ink-5'
+  'h-9 w-full rounded-[10px] border border-line-strong bg-surface px-3 text-[13px] text-ink outline-none transition placeholder:text-ink-5 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/15 disabled:bg-subtle disabled:text-ink-4'
 
 interface UnderlineInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string
@@ -76,7 +76,7 @@ export function UnderlineInput({
             className,
           )}
         />
-        {rightSlot && <div className="absolute right-0 flex items-center">{rightSlot}</div>}
+        {rightSlot && <div className="absolute right-2 flex items-center">{rightSlot}</div>}
       </div>
       {error ? (
         <p className="mt-1 text-[11px] text-danger-ink">{error}</p>

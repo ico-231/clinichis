@@ -63,7 +63,7 @@ export function TopNav() {
   return (
     <>
       <header className="sticky top-0 z-40 h-[58px] shrink-0 border-b border-line bg-surface">
-        <div className="mx-auto flex h-full w-full max-w-[1440px] items-center gap-2 px-3 sm:px-4 lg:gap-3 lg:px-6">
+        <div className="mx-auto flex h-full w-full max-w-[1920px] items-center gap-2 px-3 sm:px-4 lg:gap-3 lg:px-6">
           {compact && (
             <button
               type="button"

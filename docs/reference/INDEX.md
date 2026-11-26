@@ -122,7 +122,7 @@ Những gì không có ảnh giữ trang chờ — xem mục "Còn thiếu ảnh
   `src/features/clinic-info/`. Thông tin đơn vị vẫn chỉnh ở Hệ thống › Thông tin phòng khám.
 
 ## Còn thiếu ảnh (trang chờ)
-- Kê đơn (mục riêng trên Sidebar – giữ lại theo yêu cầu; kê đơn thật nằm trong màn Khám bệnh).
+- ~~Kê đơn~~ (26/11 đã bỏ khỏi menu; kê đơn thật nằm trong màn Khám bệnh).
 - Báo cáo: Đối soát thanh toán, Báo cáo khám mới.
 - Hệ thống: Hoá đơn điện tử.
 - CLS Thiết lập: tab Phân loại, Combo.
@@ -130,5 +130,5 @@ Những gì không có ảnh giữ trang chờ — xem mục "Còn thiếu ảnh
 
 ## Quyết định đã chốt (17/11/2026)
 - **Không có trong ảnh thì không làm.** Các mục ở "Còn thiếu ảnh" hiển thị trang chờ.
-- Mục **"Kê đơn"** trên Sidebar là phần thêm ngoài ảnh → giữ trang chờ; kê đơn thực hiện trong màn Khám bệnh.
+- Mục **"Kê đơn"** từng là phần thêm ngoài ảnh (trang chờ); 26/11 đã bỏ, kê đơn thực hiện trong màn Khám bệnh.
 - Màn Lễ tân đã theo ảnh: trạng thái thanh toán, bộ lọc nâng cao, modal Thu tiền, in phiếu F8.

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { TimeInput } from '@/components/ui/TimeInput'
 import { ChevronDown, ChevronLeft, ChevronRight, Download, FileText, FlaskConical, Printer, Save } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { DocumentsEmptyIllustration } from '@/components/ui/EmptyState'
 import { Tabs } from '@/components/ui/Tabs'
 import { useToast } from '@/components/ui/Toast'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
@@ -87,7 +87,7 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
   return (
     <div className="flex h-full flex-col bg-canvas">
       <header className="shrink-0 border-b border-line bg-surface">
-        <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center gap-3 px-4 sm:px-6 py-2.5">
+        <div className="mx-auto flex w-full max-w-[1920px] flex-wrap items-center gap-3 px-4 sm:px-6 2xl:px-8 py-2.5">
           <button
             type="button"
             onClick={onBack}
@@ -115,7 +115,7 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
         </div>
       </header>
 
-      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 gap-4 overflow-hidden px-4 sm:px-6 py-3">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1920px] flex-1 gap-4 overflow-hidden px-4 sm:px-6 2xl:px-8 py-3">
         <div className="flex w-[min(540px,48%)] shrink-0 flex-col overflow-hidden rounded-[16px] border border-line bg-surface">
           <dl className="grid grid-cols-3 gap-x-3 gap-y-2 border-b border-line bg-canvas/60 px-4 py-3 text-[12.5px]">
             <Info label="Họ và tên" value={<b className="uppercase">{patient.fullName}</b>} />
@@ -179,7 +179,7 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
                     <input type="date" value={emr.createdAt.slice(0, 10)} onChange={(e) => set({ createdAt: `${e.target.value}${emr.createdAt.slice(10)}` })} className={cn(box, 'h-9 tabular-nums')} />
                   </Row>
                   <Row label="Giờ tạo">
-                    <input type="time" value={emr.createdAt.slice(11, 16)} onChange={(e) => set({ createdAt: `${emr.createdAt.slice(0, 11)}${e.target.value}` })} className={cn(box, 'h-9 tabular-nums')} />
+                    <TimeInput value={emr.createdAt.slice(11, 16)} onChange={(v) => set({ createdAt: `${emr.createdAt.slice(0, 11)}${v}` })} className={cn(box, 'h-9 tabular-nums')} />
                   </Row>
                   <Row label="Đối tượng">
                     <select value={emr.subject} onChange={(e) => set({ subject: e.target.value as EmrRecord['subject'] })} className={cn(box, 'h-9')}>
@@ -354,7 +354,6 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
         <div className="thin-scroll min-w-0 flex-1 overflow-y-auto rounded-[16px] border border-line bg-subtle p-5">
           {!preview ? (
             <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
-              <DocumentsEmptyIllustration />
               <p className="text-[14px] font-semibold text-ink">Chưa có bản xem trước</p>
               <p className="text-xs text-ink-3">Bản xem trước sẽ xuất hiện ngay sau khi lưu bệnh án.</p>
             </div>
@@ -442,7 +441,6 @@ function Collapsible({ title, children }: { title: string; children: ReactNode }
 function Empty({ text }: { text: string }) {
   return (
     <div className="flex flex-col items-center gap-1 py-4 text-center text-xs text-ink-3">
-      <DocumentsEmptyIllustration className="h-[48px] w-[60px]" />
       {text}
     </div>
   )

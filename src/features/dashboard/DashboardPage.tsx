@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { CheckCheck, CheckCircle2, Circle, Rocket } from 'lucide-react'
+import { CheckCheck, CheckCircle2, Circle } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { Tabs } from '@/components/ui/Tabs'
@@ -184,7 +184,7 @@ export function DashboardPage() {
       />
 
       <div className="thin-scroll min-h-0 flex-1 overflow-y-auto bg-canvas">
-        <div className="mx-auto flex max-w-[1440px] flex-col gap-3.5 px-4 pb-5 sm:px-6 xl:h-full xl:min-h-[620px]">
+        <div className="mx-auto flex max-w-[1920px] flex-col gap-3.5 px-4 pb-5 sm:px-6 xl:h-full xl:max-h-[980px] xl:min-h-[620px]">
           {/* Hàng trên: Hero Doanh thu Bento + Tỉ lệ & Xu hướng */}
           <div className="grid grid-cols-1 gap-3.5 xl:grid-cols-[1.38fr_1fr]">
             <section className="rounded-[18px] border border-line bg-surface px-5 py-4">
@@ -279,7 +279,7 @@ export function DashboardPage() {
                 </div>
                 {notices.length === 0 ? (
                   <p className="flex flex-1 items-center justify-center gap-2 py-6 text-[13px] text-ink-3">
-                    <Rocket className="h-4 w-4" /> Chưa có thông báo mới
+                    Chưa có thông báo mới
                   </p>
                 ) : (
                   <div className="thin-scroll -mr-2 min-h-0 flex-1 divide-y divide-line overflow-y-auto pr-2">

@@ -332,7 +332,7 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
           </p>
         )}
         <div ref={scrollerRef} className="thin-scroll relative min-h-0 flex-1 overflow-y-auto px-5 py-3.5">
-          <div className="mx-auto max-w-[1120px] space-y-3">
+          <div className="mx-auto max-w-[1400px] space-y-3">
             {/* Lượt đã huỷ: khoá mọi ô nhập / nút bên trong */}
             <fieldset disabled={readOnly} className="contents">
               <InfoSection draft={draft} update={update} patient={patient} />

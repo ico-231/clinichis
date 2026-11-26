@@ -16,7 +16,6 @@ import {
 import { Portal } from '@/components/ui/Portal'
 import { Popover } from '@/components/ui/Popover'
 import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
-import { DocumentsEmptyIllustration } from '@/components/ui/EmptyState'
 import { useOverlayBehavior } from '@/components/ui/Modal'
 import { useToast } from '@/components/ui/Toast'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
@@ -559,7 +558,6 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                 <div className="thin-scroll flex-1 space-y-3 overflow-y-auto px-4 pb-3">
                   {groupedOrders.length === 0 ? (
                     <div className="flex h-full min-h-[260px] flex-col items-center justify-center px-6 text-center">
-                      <DocumentsEmptyIllustration />
                       <p className="mt-2 text-[13.5px] font-semibold text-ink">Chưa có chỉ định nào</p>
                       <p className="mt-1 max-w-[260px] text-[12.5px] leading-relaxed text-ink-4">
                         Tích chọn chỉ định hoặc combo từ danh sách bên trái để thêm vào đây.

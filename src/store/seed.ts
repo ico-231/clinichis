@@ -160,6 +160,16 @@ const REASONS_BY_SERVICE: Record<string, string[]> = {
   s7: ['Tư vấn tiêm 6 trong 1', 'Tư vấn tiêm phế cầu', 'Tư vấn tiêm cúm mùa', 'Tư vấn tiêm sởi - quai bị - rubella'],
 }
 
+/** Ghi chú phải hợp với người bệnh: "trẻ dưới 6 tháng" chỉ cho bé dưới 6 tháng, "Dị ứng X" chỉ khi hồ sơ có dị ứng đó.
+ * Đổi sau khi đã bốc ngẫu nhiên nên chuỗi số ngẫu nhiên (và mọi dữ liệu khác) giữ nguyên. */
+function fitNote(note: string, patient: { dob: string; allergies?: string }, date: string) {
+  if (note === 'Ưu tiên – trẻ dưới 6 tháng' && daysBetween(patient.dob, date) >= 183) return 'Mẹ đi cùng'
+  if (note.startsWith('Dị ứng ') && !(patient.allergies && note === `Dị ứng ${patient.allergies}`)) return 'Đã gọi xác nhận lịch'
+  return note
+}
+
+const daysBetween = (from: string, to: string) => Math.round((Date.parse(to) - Date.parse(from)) / 86_400_000)
+
 const NOTES = [
   '', '', '', '', '', '', '',
   'Mẹ đi cùng',
@@ -419,7 +429,7 @@ export function createSeedState(opts: SeedOptions = {}): ClinicState {
         category,
         source,
         reason: pick(rand, REASONS_BY_SERVICE[serviceId] ?? REASONS_BY_SERVICE.s1),
-        note: patient.allergies && rand() < 0.5 ? `Dị ứng ${patient.allergies}` : pick(rand, NOTES),
+        note: fitNote(patient.allergies && rand() < 0.5 ? `Dị ứng ${patient.allergies}` : pick(rand, NOTES), patient, date),
         exam: status === 'done' ? makeSeedExam(visitSeq, serviceId, date) : undefined,
         cancelReason: status === 'cancelled' ? pick(rand, ['Người nhà báo bận', 'Bé đã hết sốt', 'Đổi sang ngày khác', 'Không liên lạc được']) : undefined,
         createdAt: isoAt(category === 'booked' ? addDays(date, -1) : date, time, -10),

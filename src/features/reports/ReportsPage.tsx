@@ -48,7 +48,7 @@ export function ReportsPage() {
   return (
     <div className="flex h-full flex-col bg-canvas">
       <PageHeader title={item.label} />
-      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 gap-4 overflow-hidden px-4 sm:px-6 pt-1 pb-4 max-md:flex-col">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1920px] flex-1 gap-4 overflow-hidden px-4 sm:px-6 2xl:px-8 pt-1 pb-4 max-md:flex-col">
         {/* Màn hẹp: danh mục thành thanh tab cuộn ngang phía trên */}
         <nav
           className="thin-scroll shrink-0 rounded-[16px] border border-line bg-surface p-2 text-[13px] max-md:flex max-md:gap-1 max-md:overflow-x-auto md:w-[210px] md:space-y-0.5"

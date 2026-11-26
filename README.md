@@ -21,7 +21,7 @@ thương hiệu riêng **ClinicHIS / Phòng khám Nhi Khoa**.
 
 ## Có gì trong dự án
 
-- **Ứng dụng web (bản 1.0):** 14 mục trên menu, khoảng 24 màn. Chạy hoàn toàn trên trình duyệt, dữ liệu lưu ở
+- **Ứng dụng web (bản 1.0):** 13 mục trên menu, khoảng 24 màn. Chạy hoàn toàn trên trình duyệt, dữ liệu lưu ở
   `localStorage`. Lần đầu mở, mỗi trình duyệt tự tạo dữ liệu mẫu theo đúng ngày hôm đó.
 - **API (backend):** 18 đường dẫn REST cho người bệnh, lượt khám, khám bệnh, cận lâm sàng, thu tiền, danh mục,
   cài đặt và báo cáo. Chạy trên Vercel Functions, dữ liệu nằm ở Supabase (Postgres). Mọi quy tắc nghiệp vụ được
@@ -88,7 +88,7 @@ App chạy được ngay, không cần backend. Muốn chạy cả API thì xem 
 | --- | --- |
 | **Tổng quan** | Thẻ doanh thu, biểu đồ lượt khám theo ngày, tỉ lệ người bệnh mới/cũ, thông báo, checklist kích hoạt |
 | **Lễ tân** | Danh sách lượt khám theo ngày; lọc theo trạng thái, thanh toán và lọc nâng cao; tiếp nhận bệnh cũ (tìm nhanh) và bệnh mới; chỉ định CLS; thu tiền; in phiếu tiếp nhận; đổi trạng thái ngay trên dòng |
-| **Khám bệnh** | Hàng chờ và lịch sử bệnh; sinh hiệu, BMI; hỏi bệnh; chỉ định CLS và xem kết quả; chẩn đoán ICD-10; kê đơn (đơn mẫu, tự tính số lượng); hẹn tái khám; ghi chú; thu tiền; in đơn thuốc, phiếu chỉ định |
+| **Khám bệnh** | Hàng chờ và lịch sử bệnh; sinh hiệu, BMI; hỏi bệnh; chỉ định CLS và xem kết quả; chẩn đoán ICD-10; kê đơn (đơn mẫu có hộp quản lý đổi tên/xoá, tự tính số lượng); hẹn tái khám; ghi chú; thu tiền; in đơn thuốc, phiếu chỉ định |
 | **Cận lâm sàng** | Chẩn đoán hình ảnh (soạn mô tả và kết luận, chụp webcam, tải ảnh, mẫu kết quả); Xét nghiệm (tải tệp PDF hoặc ảnh); báo cáo doanh thu CLS; thiết lập danh mục dịch vụ và mẫu kết quả |
 | **Người bệnh** | Danh sách; thêm, sửa, xoá; hồ sơ kèm lịch sử khám và ghi chú; ngăn chi tiết lượt khám 4 tab |
 | **Bệnh án điện tử** | Danh sách; bệnh án, phiếu điều trị, tổng kết; ký; bản in bệnh án ngoại trú; nhật ký truy cập |
@@ -114,8 +114,7 @@ Mọi thao tác đều làm bằng nút, không cần nhớ phím tắt.
 
 ## Phạm vi
 
-- **Có ảnh tham chiếu thì làm, không có thì không.** Một số mục còn là trang chờ: Kê đơn trên menu (kê đơn làm trong
-  màn Khám bệnh), Đối soát thanh toán, Báo cáo khám mới, cài đặt Hoá đơn điện tử, tab Phân loại và Combo trong thiết lập CLS.
+- **Có ảnh tham chiếu thì làm, không có thì không.** Một số mục còn là trang chờ: Đối soát thanh toán, Báo cáo khám mới, cài đặt Hoá đơn điện tử, tab Phân loại và Combo trong thiết lập CLS.
 - **Loại trừ theo yêu cầu:** Nhà thuốc, Tin tức, Học CME, Tư vấn trực tuyến, hồ sơ bác sĩ công khai, Phát triển thương hiệu.
 - Ảnh tham chiếu (`docs/reference/screenshots/`) không được commit vì là ảnh của bên thứ ba. Ảnh trong README do dự án tự chụp.
 

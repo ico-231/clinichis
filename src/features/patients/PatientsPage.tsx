@@ -105,7 +105,7 @@ export function PatientsPage() {
           </Button>
         }
       />
-      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 pt-1 pb-4">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1920px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 2xl:px-8 pt-1 pb-4">
         <div className="flex flex-wrap items-end gap-2">
           <div className="relative w-full sm:w-[280px]">
             <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-4" />

@@ -25,7 +25,7 @@ Tài liệu để một phiên Claude Code hoặc Antigravity mới bắt kịp 
   `npm --prefix clinic run dev`) và `clinic/.claude/` (`npm run dev`), cổng **8443** cho Claude Code (`[CC]`) và **8444** cho Antigravity (`[AG]`, PowerShell: `$env:PORT=8444; npm --prefix clinic run dev`).
   Lần đầu khởi động Vite tối ưu lại dependencies mất ~15 giây, trang trắng trong lúc đó là bình thường.
 - Tailwind bị chặn quét `docs/` (`@source not '../docs'` trong `src/index.css`): đường dẫn Windows kiểu dấu gạch ngược + hex trong tài liệu từng làm dev server trắng trang lỗi "Invalid code point". Đổi `@source` thì phải khởi động lại dev server.
-- Kiểm tra: `npx tsc -b --noEmit` (bật `noUnusedLocals`/`noUnusedParameters`) · `npx vitest run` (**126 test** / 16 file) · `npx vite build` (bundle chính ~342 kB).
+- Kiểm tra: `npx tsc -b --noEmit` (bật `noUnusedLocals`/`noUnusedParameters`) · `npx vitest run` (**128 test** / 17 file) · `npx vite build` (bundle chính ~342 kB).
 - Dữ liệu demo nằm ở `localStorage` khoá `clinic-his:state` (STATE_VERSION = **6**), tách biệt theo từng cổng (`8443` / `8444`). Xoá khoá rồi tải
   lại để về dữ liệu mẫu. Menu tài khoản (góc phải thanh `TopNav`) có "Khôi phục dữ liệu mẫu".
 - `portfolio 1/CLAUDE.md` và `portfolio 1/GEMINI.md` nằm **ngoài** git repo (repo chỉ là `clinic/`), chỉ có trên máy này.
@@ -79,9 +79,10 @@ Transcript phiên trước nằm trên máy này:
   riêng: **ClinicHIS / Phòng khám Nhi Khoa**.
 - Không lưu mật khẩu thật; ô mật khẩu chỉ minh hoạ.
 - Loại trừ: Nhà thuốc, Tin tức, Học CME.
-- **Điều hướng hiện có 14 mục** (21/11 người dùng bỏ: Cuộc gọi, Tin nhắn, Thông tin phòng khám,
-  Phát triển thương hiệu; **giữ Kê đơn** dù chỉ là trang chờ — kê đơn thật nằm trong màn Khám bệnh).
-  Từ `25/11 [AG]`, Sidebar dọc được thay bằng thanh điều hướng ngang **`TopNav`** (`src/components/layout/TopNav.tsx`, 6 nhóm / đủ 14 mục).
+- **Điều hướng hiện có 13 mục** (21/11 người dùng bỏ: Cuộc gọi, Tin nhắn, Thông tin phòng khám,
+  Phát triển thương hiệu; **26/11 bỏ Kê đơn** sau khi cân nhắc: không đủ việc cho một màn riêng ở phòng khám một bác sĩ —
+  kê đơn làm trong màn Khám bệnh, đơn mẫu quản lý bằng hộp thoại mở từ nút ⚙ ở góc ô "Chọn đơn mẫu").
+  Từ `25/11 [AG]`, Sidebar dọc được thay bằng thanh điều hướng ngang **`TopNav`** (`src/components/layout/TopNav.tsx`, 6 nhóm / mục).
   `26/11 [CC]`: nhóm "Đặt khám thông minh" đổi tên thành **"Lịch"** (người dùng yêu cầu); biểu tượng nhóm khai ở `navigation.ts`;
   dưới 1024px menu thành ngăn kéo bên trái; `Sidebar.tsx` đã xoá.
   Route cũ đã lưu sẽ tự về Lễ tân (`isNavRoute` trong `src/navigation.ts`).
@@ -92,7 +93,8 @@ Transcript phiên trước nằm trên máy này:
   màu `brand` / `accent` / `info` / `warn` / `danger` (nền, viền) và bản `-ink` cho chữ (vd. `text-brand-ink`), nền nhạt `-soft` / `-tint`,
   viền nhạt `-line`, khối đảo màu `inverse` + `on-inverse`, lớp phủ `overlay`. Giao diện tối chỉ đổi giá trị token trong `.dark`.
   SVG/biểu đồ: class `fill-*`/`stroke-*` hoặc `style={{ fill: 'var(--chart-new)' }}`. Tờ giấy xem trước bản in: thêm class `paper`.
-- Trang chờ còn lại (không có ảnh): Kê đơn, Đối soát thanh toán, Báo cáo khám mới, cài đặt Hoá đơn
+  Ô giờ: dùng `TimeInput` (`src/components/ui/TimeInput.tsx`, luôn 24 giờ), không dùng `<input type="time">`.
+- Trang chờ còn lại (không có ảnh): Đối soát thanh toán, Báo cáo khám mới, cài đặt Hoá đơn
   điện tử, tab Phân loại/Combo trong CLS › Thiết lập.
 
 ## 5. Kiến trúc nhanh

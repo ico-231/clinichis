@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react'
+import { TimeInput } from '@/components/ui/TimeInput'
 import { AlertCircle, CalendarDays, ChevronDown, Copy, Pencil, Plus, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
@@ -191,10 +192,10 @@ export function WeeklySetupModal({ initial, onClose, onApply }: { initial: Fixed
                     </div>
                     <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
                       <Field label="Giờ bắt đầu" required>
-                        <input type="time" value={s.start} onChange={(e) => patch(s.id, { start: e.target.value })} className={input} />
+                        <TimeInput value={s.start} onChange={(v) => patch(s.id, { start: v })} className={input} />
                       </Field>
                       <Field label="Giờ kết thúc" required>
-                        <input type="time" value={s.end} onChange={(e) => patch(s.id, { end: e.target.value })} className={input} />
+                        <TimeInput value={s.end} onChange={(v) => patch(s.id, { end: v })} className={input} />
                       </Field>
                       <Field label="Số lượt khám trên một slot" required>
                         <NumberInput min={1} value={s.perSlot} onChange={(v) => patch(s.id, { perSlot: v ?? 1 })} />
@@ -331,10 +332,10 @@ export function SlotEditModal({
         </Field>
         <div className="grid grid-cols-2 gap-2">
           <Field label="Giờ bắt đầu" required>
-            <input type="time" value={s.start} onChange={(e) => set({ start: e.target.value })} className={input} />
+            <TimeInput value={s.start} onChange={(v) => set({ start: v })} className={input} />
           </Field>
           <Field label="Giờ kết thúc" required>
-            <input type="time" value={s.end} onChange={(e) => set({ end: e.target.value })} className={input} />
+            <TimeInput value={s.end} onChange={(v) => set({ end: v })} className={input} />
           </Field>
           <Field label="Số lượt khám trên một slot" required>
             <NumberInput min={1} value={s.perSlot} onChange={(v) => set({ perSlot: v ?? 1 })} />
@@ -400,10 +401,10 @@ export function LeaveModal({ leave, onClose, onSave, onDelete }: { leave: LeaveS
         <DatePicker label="Ngày nghỉ" required value={l.date} onChange={(date) => setL((x) => ({ ...x, date }))} />
         <div className="grid grid-cols-2 gap-2">
           <Field label="Giờ bắt đầu" required>
-            <input type="time" value={l.start} onChange={(e) => setL((x) => ({ ...x, start: e.target.value }))} className={input} />
+            <TimeInput value={l.start} onChange={(v) => setL((x) => ({ ...x, start: v }))} className={input} />
           </Field>
           <Field label="Giờ kết thúc" required>
-            <input type="time" value={l.end} onChange={(e) => setL((x) => ({ ...x, end: e.target.value }))} className={input} />
+            <TimeInput value={l.end} onChange={(v) => setL((x) => ({ ...x, end: v }))} className={input} />
           </Field>
         </div>
       </div>

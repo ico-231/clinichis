@@ -1,4 +1,5 @@
 import { CircleAlert } from 'lucide-react'
+import { TimeInput } from '@/components/ui/TimeInput'
 import { Checkbox, MoneyField, Segmented, TextArea, TextField, FieldShell, inputBase, inputError } from '@/components/ui/Field'
 import { DatePicker } from '@/components/ui/DatePicker'
 import { Select } from '@/components/ui/Select'
@@ -227,7 +228,7 @@ export function VisitFields({ value, onChange, errors }: { value: VisitInput; on
         error={errors.date}
       />
       <FieldShell label="Giờ khám" required error={errors.time}>
-        <input type="time" className={cn(inputBase, 'tabular-nums', errors.time && inputError)} value={value.time} onChange={(e) => onChange({ time: e.target.value })} />
+        <TimeInput value={value.time} onChange={(v) => onChange({ time: v })} className={cn(inputBase, 'tabular-nums', errors.time && inputError)} />
       </FieldShell>
       <Select
         label="Dịch vụ khám"

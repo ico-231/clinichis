@@ -84,7 +84,7 @@ export function ClinicInfoPage() {
         }
       />
       <PendingProfileBanner />
-      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 gap-4 overflow-hidden px-4 sm:px-6 pt-1 pb-4">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1920px] flex-1 gap-4 overflow-hidden px-4 sm:px-6 2xl:px-8 pt-1 pb-4">
         <div className="flex w-[min(560px,52%)] shrink-0 flex-col overflow-hidden rounded-[16px] border border-line bg-surface">
           <div className="thin-scroll flex-1 space-y-3 overflow-y-auto p-4 text-[13px]">
             <Field label="Ảnh đại diện">

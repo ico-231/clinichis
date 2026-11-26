@@ -59,7 +59,7 @@ export function ClsSettingsPage() {
   return (
     <div className="flex h-full flex-col bg-canvas">
       <PageHeader title="Thiết lập cận lâm sàng" />
-      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 pt-1 pb-4">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1920px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 2xl:px-8 pt-1 pb-4">
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-[14px] border border-line bg-surface px-3.5 py-2.5">
           <Tabs
             variant="pill"

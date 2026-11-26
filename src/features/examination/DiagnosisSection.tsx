@@ -66,7 +66,7 @@ export function DiagnosisInput({
       )}
     >
       <div ref={anchorRef} className="relative">
-        <Search className="pointer-events-none absolute top-1/2 left-1 h-3.5 w-3.5 -translate-y-1/2 text-ink-5" />
+        <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-4" />
         <input
           aria-label={placeholder}
           value={query}
@@ -94,7 +94,7 @@ export function DiagnosisInput({
             }
           }}
           placeholder={placeholder}
-          className="h-9 w-full border-b border-line bg-transparent pl-6 text-[13px] outline-none placeholder:text-ink-5 focus:border-brand"
+          className="h-9 w-full pr-3 pl-9 rounded-[10px] border border-line-strong bg-surface text-[13px] text-ink outline-none transition placeholder:text-ink-5 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
         />
         <Popover
           open={open}

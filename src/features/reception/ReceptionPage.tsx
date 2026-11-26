@@ -145,7 +145,7 @@ export function ReceptionPage() {
         }
       />
 
-      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col px-4 pb-4 sm:px-6">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1920px] flex-1 flex-col px-4 pb-4 sm:px-6">
         {/* Thanh trạng thái dạng pill + nút chuyển Danh sách / Bảng điều phối */}
         <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2">
           {recMode === 'board' && (
@@ -229,6 +229,7 @@ export function ReceptionPage() {
               <ReceptionTable
                 rows={data.pageRows}
                 visibleColumns={view.visibleColumns}
+                singleDay={view.filters.dateFrom === view.filters.dateTo}
                 sort={view.sort}
                 onSort={onSort}
                 highlightId={highlightId}

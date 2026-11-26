@@ -18,7 +18,6 @@ import {
 import { PageHeader } from '@/components/layout/PageHeader'
 import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
 import { findDuplicatePatients } from '@/store/patientRules'
-import { DocumentsEmptyIllustration } from '@/components/ui/EmptyState'
 import { Modal } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
 import { Segmented } from '@/components/ui/Field'
@@ -37,6 +36,7 @@ import { addMinutesToTime, formatDateVN, nowTime, pad, todayISO } from '@/lib/da
 import { formatMoney, formatNumber, formatPhone, normalizeText } from '@/lib/format'
 import { cn } from '@/lib/cn'
 import { CostSummary } from '@/components/clinic/CostSummary'
+import { TimeInput } from '@/components/ui/TimeInput'
 import { ParaclinicalOrderModal } from './ParaclinicalOrderModal'
 import {
   CardSectionHeader,
@@ -811,10 +811,10 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
 
               <div className="sm:col-span-2">
                 <FieldLabel label="Giờ khám" required />
-                <input
-                  type="time"
+                <TimeInput
                   value={vForm.time}
-                  onChange={(e) => setVForm((f) => ({ ...f, time: e.target.value }))}
+                  onChange={(time) => setVForm((f) => ({ ...f, time }))}
+                  aria-label="Giờ khám"
                   className={cn(underlineBase, 'mt-0.5 tabular-nums', errors.visitTime && 'border-danger')}
                 />
                 {errors.visitTime && <p className="mt-1 text-[11px] text-danger-ink">{errors.visitTime}</p>}
@@ -953,7 +953,6 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
 
           {orders.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-xl border border-line-soft bg-canvas/30 px-4 py-9 text-center">
-              <DocumentsEmptyIllustration />
               <p className="mt-2 text-[13px] font-medium text-ink-2">
                 Chưa có chỉ định cận lâm sàng. Thêm chỉ định để bắt đầu.
               </p>

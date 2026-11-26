@@ -285,3 +285,20 @@ describe('Điều hướng', () => {
     expect(state.patients).toHaveLength(seedCount)
   })
 })
+
+describe('Đơn mẫu', () => {
+  beforeEach(() => makeStore(createSeedState()))
+
+  it('đổi tên (cắt khoảng trắng), chặn tên rỗng / trùng, xoá', () => {
+    const a = actions.savePrescriptionTemplate({ name: 'Mẫu thử A', advice: '', items: [] })
+    const b = actions.savePrescriptionTemplate({ name: 'Mẫu thử B', advice: '', items: [] })
+    expect(actions.renamePrescriptionTemplate(a.id, '  Mẫu   thử A1 ')).toBeNull()
+    expect(state.prescriptionTemplates!.find((t) => t.id === a.id)!.name).toBe('Mẫu thử A1')
+    expect(actions.renamePrescriptionTemplate(a.id, '   ')).toMatch(/trống/)
+    expect(actions.renamePrescriptionTemplate(a.id, 'mẫu THỬ b')).toMatch(/trùng|cùng tên/)
+    expect(state.prescriptionTemplates!.find((t) => t.id === a.id)!.name).toBe('Mẫu thử A1')
+    actions.deletePrescriptionTemplate(b.id)
+    expect(state.prescriptionTemplates!.some((t) => t.id === b.id)).toBe(false)
+    expect(state.prescriptionTemplates!.some((t) => t.id === a.id)).toBe(true)
+  })
+})

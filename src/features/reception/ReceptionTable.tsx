@@ -19,6 +19,8 @@ interface ReceptionTableProps {
   onChangeStatus: (row: VisitRow, nextStatus: VisitStatus) => void
   onPay: (visitId: string) => void
   emptyAction?: React.ReactNode
+  /** Đang xem đúng một ngày: ẩn cột Ngày khám (trùng bộ lọc) cho bảng vừa màn hình */
+  singleDay?: boolean
 }
 
 /** Hai cột đầu ghim bên trái khi cuộn ngang (giữ ngữ cảnh khi bảng rộng hơn màn hình) */
@@ -48,8 +50,9 @@ export function ReceptionTable({
   onChangeStatus,
   onPay,
   emptyAction,
+  singleDay,
 }: ReceptionTableProps) {
-  const columns = RECEPTION_COLUMNS.filter((c) => visibleColumns.includes(c.key))
+  const columns = RECEPTION_COLUMNS.filter((c) => visibleColumns.includes(c.key) && !(singleDay && c.key === 'visitDate'))
   const totalWidth = FIXED_LEFT.reduce((s, c) => s + c.width, 0) + columns.reduce((s, c) => s + c.width, 0)
 
   const th = 'h-[38px] px-2.5 text-left text-[12.5px] font-semibold whitespace-nowrap text-ink-3'
@@ -57,13 +60,13 @@ export function ReceptionTable({
 
   return (
     <div className="thin-scroll relative h-full overflow-auto">
-      <table className="min-w-full table-fixed border-separate border-spacing-0" style={{ width: totalWidth }}>
+      <table className="table-fixed border-separate border-spacing-0" style={columns.some((c) => c.flex) ? { width: '100%', minWidth: totalWidth } : { width: totalWidth, minWidth: '100%' }}>
         <colgroup>
           {FIXED_LEFT.map((c) => (
             <col key={c.key} style={{ width: c.width }} />
           ))}
           {columns.map((c) => (
-            <col key={c.key} style={{ width: c.width }} />
+            <col key={c.key} style={c.flex ? undefined : { width: c.width }} />
           ))}
         </colgroup>
         <thead className="sticky top-0 z-10 bg-subtle">

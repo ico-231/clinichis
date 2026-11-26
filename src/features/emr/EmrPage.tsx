@@ -59,7 +59,7 @@ export function EmrPage() {
   return (
     <div className="flex h-full flex-col bg-canvas">
       <PageHeader title="Bệnh án điện tử" />
-      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 pt-1 pb-4">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1920px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 2xl:px-8 pt-1 pb-4">
         <div className="flex flex-wrap items-end gap-2">
           <div className="relative w-full sm:w-[280px]">
             <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-4" />
@@ -126,7 +126,7 @@ export function EmrPage() {
                   </tr>
                 )}
                 {pageRows.map(({ visit, patient, emr }, i) => (
-                  <tr key={visit.id} className="transition-colors hover:bg-brand-wash">
+                  <tr key={visit.id} onClick={() => setUI({ emrVisitId: visit.id })} className="cursor-pointer transition-colors hover:bg-brand-wash">
                     <td className="px-3 py-2.5 text-ink-3 tabular-nums">{(safePage - 1) * pageSize + i + 1}</td>
                     <td className="px-3 py-2.5">
                       <button type="button" onClick={() => setUI({ emrVisitId: visit.id })} className="font-semibold text-info-ink hover:underline tabular-nums">
@@ -166,7 +166,7 @@ export function EmrPage() {
                         {SIGN_LABEL[emr.signStatus]}
                       </span>
                     </td>
-                    <td className="px-3 py-2.5 text-right">
+                    <td className="px-3 py-2.5 text-right" onClick={(e) => e.stopPropagation()}>
                       <span className="inline-flex gap-1">
                         <button type="button" onClick={() => setUI({ emrVisitId: visit.id })} className="rounded-[8px] p-1.5 text-ink-2 hover:bg-subtle" aria-label="Sửa bệnh án" title="Sửa bệnh án">
                           <Pencil className="h-3.5 w-3.5" />

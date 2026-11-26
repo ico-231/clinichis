@@ -8,7 +8,6 @@ import {
   FlaskConical,
   LayoutDashboard,
   LayoutGrid,
-  NotebookPen,
   ScanLine,
   Settings2,
   Stethoscope,
@@ -43,10 +42,10 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { key: 'reception', label: 'Lễ tân', icon: UserRoundCheck, description: 'Tiếp nhận, xếp hàng đợi và thu phí người bệnh.' },
       { key: 'examination', label: 'Khám bệnh', icon: Stethoscope, description: 'Danh sách chờ khám của bác sĩ, ghi nhận sinh hiệu, chẩn đoán ICD-10.' },
-      { key: 'prescriptions', label: 'Kê đơn', icon: NotebookPen, description: 'Kê đơn thuốc điện tử, mẫu đơn và lịch sử đơn của người bệnh.' },
     ],
   },
-  // Đã bỏ khỏi menu theo yêu cầu: Tư vấn trực tuyến (Cuộc gọi, Tin nhắn), Thông tin phòng khám, Phát triển thương hiệu
+  // Đã bỏ khỏi menu theo yêu cầu: Tư vấn trực tuyến (Cuộc gọi, Tin nhắn), Thông tin phòng khám, Phát triển thương hiệu,
+  // Kê đơn (26/11: kê đơn làm trong màn Khám bệnh, đơn mẫu quản lý ngay tại đó)
   {
     title: 'Lịch',
     icon: CalendarClock,

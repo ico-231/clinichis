@@ -1,8 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
-import { AlertTriangle, BookmarkPlus, ChevronDown, Eraser, FileText, Pill, Plus, Printer, Search, Send, Trash2 } from 'lucide-react'
+import { AlertTriangle, BookmarkPlus, ChevronDown, Eraser, FileText, Pill, Plus, Printer, Search, Send, Settings2, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DropdownMenu, MenuItem } from '@/components/ui/DropdownMenu'
-import { DocumentsEmptyIllustration } from '@/components/ui/EmptyState'
 import { Modal } from '@/components/ui/Modal'
 import { Popover } from '@/components/ui/Popover'
 import { useToast } from '@/components/ui/Toast'
@@ -13,6 +12,7 @@ import { formatDateTimeVN } from '@/lib/date'
 import { cn } from '@/lib/cn'
 import { Section, boxInput, type DraftUpdate } from './ExamSections'
 import { computeQuantity, type ExamDraft } from './examDraft'
+import { TemplateManagerModal } from './TemplateManagerModal'
 import type { Drug, PrescriptionItem, PrescriptionTemplate } from '@/store/types'
 
 interface Props {
@@ -124,7 +124,6 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
 
       {items.length === 0 ? (
         <div className="mt-3 flex flex-col items-center gap-2 py-4 text-center">
-          <DocumentsEmptyIllustration />
           <p className="text-[13px] text-ink-3">Chưa có thuốc trong đơn. Thêm thuốc hoặc chọn đơn mẫu để kê đơn.</p>
           <Button size="sm" variant="outline" leftIcon={<Plus className="h-3.5 w-3.5" />} onClick={() => searchRef.current?.focus()}>
             Thêm thuốc
@@ -218,7 +217,7 @@ function NumberCell({ label, value, onChange, step = 1, min = 0 }: { label: stri
       min={min}
       onChange={(e) => onChange(Number(e.target.value.replace(',', '.')) || 0)}
       onFocus={(e) => e.target.select()}
-      className="h-8 w-full border-b border-line-strong bg-transparent text-center tabular-nums outline-none focus:border-brand"
+      className="h-8 w-full px-1.5 text-center tabular-nums rounded-[10px] border border-line-strong bg-surface text-[13px] text-ink outline-none transition placeholder:text-ink-5 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
     />
   )
 }
@@ -226,7 +225,7 @@ function NumberCell({ label, value, onChange, step = 1, min = 0 }: { label: stri
 function UnitSelect({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   const options = DOSE_UNITS.includes(value) ? DOSE_UNITS : [value, ...DOSE_UNITS]
   return (
-    <select aria-label={label} value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full border-b border-line-strong bg-transparent outline-none focus:border-brand">
+    <select aria-label={label} value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full pl-2 rounded-[10px] border border-line-strong bg-surface text-[13px] text-ink outline-none transition placeholder:text-ink-5 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15">
       {options.map((u) => (
         <option key={u}>{u}</option>
       ))}
@@ -309,6 +308,7 @@ function DrugSearch({ onPick, inputRef }: { onPick: (d: Drug) => void; inputRef:
 function TemplatePicker({ onPick }: { onPick: (t: PrescriptionTemplate) => void }) {
   const templates = useClinicState().prescriptionTemplates ?? []
   const [open, setOpen] = useState(false)
+  const [manageOpen, setManageOpen] = useState(false)
   const [q, setQ] = useState('')
   const ref = useRef<HTMLButtonElement>(null)
   const list = templates.filter((t) => normalizeText(t.name).includes(normalizeText(q)))
@@ -318,13 +318,27 @@ function TemplatePicker({ onPick }: { onPick: (t: PrescriptionTemplate) => void 
         Chọn đơn mẫu
       </Button>
       <Popover open={open} onClose={() => setOpen(false)} anchorRef={ref} className="w-[340px] p-2">
-        <div className="relative">
-          <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-ink-5" />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Tìm theo tên đơn mẫu..." aria-label="Tìm theo tên đơn mẫu" className={cn(boxInput, 'h-8 pl-8')} />
+        <div className="flex items-center gap-1.5">
+          <div className="relative min-w-0 flex-1">
+            <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-ink-5" />
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Tìm theo tên đơn mẫu..." aria-label="Tìm theo tên đơn mẫu" className={cn(boxInput, 'h-8 pl-8')} />
+          </div>
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            className="h-8 w-8 shrink-0"
+            title="Quản lý đơn mẫu"
+            aria-label="Quản lý đơn mẫu"
+            onClick={() => {
+              setOpen(false)
+              setManageOpen(true)
+            }}
+          >
+            <Settings2 className="h-4 w-4" />
+          </Button>
         </div>
         {list.length === 0 ? (
           <div className="flex flex-col items-center gap-1 py-5 text-center">
-            <DocumentsEmptyIllustration className="h-[56px] w-[70px]" />
             <p className="text-[13px] font-medium text-ink-2">Hiện không có đơn mẫu nào</p>
             <p className="text-xs text-ink-4">Lưu đơn đang kê ở “Thao tác khác” để tạo mới.</p>
           </div>
@@ -350,6 +364,7 @@ function TemplatePicker({ onPick }: { onPick: (t: PrescriptionTemplate) => void 
           </ul>
         )}
       </Popover>
+      <TemplateManagerModal open={manageOpen} onClose={() => setManageOpen(false)} />
     </>
   )
 }

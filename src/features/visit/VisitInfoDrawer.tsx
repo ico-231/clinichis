@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { Copy, Eye, FlaskConical, HeartPulse, Printer, ReceiptText, ScanLine, Users, X } from 'lucide-react'
+import { Copy, Eye, FlaskConical, HeartPulse, Printer, ScanLine, Users, X } from 'lucide-react'
 import { Tabs } from '@/components/ui/Tabs'
 import { useOverlayBehavior } from '@/components/ui/Modal'
 import { Portal } from '@/components/ui/Portal'
@@ -160,7 +160,7 @@ function RxTab({ visit, patient }: { visit: Visit; patient: Patient }) {
   const toast = useToast()
   const [printOpen, setPrintOpen] = useState(false)
   const draft = draftFromVisit(visit)
-  if (!draft.prescription.length) return <Empty icon={<ReceiptText className="h-6 w-6" />} text="Lượt khám này không có toa thuốc." />
+  if (!draft.prescription.length) return <Empty text="Lượt khám này không có toa thuốc." />
   return (
     <>
       <div className="mb-3 flex items-center justify-between">
@@ -191,7 +191,7 @@ function RxTab({ visit, patient }: { visit: Visit; patient: Patient }) {
 function ClsTab({ visit }: { visit: Visit }) {
   const [viewing, setViewing] = useState<string | null>(null)
   const orders = visit.paraclinicalOrders ?? []
-  if (!orders.length) return <Empty icon={<FlaskConical className="h-6 w-6" />} text="Lượt khám này không có chỉ định cận lâm sàng." />
+  if (!orders.length) return <Empty text="Lượt khám này không có chỉ định cận lâm sàng." />
   const groups = new Map<string, typeof orders>()
   orders.forEach((o) => groups.set(o.providerName, [...(groups.get(o.providerName) ?? []), o]))
   const firstSent = orders.map((o) => o.sentAt).filter(Boolean).sort()[0]
@@ -258,7 +258,7 @@ function ClsTab({ visit }: { visit: Visit }) {
 export function ReceiptsTab({ visit }: { visit: Visit }) {
   const [openId, setOpenId] = useState<string | null>(null)
   const receipts = receiptsOf(visit)
-  if (!receipts.length) return <Empty icon={<ReceiptText className="h-6 w-6" />} text="Chưa có phiếu thu cho lượt khám này." />
+  if (!receipts.length) return <Empty text="Chưa có phiếu thu cho lượt khám này." />
   return (
     <>
       <table className="w-full">
@@ -294,11 +294,6 @@ export function ReceiptsTab({ visit }: { visit: Visit }) {
   )
 }
 
-function Empty({ icon, text }: { icon: ReactNode; text: string }) {
-  return (
-    <div className="flex flex-col items-center gap-2 py-16 text-center text-ink-4">
-      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-subtle text-ink-5">{icon}</span>
-      {text}
-    </div>
-  )
+function Empty({ text }: { text: string }) {
+  return <p className="py-16 text-center text-[13px] text-ink-4">{text}</p>
 }

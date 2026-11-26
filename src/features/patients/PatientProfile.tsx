@@ -52,7 +52,7 @@ export function PatientProfile({ patient, onBack }: { patient: Patient; onBack: 
   return (
     <div className="flex h-full flex-col bg-canvas">
       <header className="shrink-0 border-b border-line bg-surface">
-        <div className="mx-auto flex w-full max-w-[1440px] items-center gap-2.5 px-4 sm:px-6 py-2.5">
+        <div className="mx-auto flex w-full max-w-[1920px] items-center gap-2.5 px-4 sm:px-6 2xl:px-8 py-2.5">
           <button
             type="button"
             onClick={onBack}
@@ -94,7 +94,7 @@ export function PatientProfile({ patient, onBack }: { patient: Patient; onBack: 
         </div>
       </header>
 
-      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 gap-4 overflow-hidden px-4 sm:px-6 py-4">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1920px] flex-1 gap-4 overflow-hidden px-4 sm:px-6 2xl:px-8 py-4">
         <aside className="thin-scroll w-[280px] shrink-0 overflow-y-auto rounded-[16px] border border-line bg-surface text-[13px]">
           <div className="flex flex-col items-center gap-1 border-b border-line px-4 py-4">
             <span className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-brand-line bg-brand-tint text-[15px] font-bold text-brand-ink">{initials(patient.fullName)}</span>
@@ -158,7 +158,7 @@ export function PatientProfile({ patient, onBack }: { patient: Patient; onBack: 
                     {pageRows.map((v, i) => {
                       const dx = v.exam?.diagnoses ?? []
                       return (
-                        <tr key={v.id} className={cn('transition-colors hover:bg-brand-wash', v.status === 'cancelled' && 'text-ink-5')}>
+                        <tr key={v.id} onClick={() => setDetailId(v.id)} className={cn('cursor-pointer transition-colors hover:bg-brand-wash', v.status === 'cancelled' && 'text-ink-5')}>
                           <td className="px-3 py-2 text-ink-3 tabular-nums">{(page - 1) * pageSize + i + 1}</td>
                           <td className="px-3 py-2">
                             <button type="button" onClick={() => setDetailId(v.id)} className="font-semibold text-info-ink hover:underline tabular-nums">

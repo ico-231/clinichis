@@ -1,7 +1,8 @@
 import { useState, type ReactNode } from 'react'
 import { ChevronUp, Pencil } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { Checkbox, TextField } from '@/components/ui/Field'
+import { Checkbox, FieldShell, inputBase } from '@/components/ui/Field'
+import { TimeInput } from '@/components/ui/TimeInput'
 import { DatePicker } from '@/components/ui/DatePicker'
 import { Select } from '@/components/ui/Select'
 import { GENDER_LABEL, SERVICES } from '@/store/catalog'
@@ -115,7 +116,9 @@ export function InfoSection({ draft, update, patient }: { draft: ExamDraft; upda
       <section id="sec-info" className="scroll-mt-3 rounded-[16px] border border-line bg-surface px-5 pt-5 pb-4">
         <div className="grid grid-cols-1 gap-x-3 gap-y-4 md:grid-cols-[1fr_1fr_1.4fr]">
           <DatePicker label="Ngày khám" required value={draft.date} onChange={(date) => update({ date })} />
-          <TextField label="Giờ khám" required type="time" value={draft.time} onChange={(e) => update({ time: e.target.value })} />
+          <FieldShell label="Giờ khám" required>
+            <TimeInput value={draft.time} onChange={(time) => update({ time })} className={inputBase} aria-label="Giờ khám" />
+          </FieldShell>
           <Select
             label="Công khám"
             required
@@ -292,7 +295,7 @@ function RiskRow({
         onChange={(e) => onNote(e.target.value)}
         placeholder="Ghi chú"
         aria-label={`Ghi chú ${label.toLowerCase()}`}
-        className="h-8 w-full border-b border-line bg-transparent text-[13px] outline-none placeholder:text-ink-5 focus:border-brand"
+        className="h-8 w-full px-3 rounded-[10px] border border-line-strong bg-surface text-[13px] text-ink outline-none transition placeholder:text-ink-5 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
       />
     </div>
   )

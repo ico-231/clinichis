@@ -3,7 +3,6 @@ import { AlertTriangle, ChevronDown, Eye, FlaskConical, MoreHorizontal, Plus, Pr
 import { Button } from '@/components/ui/Button'
 import { Tabs } from '@/components/ui/Tabs'
 import { DropdownMenu, MenuItem } from '@/components/ui/DropdownMenu'
-import { DocumentsEmptyIllustration } from '@/components/ui/EmptyState'
 import { formatMoney } from '@/lib/format'
 import { cn } from '@/lib/cn'
 import { htmlToText } from '@/components/ui/RichText'
@@ -110,13 +109,11 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
         </ul>
       ) : tab === 'results' ? (
         <div className="flex flex-col items-center gap-2 rounded-md border border-dashed border-line py-6 text-center">
-          <DocumentsEmptyIllustration />
           <p className="text-[13px] font-medium text-ink-2">Chưa có kết quả cận lâm sàng</p>
           <p className="max-w-md text-xs text-ink-4">Kết quả sẽ hiển thị khi phòng xét nghiệm / chẩn đoán hình ảnh trả kết quả cho các chỉ định đã gửi.</p>
         </div>
       ) : orders.length === 0 ? (
         <div className="flex flex-col items-center gap-2 py-5 text-center">
-          <DocumentsEmptyIllustration />
           <p className="text-[13px] text-ink-3">Chưa có chỉ định cận lâm sàng. Thêm chỉ định để bắt đầu.</p>
           <Button size="sm" variant="soft" leftIcon={<Plus className="h-3.5 w-3.5" />} onClick={onAdd}>
             Thêm chỉ định

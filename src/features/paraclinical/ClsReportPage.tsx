@@ -86,7 +86,7 @@ export function ClsReportPage() {
         }
       />
       <div className="thin-scroll min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-[1440px] space-y-3.5 px-4 sm:px-6 pt-1 pb-6">
+        <div className="mx-auto w-full max-w-[1920px] space-y-3.5 px-4 sm:px-6 2xl:px-8 pt-1 pb-6">
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <Stat label="Số phiếu chỉ định" value={formatNumber(stats.orders)} />
             <Stat label="Số người bệnh" value={formatNumber(stats.patients)} />

@@ -92,7 +92,7 @@ export function AppointmentsPage() {
     <div className="flex h-full flex-col bg-canvas">
       <PageHeader title="Lịch hẹn" />
       <PendingProfileBanner />
-      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 pt-1 pb-4">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1920px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 2xl:px-8 pt-1 pb-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3.5 rounded-[16px] border border-line bg-surface px-4 py-3">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] border border-brand-line bg-brand-tint text-brand-ink">
@@ -167,6 +167,7 @@ export function AppointmentsPage() {
             <ReceptionTable
               rows={filtered.slice((safePage - 1) * pageSize, safePage * pageSize)}
               visibleColumns={DEFAULT_COLUMNS}
+              singleDay={from === to}
               sort={sort}
               onSort={(key) => (setSort((s) => nextSort(s, key)), setPage(1))}
               highlightId={null}
