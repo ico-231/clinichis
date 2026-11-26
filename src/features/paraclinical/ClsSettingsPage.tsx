@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { ChevronDown, FileSpreadsheet, MoreHorizontal, Pause, Pencil, Play, PlusCircle, Settings2, Trash2, UploadCloud } from 'lucide-react'
+import { ChevronDown, FileSpreadsheet, MoreHorizontal, Pause, Pencil, Play, PlusCircle, Settings2, Trash2, UploadCloud, Search } from 'lucide-react'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
@@ -21,7 +21,7 @@ import type { ParaclinicalServiceItem, ResultTemplate } from '@/store/types'
 import { useControlLabel } from '@/lib/useControlLabel'
 
 const CLASSES = ['Sinh hoá', 'Huyết học', 'Miễn dịch', 'Vi sinh', 'Thăm dò chức năng', 'Siêu âm', 'X-quang', 'Khác']
-const input = 'h-9 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[13px] outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15'
+const input = 'h-9 w-full rounded-[10px] border border-line-strong bg-surface px-2.5 text-[13px] text-ink placeholder:text-ink-4 outline-none focus:border-brand focus:ring-2 focus:ring-brand/15'
 const newId = (p: string) => `${p}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`
 
 /** Cận lâm sàng › Thiết lập (ảnh 123–132) */
@@ -57,10 +57,10 @@ export function ClsSettingsPage() {
     setEdit({ s: { id: newId('cls'), providerId: INTERNAL_LAB_ID, name: '', groupLabel: '', category: 'lab', price: 0, unit: 'Lần', classification: '', room: 'Mặc định', returnsResult: false, printLayout: 'portrait' }, isNew: true })
 
   return (
-    <div className="flex h-full flex-col">
-      <PageHeader title="Thiết lập" />
-      <div className="flex min-h-0 flex-1 flex-col p-3">
-        <div className="mb-3 flex flex-wrap items-center gap-2">
+    <div className="flex h-full flex-col bg-canvas">
+      <PageHeader title="Thiết lập cận lâm sàng" />
+      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 pt-1 pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-[14px] border border-line bg-surface px-3.5 py-2.5">
           <Tabs
             variant="pill"
             value={tab}
@@ -72,106 +72,123 @@ export function ClsSettingsPage() {
             ]}
           />
           {tab === 'catalog' && (
-            <>
-              <span className="ml-auto" />
-              <DropdownMenu
-                align="end"
-                renderTrigger={({ ref, toggle }) => (
-                  <Button ref={ref} onClick={toggle} rightIcon={<ChevronDown className="h-3.5 w-3.5" />}>
-                    Nhập danh mục từ file
-                  </Button>
-                )}
-              >
-                <MenuItem icon={<UploadCloud className="h-3.5 w-3.5" />} onSelect={() => setImportOpen(true)}>
-                  Tải lên tệp danh mục
-                </MenuItem>
-                <MenuItem icon={<FileSpreadsheet className="h-3.5 w-3.5" />} onSelect={() => downloadTemplate()}>
-                  Tải file mẫu
-                </MenuItem>
-              </DropdownMenu>
-            </>
+            <DropdownMenu
+              align="end"
+              renderTrigger={({ ref, toggle }) => (
+                <Button ref={ref} variant="outline" size="sm" onClick={toggle} rightIcon={<ChevronDown className="h-3.5 w-3.5" />}>
+                  Nhập danh mục từ file
+                </Button>
+              )}
+            >
+              <MenuItem icon={<UploadCloud className="h-3.5 w-3.5" />} onSelect={() => setImportOpen(true)}>
+                Tải lên tệp danh mục
+              </MenuItem>
+              <MenuItem icon={<FileSpreadsheet className="h-3.5 w-3.5" />} onSelect={() => downloadTemplate()}>
+                Tải file mẫu
+              </MenuItem>
+            </DropdownMenu>
           )}
         </div>
 
         {tab !== 'catalog' ? (
-          <div className="flex flex-1 items-center justify-center">
-            <EmptyState title={`${tab === 'classes' ? 'Phân loại' : 'Combo'} đang chờ thiết kế`} description="Chưa có ảnh tham chiếu cho tab này – giữ trang chờ theo kế hoạch." />
+          <div className="flex flex-1 items-center justify-center rounded-[16px] border border-line bg-surface">
+            <EmptyState title={`${tab === 'classes' ? 'Phân loại' : 'Combo'} sẽ có trong bản cập nhật sau`} description="Hiện thêm, sửa dịch vụ cận lâm sàng ở tab Danh mục CLS." />
           </div>
         ) : (
           <>
-            <div className="mb-3 flex flex-wrap items-end gap-2">
-              <input value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && (setApplied({ q, cls, room }), setPage(1))} placeholder="Tìm theo tên" aria-label="Tìm theo tên" className={cn(input, 'w-[220px] bg-slate-50')} />
-              <Select label="Phân loại" value={cls} options={[{ value: 'all', label: 'Tất cả' }, ...CLASSES.map((c) => ({ value: c, label: c }))]} onChange={setCls} className="w-[150px]" />
-              <Select label="Phòng CLS" value={room} options={[{ value: 'all', label: 'Tất cả' }, ...roomOptions.map((r) => ({ value: r, label: r }))]} onChange={setRoom} className="w-[150px]" />
-              <Button onClick={() => (setApplied({ q, cls, room }), setPage(1))}>Tìm kiếm</Button>
-              <Button variant="success" className="ml-auto" leftIcon={<PlusCircle className="h-4 w-4" />} onClick={openNew}>
+            <div className="flex flex-wrap items-end gap-2">
+              <div className="relative w-[240px]">
+                <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-4" />
+                <input
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && (setApplied({ q, cls, room }), setPage(1))}
+                  placeholder="Tìm theo tên cận lâm sàng"
+                  aria-label="Tìm theo tên cận lâm sàng"
+                  className="h-9 w-full rounded-[10px] border border-line-strong bg-surface pr-3 pl-9 text-[13.5px] text-ink outline-none transition placeholder:text-ink-4 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
+                />
+              </div>
+              <Select label="Phân loại" value={cls} options={[{ value: 'all', label: 'Tất cả' }, ...CLASSES.map((c) => ({ value: c, label: c }))]} onChange={setCls} className="w-[160px]" />
+              <Select label="Phòng CLS" value={room} options={[{ value: 'all', label: 'Tất cả' }, ...roomOptions.map((r) => ({ value: r, label: r }))]} onChange={setRoom} className="w-[160px]" />
+              <Button className="w-[74px]" onClick={() => (setApplied({ q, cls, room }), setPage(1))}>
+                Tìm
+              </Button>
+              <Button size="sm" className="ml-auto h-9 px-4" leftIcon={<PlusCircle className="h-4 w-4" />} onClick={openNew}>
                 Thêm mới
               </Button>
             </div>
-            <div className="thin-scroll min-h-0 flex-1 overflow-auto rounded-lg border border-slate-200 bg-white">
-              <table className="w-full min-w-[900px] text-[13px]">
-                <thead className="sticky top-0 bg-slate-50 text-[12.5px] text-slate-600">
-                  <tr>
-                    {['STT', 'Tên cận lâm sàng', 'Phân loại', 'Loại CLS', 'Đơn giá', 'Đơn vị', 'Phòng thực hiện', 'Trả kết quả', ''].map((h) => (
-                      <th key={h} className="px-3 py-2 text-left font-medium">
-                        {h}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.length === 0 && (
+            <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[16px] border border-line bg-surface">
+              <div className="thin-scroll min-h-0 flex-1 overflow-auto">
+                <table className="w-full min-w-[900px] text-[13px]">
+                  <thead className="sticky top-0 z-10 border-b border-line bg-subtle text-[12.5px] font-semibold text-ink-3">
                     <tr>
-                      <td colSpan={9}>
-                        <EmptyState description="Thêm dịch vụ cận lâm sàng thực hiện tại phòng khám để chỉ định cho người bệnh." />
-                      </td>
+                      {['STT', 'Tên cận lâm sàng', 'Phân loại', 'Loại CLS', 'Đơn giá', 'Đơn vị', 'Phòng thực hiện', 'Trả kết quả', ''].map((h) => (
+                        <th key={h} className="px-3 py-2.5 text-left font-semibold">
+                          {h}
+                        </th>
+                      ))}
                     </tr>
-                  )}
-                  {rows.slice((page - 1) * pageSize, page * pageSize).map((s, i) => (
-                    <tr key={s.id} className={cn('border-t border-slate-100', s.paused && 'text-slate-400')}>
-                      <td className="px-3 py-2">{(page - 1) * pageSize + i + 1}</td>
-                      <td className="px-3 py-2 font-medium">
-                        {s.name}
-                        {s.paused && <span className="ml-2 rounded bg-slate-100 px-1.5 text-[11px]">Tạm ngưng</span>}
-                      </td>
-                      <td className="px-3 py-2">{s.classification}</td>
-                      <td className="px-3 py-2">{s.category === 'imaging' ? 'Chẩn đoán hình ảnh' : 'Xét nghiệm'}</td>
-                      <td className="px-3 py-2 tabular-nums">{formatNumber(s.price)}</td>
-                      <td className="px-3 py-2">{s.unit}</td>
-                      <td className="px-3 py-2">{s.room}</td>
-                      <td className="px-3 py-2">{s.returnsResult ? 'Có' : 'Không'}</td>
-                      <td className="px-2 py-2 text-right">
-                        <DropdownMenu
-                          align="end"
-                          renderTrigger={({ ref, toggle }) => (
-                            <button ref={ref} type="button" onClick={toggle} className="rounded p-1 text-slate-500 hover:bg-slate-100" aria-label="Hành động">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </button>
-                          )}
-                        >
-                          <MenuItem icon={<Pencil className="h-3.5 w-3.5" />} onSelect={() => setEdit({ s, isNew: false })}>
-                            Chỉnh sửa
-                          </MenuItem>
-                          <MenuItem icon={<Settings2 className="h-3.5 w-3.5" />} onSelect={() => setTplFor(s)}>
-                            Cài đặt mẫu
-                          </MenuItem>
-                          <MenuItem
-                            icon={s.paused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
-                            onSelect={() => save(list.map((x) => (x.id === s.id ? { ...x, paused: !x.paused } : x)), s.paused ? 'Đã mở lại dịch vụ' : 'Đã tạm ngưng dịch vụ')}
+                  </thead>
+                  <tbody className="divide-y divide-line-soft">
+                    {rows.length === 0 && (
+                      <tr>
+                        <td colSpan={9}>
+                          <EmptyState description="Thêm dịch vụ cận lâm sàng thực hiện tại phòng khám để chỉ định cho người bệnh." />
+                        </td>
+                      </tr>
+                    )}
+                    {rows.slice((page - 1) * pageSize, page * pageSize).map((s, i) => (
+                      <tr key={s.id} className={cn('transition-colors hover:bg-brand-wash', s.paused && 'text-ink-5')}>
+                        <td className="px-3 py-2.5 text-ink-3 tabular-nums">{(page - 1) * pageSize + i + 1}</td>
+                        <td className="px-3 py-2.5 font-semibold text-ink">
+                          <span className={cn(s.paused && 'text-ink-5')}>{s.name}</span>
+                          {s.paused && <span className="ml-2 rounded-full bg-subtle px-2 py-0.5 text-[11px] font-medium text-ink-3">Tạm ngưng</span>}
+                        </td>
+                        <td className="px-3 py-2.5 text-ink-2">{s.classification}</td>
+                        <td className="px-3 py-2.5 text-ink-2">{s.category === 'imaging' ? 'Chẩn đoán hình ảnh' : 'Xét nghiệm'}</td>
+                        <td className="px-3 py-2.5 font-medium text-ink tabular-nums">{formatNumber(s.price)}</td>
+                        <td className="px-3 py-2.5 text-ink-2">{s.unit}</td>
+                        <td className="px-3 py-2.5 text-ink-2">{s.room}</td>
+                        <td className="px-3 py-2.5">
+                          <span className={cn('inline-block rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold', s.returnsResult ? 'bg-brand-soft text-brand-ink' : 'bg-subtle text-ink-3')}>
+                            {s.returnsResult ? 'Có' : 'Không'}
+                          </span>
+                        </td>
+                        <td className="px-3 py-2.5 text-right">
+                          <DropdownMenu
+                            align="end"
+                            renderTrigger={({ ref, toggle }) => (
+                              <button ref={ref} type="button" onClick={toggle} className="rounded-[8px] p-1.5 text-ink-2 hover:bg-subtle" aria-label="Hành động">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </button>
+                            )}
                           >
-                            {s.paused ? 'Tiếp tục' : 'Tạm ngưng'}
-                          </MenuItem>
-                          <MenuItem icon={<Trash2 className="h-3.5 w-3.5" />} danger onSelect={() => setDel(s)}>
-                            Xoá
-                          </MenuItem>
-                        </DropdownMenu>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                            <MenuItem icon={<Pencil className="h-3.5 w-3.5" />} onSelect={() => setEdit({ s, isNew: false })}>
+                              Chỉnh sửa
+                            </MenuItem>
+                            <MenuItem icon={<Settings2 className="h-3.5 w-3.5" />} onSelect={() => setTplFor(s)}>
+                              Cài đặt mẫu
+                            </MenuItem>
+                            <MenuItem
+                              icon={s.paused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
+                              onSelect={() => save(list.map((x) => (x.id === s.id ? { ...x, paused: !x.paused } : x)), s.paused ? 'Đã mở lại dịch vụ' : 'Đã tạm ngưng dịch vụ')}
+                            >
+                              {s.paused ? 'Tiếp tục' : 'Tạm ngưng'}
+                            </MenuItem>
+                            <MenuItem icon={<Trash2 className="h-3.5 w-3.5" />} danger onSelect={() => setDel(s)}>
+                              Xoá
+                            </MenuItem>
+                          </DropdownMenu>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="border-t border-line px-4">
+                <Pagination page={page} pageCount={Math.ceil(rows.length / pageSize)} pageSize={pageSize} total={rows.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
+              </div>
             </div>
-            <Pagination page={page} pageCount={Math.ceil(rows.length / pageSize)} pageSize={pageSize} total={rows.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
           </>
         )}
       </div>
@@ -292,10 +309,10 @@ function ImportModal({ onClose, onImport }: { onClose: () => void; onImport: (it
         </Button>
       }
     >
-      <div className="mb-3 flex items-center gap-3 rounded-lg border border-slate-200 p-3 text-[12.5px]">
-        <FileSpreadsheet className="h-6 w-6 shrink-0 text-emerald-700" />
-        <p className="flex-1 text-slate-600">
-          <b className="block text-slate-900">File mẫu</b>Tải file mẫu, điền đầy đủ thông tin dịch vụ rồi tải lên tại ô bên dưới.
+      <div className="mb-3 flex items-center gap-3 rounded-[12px] border border-line bg-canvas p-3 text-[12.5px]">
+        <FileSpreadsheet className="h-6 w-6 shrink-0 text-brand-ink" />
+        <p className="flex-1 text-ink-3">
+          <b className="block text-ink">File mẫu</b>Tải file mẫu, điền đầy đủ thông tin dịch vụ rồi tải lên tại ô bên dưới.
         </p>
         <Button size="sm" variant="outline" onClick={downloadTemplate}>
           Tải file mẫu
@@ -310,16 +327,16 @@ function ImportModal({ onClose, onImport }: { onClose: () => void; onImport: (it
           const f = e.dataTransfer.files[0]
           if (f) read(f)
         }}
-        className="flex w-full flex-col items-center gap-1 rounded-lg border border-dashed border-slate-300 py-6 text-[13px] text-slate-600 hover:bg-slate-50"
+        className="flex w-full flex-col items-center gap-1 rounded-[14px] border border-dashed border-line-strong bg-canvas py-6 text-[13px] text-ink-2 transition-colors hover:bg-subtle"
       >
-        <UploadCloud className="h-7 w-7 text-slate-400" />
+        <UploadCloud className="h-7 w-7 text-ink-4" />
         {name || 'Kéo và thả tập tin hoặc nhấn vào đây để chọn'}
-        <span className="text-xs text-slate-500">Hỗ trợ định dạng .csv</span>
+        <span className="text-xs text-ink-3">Hỗ trợ định dạng .csv</span>
       </button>
       <input ref={ref} type="file" accept=".csv,text/csv" hidden onChange={(e) => e.target.files?.[0] && read(e.target.files[0])} />
-      {items.length > 0 && <p className="mt-2 text-[12.5px] text-emerald-700">Đọc được {items.length} dịch vụ hợp lệ.</p>}
+      {items.length > 0 && <p className="mt-2 text-[12.5px] font-medium text-brand-ink">Đọc được {items.length} dịch vụ hợp lệ.</p>}
       {errors.length > 0 && (
-        <ul className="mt-2 max-h-28 overflow-y-auto text-[12px] text-red-600">
+        <ul className="mt-2 max-h-28 overflow-y-auto text-[12px] text-accent-ink">
           {errors.map((e) => (
             <li key={e}>{e}</li>
           ))}
@@ -387,14 +404,14 @@ function ServiceDrawer({ value, isNew, onClose, onSave }: { value: ParaclinicalS
           </select>
         </ReqField>
         <div>
-          <span className="mb-1 block text-[12.5px] font-medium text-slate-700">Trả kết quả</span>
+          <span className="mb-1 block text-[12.5px] font-medium text-ink-2">Trả kết quả</span>
           <select value={s.returnsResult ? 'yes' : 'no'} onChange={(e) => set({ returnsResult: e.target.value === 'yes' })} className={input}>
             <option value="yes">Trả kết quả</option>
             <option value="no">Không trả kết quả</option>
           </select>
         </div>
         <div>
-          <span className="mb-1 block text-[12.5px] font-medium text-slate-700">Loại in</span>
+          <span className="mb-1 block text-[12.5px] font-medium text-ink-2">Loại in</span>
           <select value={s.printLayout ?? 'portrait'} onChange={(e) => set({ printLayout: e.target.value as 'portrait' | 'landscape' })} className={input}>
             <option value="landscape">In ngang</option>
             <option value="portrait">In dọc</option>
@@ -440,20 +457,20 @@ function TemplateModal({ service, onClose }: { service: ParaclinicalServiceItem;
       }
     >
       <div className="grid min-h-[420px] grid-cols-[220px_1fr] gap-4">
-        <div className="rounded-lg border border-slate-200">
-          <div className="flex items-center justify-between border-b border-slate-100 px-2.5 py-2 text-[13px] font-semibold">
+        <div className="rounded-[12px] border border-line bg-canvas">
+          <div className="flex items-center justify-between border-b border-line px-2.5 py-2 text-[13px] font-semibold text-ink">
             Danh sách mẫu
             <Button size="sm" variant="outline" leftIcon={<PlusCircle className="h-3.5 w-3.5" />} onClick={() => setCur(blank())}>
               Thêm mới
             </Button>
           </div>
           {mine.length === 0 ? (
-            <p className="px-3 py-6 text-center text-[12.5px] text-slate-500">Vui lòng thêm mẫu</p>
+            <p className="px-3 py-6 text-center text-[12.5px] text-ink-3">Vui lòng thêm mẫu</p>
           ) : (
-            <ul className="p-1">
+            <ul className="space-y-1 p-1.5">
               {mine.map((t) => (
-                <li key={t.id} className="flex items-center">
-                  <button type="button" onClick={() => setCur(t)} className={cn('flex-1 truncate rounded px-2 py-1.5 text-left text-[13px]', t.id === cur.id ? 'bg-blue-50 text-blue-700' : 'hover:bg-slate-50')}>
+                <li key={t.id} className="flex items-center gap-1">
+                  <button type="button" onClick={() => setCur(t)} className={cn('flex-1 truncate rounded-[8px] px-2.5 py-1.5 text-left text-[13px] transition-colors', t.id === cur.id ? 'bg-brand-tint font-medium text-brand-ink' : 'text-ink-2 hover:bg-surface')}>
                     {t.name}
                   </button>
                   <button
@@ -462,7 +479,7 @@ function TemplateModal({ service, onClose }: { service: ParaclinicalServiceItem;
                       setResultTemplates(all.filter((x) => x.id !== t.id))
                       if (cur.id === t.id) setCur(blank())
                     }}
-                    className="rounded p-1 text-red-600 hover:bg-red-50"
+                    className="rounded-[8px] p-1 text-accent-ink hover:bg-accent-soft"
                     aria-label={`Xoá mẫu ${t.name}`}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -471,25 +488,25 @@ function TemplateModal({ service, onClose }: { service: ParaclinicalServiceItem;
               ))}
             </ul>
           )}
-          <p className="border-t border-slate-100 px-2.5 py-2 text-[11.5px] text-slate-500">Mẫu có sẵn: {RESULT_TEMPLATES.length} mẫu dùng chung</p>
+          <p className="border-t border-line px-2.5 py-2 text-[11.5px] text-ink-3 tabular-nums">Mẫu có sẵn: {RESULT_TEMPLATES.length} mẫu dùng chung</p>
         </div>
         <div className="space-y-3">
           <div className="grid grid-cols-[1fr_160px_120px] gap-2">
             <label className="block">
-              <span className="mb-1 block text-[12.5px] font-medium">
-                Tên mẫu<span className="text-red-600">*</span>
+              <span className="mb-1 block text-[12.5px] font-medium text-ink-2">
+                Tên mẫu<span className="text-accent-ink">*</span>
               </span>
-              <input value={cur.name} onChange={(e) => setCur((x) => ({ ...x, name: e.target.value }))} placeholder="Nhập tên gợi nhớ của mẫu." className={cn(input, touched && !cur.name.trim() && 'border-red-400')} />
+              <input value={cur.name} onChange={(e) => setCur((x) => ({ ...x, name: e.target.value }))} placeholder="Nhập tên gợi nhớ của mẫu." className={cn(input, touched && !cur.name.trim() && 'border-accent')} />
             </label>
             <label className="block">
-              <span className="mb-1 block text-[12.5px] font-medium">Nội dung phiếu in</span>
+              <span className="mb-1 block text-[12.5px] font-medium text-ink-2">Nội dung phiếu in</span>
               <select className={input} defaultValue="both">
                 <option value="both">Nội dung + hình ảnh</option>
                 <option value="text">Chỉ nội dung</option>
               </select>
             </label>
             <label className="block">
-              <span className="mb-1 block text-[12.5px] font-medium">Bố cục in</span>
+              <span className="mb-1 block text-[12.5px] font-medium text-ink-2">Bố cục in</span>
               <select className={input} defaultValue={service.printLayout ?? 'portrait'}>
                 <option value="portrait">In dọc</option>
                 <option value="landscape">In ngang</option>
@@ -497,8 +514,8 @@ function TemplateModal({ service, onClose }: { service: ParaclinicalServiceItem;
             </label>
           </div>
           <label className="block">
-            <span className="mb-1 block text-[12.5px] font-medium">
-              Tên hiển thị trên phiếu in<span className="text-red-600">*</span>
+            <span className="mb-1 block text-[12.5px] font-medium text-ink-2">
+              Tên hiển thị trên phiếu in<span className="text-accent-ink">*</span>
             </span>
             <input value={cur.printTitle ?? ''} onChange={(e) => setCur((x) => ({ ...x, printTitle: e.target.value }))} className={input} />
           </label>
@@ -514,12 +531,12 @@ function ReqField({ label, error, children }: { label: string; error?: string; c
   const { ref, labelId, errorId } = useControlLabel<HTMLSpanElement>(error)
   return (
     <div>
-      <span ref={ref} id={labelId} className="mb-1 block text-[12.5px] font-medium text-slate-700">
+      <span ref={ref} id={labelId} className="mb-1 block text-[12.5px] font-medium text-ink-2">
         {label}
-        <span className="text-red-600">*</span>
+        <span className="text-accent-ink">*</span>
       </span>
       {children}
-      {error && <span id={errorId} className="mt-1 block text-xs text-red-600">{error}</span>}
+      {error && <span id={errorId} className="mt-1 block text-xs text-accent-ink">{error}</span>}
     </div>
   )
 }

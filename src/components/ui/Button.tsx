@@ -12,12 +12,12 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 shadow-sm',
-  success: 'bg-green-700 text-white hover:bg-green-800 active:bg-green-900 shadow-sm',
-  outline: 'border border-slate-200 bg-white text-slate-800 hover:bg-slate-50 active:bg-slate-100',
-  ghost: 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
-  danger: 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
-  soft: 'bg-blue-50 text-blue-700 hover:bg-blue-100',
+  primary: 'bg-brand text-white hover:bg-brand-strong active:bg-brand-deep shadow-sm',
+  success: 'bg-brand text-white hover:bg-brand-strong active:bg-brand-deep shadow-sm',
+  outline: 'border border-line-strong bg-surface text-ink hover:bg-subtle active:bg-line',
+  ghost: 'text-ink-3 hover:bg-subtle hover:text-ink',
+  danger: 'bg-danger text-white hover:bg-danger-strong shadow-sm',
+  soft: 'bg-brand-soft text-brand-ink hover:bg-brand-line',
 }
 
 const sizes: Record<Size, string> = {
@@ -36,7 +36,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       ref={ref}
       type={type}
       className={cn(
-        'inline-flex shrink-0 items-center justify-center rounded-md font-semibold whitespace-nowrap transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-blue-500/40 disabled:pointer-events-none disabled:opacity-50',
+        'inline-flex shrink-0 items-center justify-center rounded-[10px] font-semibold whitespace-nowrap transition-colors outline-none select-none focus-visible:ring-2 focus-visible:ring-brand/35 focus-visible:ring-offset-1 focus-visible:ring-offset-surface disabled:pointer-events-none disabled:opacity-50',
         variants[variant],
         sizes[size],
         className,

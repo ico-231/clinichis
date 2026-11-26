@@ -55,7 +55,7 @@ function DetailContent({ visitId, onClose, onOpenVisit, onPay, onCancel }: Props
       width="w-[600px]"
       title={patient.fullName}
       headerExtra={
-        <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-slate-500">
+        <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-ink-4">
           <span>{patient.code}</span>·<span>{GENDER_LABEL[patient.gender]}</span>·<span>{ageLabel(patient.dob)}</span>·
           <span className="flex items-center gap-1">
             <Phone className="h-3 w-3" />
@@ -67,27 +67,27 @@ function DetailContent({ visitId, onClose, onOpenVisit, onPay, onCancel }: Props
     >
       <div className="px-4">
         {patient.allergies && (
-          <p className="mb-3 flex items-center gap-2 rounded-md bg-red-50 px-3 py-2 text-[12.5px] text-red-700">
+          <p className="mb-3 flex items-center gap-2 rounded-md bg-danger-soft px-3 py-2 text-[12.5px] text-danger-ink">
             <ShieldAlert className="h-4 w-4" /> <span className="font-semibold">Dị ứng:</span> {patient.allergies}
           </p>
         )}
 
         {/* Thẻ STT */}
-        <div className="flex items-stretch gap-3 rounded-xl border border-slate-200 p-3">
-          <div className="flex w-[72px] flex-col items-center justify-center rounded-lg bg-blue-600 text-white">
+        <div className="flex items-stretch gap-3 rounded-[14px] border border-line p-3">
+          <div className="flex w-[72px] flex-col items-center justify-center rounded-[10px] bg-brand text-white">
             <span className="text-[10px] font-medium tracking-wider uppercase opacity-80">STT</span>
             <span className="text-2xl leading-tight font-bold tabular-nums">{String(visit.queueNumber).padStart(2, '0')}</span>
           </div>
           <div className="min-w-0 flex-1 text-[12.5px]">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-slate-900">{visit.code}</span>
+              <span className="font-semibold text-ink">{visit.code}</span>
               <VisitStatusBadge status={visit.status} />
               <PaymentStatusBadge status={visit.paymentStatus} />
             </div>
-            <p className="mt-1 text-slate-600">
+            <p className="mt-1 text-ink-3">
               {formatDateVN(visit.date)} · {visit.time} · {roomById(visit.roomId)?.name}
             </p>
-            <p className="text-slate-600">{doctorLabel(visit.doctorId)}</p>
+            <p className="text-ink-3">{doctorLabel(visit.doctorId)}</p>
           </div>
         </div>
 
@@ -121,7 +121,7 @@ function DetailContent({ visitId, onClose, onOpenVisit, onPay, onCancel }: Props
             In phiếu tiếp nhận
           </Button>
           {canCancel && (
-            <Button size="sm" variant="ghost" className="text-red-600 hover:bg-red-50 hover:text-red-700" leftIcon={<Ban className="h-3.5 w-3.5" />} onClick={() => onCancel(visit.id)}>
+            <Button size="sm" variant="ghost" className="text-danger-ink hover:bg-danger-soft hover:text-danger-ink" leftIcon={<Ban className="h-3.5 w-3.5" />} onClick={() => onCancel(visit.id)}>
               Huỷ lượt
             </Button>
           )}
@@ -143,21 +143,21 @@ function DetailContent({ visitId, onClose, onOpenVisit, onPay, onCancel }: Props
           {tab === 'patient' && <PatientTab key={patient.id} patientId={patient.id} />}
           {tab === 'payment' && <PaymentTab visit={visit} />}
           {tab === 'history' && (
-            <ul className="divide-y divide-slate-100 rounded-lg border border-slate-200">
+            <ul className="divide-y divide-line-soft rounded-lg border border-line">
               {history.map((h) => (
                 <li key={h.id}>
                   <button
                     type="button"
                     onClick={() => h.id !== visit.id && onOpenVisit(h.id)}
-                    className={cn('flex w-full items-center gap-3 px-3 py-2.5 text-left text-[12.5px]', h.id === visit.id ? 'bg-blue-50/60' : 'hover:bg-slate-50')}
+                    className={cn('flex w-full items-center gap-3 px-3 py-2.5 text-left text-[12.5px]', h.id === visit.id ? 'bg-brand-tint/60' : 'hover:bg-canvas')}
                   >
-                    <span className="w-[84px] shrink-0 text-slate-700 tabular-nums">
+                    <span className="w-[84px] shrink-0 text-ink-2 tabular-nums">
                       {formatDateVN(h.date)}
-                      <span className="block text-[11px] text-slate-500">{h.time}</span>
+                      <span className="block text-[11px] text-ink-4">{h.time}</span>
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate font-medium text-slate-800">{serviceById(h.serviceId)?.name}</span>
-                      <span className="block truncate text-slate-500">{h.reason}</span>
+                      <span className="block truncate font-medium text-ink">{serviceById(h.serviceId)?.name}</span>
+                      <span className="block truncate text-ink-4">{h.reason}</span>
                     </span>
                     <VisitStatusBadge status={h.status} />
                   </button>
@@ -188,12 +188,12 @@ function Stepper({ visit }: { visit: Visit }) {
         const reached = cancelled ? !!s.at : i <= current
         return (
           <li key={s.label} className="min-w-0">
-            <div className={cn('h-1 rounded-full', reached ? (cancelled ? 'bg-slate-300' : 'bg-blue-600') : 'bg-slate-100')} />
-            <p className={cn('mt-1.5 flex items-center gap-1 text-[11.5px] font-medium', reached ? 'text-slate-800' : 'text-slate-400')}>
+            <div className={cn('h-1 rounded-full', reached ? (cancelled ? 'bg-line-strong' : 'bg-brand') : 'bg-subtle')} />
+            <p className={cn('mt-1.5 flex items-center gap-1 text-[11.5px] font-medium', reached ? 'text-ink' : 'text-ink-5')}>
               {reached && <Check className="h-3 w-3" />}
               {s.label}
             </p>
-            <p className="truncate text-[10.5px] text-slate-500">{s.at ? formatDateTimeVN(s.at).slice(0, 5) : '—'}</p>
+            <p className="truncate text-[10.5px] text-ink-4">{s.at ? formatDateTimeVN(s.at).slice(0, 5) : '—'}</p>
           </li>
         )
       })}
@@ -206,8 +206,8 @@ function InfoGrid({ items }: { items: { label: string; value: ReactNode; full?: 
     <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-[13px]">
       {items.map((it) => (
         <div key={it.label} className={cn(it.full && 'col-span-2')}>
-          <dt className="text-[11.5px] text-slate-500">{it.label}</dt>
-          <dd className="mt-0.5 text-slate-900">{it.value || <span className="text-slate-300">—</span>}</dd>
+          <dt className="text-[11.5px] text-ink-4">{it.label}</dt>
+          <dd className="mt-0.5 text-ink">{it.value || <span className="text-line-strong">—</span>}</dd>
         </div>
       ))}
     </dl>
@@ -239,44 +239,44 @@ function VisitTab({ visit }: { visit: Visit }) {
           { label: 'Nguồn', value: SOURCE_LABEL[visit.source] },
           { label: 'Lý do khám', value: visit.reason, full: true },
           ...(visit.symptoms ? [{ label: 'Triệu chứng', value: visit.symptoms, full: true }] : []),
-          ...(visit.cancelReason ? [{ label: 'Lý do huỷ', value: <span className="text-red-600">{visit.cancelReason}</span>, full: true }] : []),
+          ...(visit.cancelReason ? [{ label: 'Lý do huỷ', value: <span className="text-danger-ink">{visit.cancelReason}</span>, full: true }] : []),
         ]}
       />
 
       {hasVitals && (
-        <div className="rounded-lg border border-slate-200 p-3">
-          <p className="mb-2 text-[11.5px] font-semibold tracking-wide text-slate-600 uppercase">Chỉ số sinh hiệu</p>
+        <div className="rounded-lg border border-line p-3">
+          <p className="mb-2 text-[11.5px] font-semibold tracking-wide text-ink-3 uppercase">Chỉ số sinh hiệu</p>
           <div className="grid grid-cols-4 gap-2 text-[12.5px]">
-            {vt?.heightCm && <div><span className="text-slate-400">Cao:</span> <span className="font-medium">{vt.heightCm} cm</span></div>}
-            {vt?.weightKg && <div><span className="text-slate-400">Nặng:</span> <span className="font-medium">{vt.weightKg} kg</span></div>}
-            {vt?.bmi && <div><span className="text-slate-400">BMI:</span> <span className="font-medium">{vt.bmi} kg/m²</span></div>}
-            {vt?.temperatureC && <div><span className="text-slate-400">Nhiệt độ:</span> <span className="font-medium">{vt.temperatureC} °C</span></div>}
+            {vt?.heightCm && <div><span className="text-ink-5">Cao:</span> <span className="font-medium">{vt.heightCm} cm</span></div>}
+            {vt?.weightKg && <div><span className="text-ink-5">Nặng:</span> <span className="font-medium">{vt.weightKg} kg</span></div>}
+            {vt?.bmi && <div><span className="text-ink-5">BMI:</span> <span className="font-medium">{vt.bmi} kg/m²</span></div>}
+            {vt?.temperatureC && <div><span className="text-ink-5">Nhiệt độ:</span> <span className="font-medium">{vt.temperatureC} °C</span></div>}
             {(vt?.bpSystolic || vt?.bpDiastolic) && (
-              <div><span className="text-slate-400">HA:</span> <span className="font-medium">{vt.bpSystolic || '—'}/{vt.bpDiastolic || '—'} mmHg</span></div>
+              <div><span className="text-ink-5">HA:</span> <span className="font-medium">{vt.bpSystolic || '—'}/{vt.bpDiastolic || '—'} mmHg</span></div>
             )}
-            {vt?.pulse && <div><span className="text-slate-400">Mạch:</span> <span className="font-medium">{vt.pulse} l/p</span></div>}
-            {vt?.respiratoryRate && <div><span className="text-slate-400">Nhịp thở:</span> <span className="font-medium">{vt.respiratoryRate} l/p</span></div>}
-            {vt?.spo2 && <div><span className="text-slate-400">SpO2:</span> <span className="font-medium">{vt.spo2}%</span></div>}
+            {vt?.pulse && <div><span className="text-ink-5">Mạch:</span> <span className="font-medium">{vt.pulse} l/p</span></div>}
+            {vt?.respiratoryRate && <div><span className="text-ink-5">Nhịp thở:</span> <span className="font-medium">{vt.respiratoryRate} l/p</span></div>}
+            {vt?.spo2 && <div><span className="text-ink-5">SpO2:</span> <span className="font-medium">{vt.spo2}%</span></div>}
           </div>
         </div>
       )}
 
       {clsOrders.length > 0 && (
-        <div className="rounded-lg border border-slate-200 p-3">
-          <p className="mb-2 text-[11.5px] font-semibold tracking-wide text-slate-600 uppercase">
+        <div className="rounded-lg border border-line p-3">
+          <p className="mb-2 text-[11.5px] font-semibold tracking-wide text-ink-3 uppercase">
             Chỉ định cận lâm sàng ({clsOrders.length})
           </p>
-          <ul className="divide-y divide-slate-100 text-[12.5px]">
+          <ul className="divide-y divide-line-soft text-[12.5px]">
             {clsOrders.map((o) => (
               <li key={o.id} className="flex items-start justify-between gap-2 py-1.5">
                 <div>
-                  <p className="font-medium text-slate-900">
-                    {o.name} <span className="text-slate-400">x{o.quantity}</span>
+                  <p className="font-medium text-ink">
+                    {o.name} <span className="text-ink-5">x{o.quantity}</span>
                   </p>
-                  <p className="text-[11.5px] text-slate-500">{o.providerName}</p>
-                  {o.instruction && <p className="text-[11.5px] text-blue-600">HD: {o.instruction}</p>}
+                  <p className="text-[11.5px] text-ink-4">{o.providerName}</p>
+                  {o.instruction && <p className="text-[11.5px] text-brand-ink">HD: {o.instruction}</p>}
                 </div>
-                <span className="font-semibold text-emerald-700 tabular-nums">
+                <span className="font-semibold text-brand-ink tabular-nums">
                   {formatMoney(o.unitPrice * o.quantity)}
                 </span>
               </li>
@@ -386,22 +386,22 @@ function PaymentTab({ visit }: { visit: Visit }) {
     <div className="space-y-4">
       <div className="grid grid-cols-3 gap-2">
         {[
-          { label: 'Phí khám', value: visit.fee, cls: 'text-slate-900' },
-          { label: 'Đã thu (thuần)', value: paid, cls: 'text-emerald-700' },
-          { label: 'Còn lại', value: visit.status === 'cancelled' ? 0 : remainingAmount(visit), cls: 'text-orange-700' },
+          { label: 'Phí khám', value: visit.fee, cls: 'text-ink' },
+          { label: 'Đã thu (thuần)', value: paid, cls: 'text-brand-ink' },
+          { label: 'Còn lại', value: visit.status === 'cancelled' ? 0 : remainingAmount(visit), cls: 'text-accent-ink' },
         ].map((s) => (
-          <div key={s.label} className="rounded-lg border border-slate-200 px-3 py-2.5">
-            <p className="text-[11.5px] text-slate-500">{s.label}</p>
+          <div key={s.label} className="rounded-lg border border-line px-3 py-2.5">
+            <p className="text-[11.5px] text-ink-4">{s.label}</p>
             <p className={cn('mt-0.5 text-[15px] font-semibold tabular-nums', s.cls)}>{formatMoney(s.value)}</p>
           </div>
         ))}
       </div>
       {visit.payments.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-slate-200 py-6 text-center text-[12.5px] text-slate-500">Chưa có giao dịch</p>
+        <p className="rounded-lg border border-dashed border-line py-6 text-center text-[12.5px] text-ink-4">Chưa có giao dịch</p>
       ) : (
         <table className="w-full text-[12.5px]">
           <thead>
-            <tr className="border-b border-slate-200 text-left text-slate-500">
+            <tr className="border-b border-line text-left text-ink-4">
               <th className="py-2 font-medium">Thời gian</th>
               <th className="py-2 font-medium">Loại</th>
               <th className="py-2 font-medium">Hình thức</th>
@@ -410,14 +410,14 @@ function PaymentTab({ visit }: { visit: Visit }) {
           </thead>
           <tbody>
             {visit.payments.map((p) => (
-              <tr key={p.id} className="border-b border-slate-100">
-                <td className="py-2 text-slate-700 tabular-nums">{formatDateTimeVN(p.at)}</td>
+              <tr key={p.id} className="border-b border-line-soft">
+                <td className="py-2 text-ink-2 tabular-nums">{formatDateTimeVN(p.at)}</td>
                 <td className="py-2">
-                  <span className={p.kind === 'payment' ? 'text-emerald-700' : 'text-violet-700'}>{p.kind === 'payment' ? 'Thu tiền' : 'Hoàn tiền'}</span>
-                  {p.note && <span className="block text-[11px] text-slate-500">{p.note}</span>}
+                  <span className={p.kind === 'payment' ? 'text-brand-ink' : 'text-violet-700'}>{p.kind === 'payment' ? 'Thu tiền' : 'Hoàn tiền'}</span>
+                  {p.note && <span className="block text-[11px] text-ink-4">{p.note}</span>}
                 </td>
-                <td className="py-2 text-slate-700">{PAYMENT_METHOD_LABEL[p.method]}</td>
-                <td className={cn('py-2 text-right font-medium tabular-nums', p.kind === 'refund' ? 'text-violet-700' : 'text-slate-900')}>
+                <td className="py-2 text-ink-2">{PAYMENT_METHOD_LABEL[p.method]}</td>
+                <td className={cn('py-2 text-right font-medium tabular-nums', p.kind === 'refund' ? 'text-violet-700' : 'text-ink')}>
                   {p.kind === 'refund' ? '−' : ''}
                   {formatMoney(p.amount)}
                 </td>

@@ -21,10 +21,10 @@ export function CardSectionHeader({
         <span
           className={cn(
             'h-3.5 w-[3px] rounded-full',
-            accent === 'blue' ? 'bg-blue-600' : 'bg-orange-500',
+            accent === 'blue' ? 'bg-brand' : 'bg-accent',
           )}
         />
-        <h2 className="text-[12.5px] font-bold tracking-wide text-slate-900 uppercase">{title}</h2>
+        <h2 className="text-[12.5px] font-bold tracking-wide text-ink uppercase">{title}</h2>
       </div>
       {rightSlot}
     </div>
@@ -34,15 +34,15 @@ export function CardSectionHeader({
 export function FieldLabel({ label, required }: { label: string; required?: boolean }) {
   const { ref, labelId } = useControlLabel<HTMLLabelElement>()
   return (
-    <label ref={ref} id={labelId} className="block text-[12.5px] font-semibold text-slate-800">
+    <label ref={ref} id={labelId} className="block text-[12.5px] font-semibold text-ink">
       {label}
-      {required && <span className="ml-0.5 text-red-600">*</span>}
+      {required && <span className="ml-0.5 text-danger-ink">*</span>}
     </label>
   )
 }
 
 export const underlineBase =
-  'h-8 w-full border-b border-slate-200 bg-transparent text-[13px] text-slate-900 outline-none transition-colors placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-600 disabled:text-slate-400'
+  'h-8 w-full border-b border-line bg-transparent text-[13px] text-ink outline-none transition-colors placeholder:text-ink-5 hover:border-line-strong focus:border-brand disabled:text-ink-5'
 
 interface UnderlineInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string
@@ -72,16 +72,16 @@ export function UnderlineInput({
           className={cn(
             underlineBase,
             Boolean(rightSlot) && 'pr-8',
-            error && 'border-red-400 focus:border-red-500',
+            error && 'border-danger focus:border-danger',
             className,
           )}
         />
         {rightSlot && <div className="absolute right-0 flex items-center">{rightSlot}</div>}
       </div>
       {error ? (
-        <p className="mt-1 text-[11px] text-red-600">{error}</p>
+        <p className="mt-1 text-[11px] text-danger-ink">{error}</p>
       ) : helper ? (
-        <p className="mt-1 text-[11px] text-slate-500">{helper}</p>
+        <p className="mt-1 text-[11px] text-ink-4">{helper}</p>
       ) : null}
     </div>
   )
@@ -113,15 +113,15 @@ export function UnderlineRadioGender({
               key={it.v}
               type="button"
               onClick={() => onChange(it.v)}
-              className="inline-flex items-center gap-1.5 text-[13px] text-slate-800 select-none"
+              className="inline-flex items-center gap-1.5 text-[13px] text-ink select-none"
             >
               <span
                 className={cn(
                   'flex h-4 w-4 items-center justify-center rounded-full border transition',
-                  checked ? 'border-blue-600' : 'border-slate-300',
+                  checked ? 'border-brand' : 'border-line-strong',
                 )}
               >
-                {checked && <span className="h-2 w-2 rounded-full bg-blue-600" />}
+                {checked && <span className="h-2 w-2 rounded-full bg-brand" />}
               </span>
               {it.text}
             </button>
@@ -212,16 +212,16 @@ export function UnderlineSelect<T extends string>({
         className={cn(
           underlineBase,
           'mt-0.5 flex items-center justify-between gap-1 text-left',
-          open && 'border-blue-600',
-          error && 'border-red-400',
+          open && 'border-brand',
+          error && 'border-danger',
         )}
       >
-        <span className={cn('truncate', !selected && 'text-slate-400')}>
+        <span className={cn('truncate', !selected && 'text-ink-5')}>
           {selected ? selected.label : placeholder}
         </span>
-        <Icon className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+        <Icon className="h-3.5 w-3.5 shrink-0 text-ink-5" />
       </button>
-      {error && <p className="mt-1 text-[11px] text-red-600">{error}</p>}
+      {error && <p className="mt-1 text-[11px] text-danger-ink">{error}</p>}
 
       <Popover
         open={open}
@@ -231,8 +231,8 @@ export function UnderlineSelect<T extends string>({
         className="min-w-[200px] overflow-hidden py-1"
       >
         {searchable && (
-          <div className="flex items-center gap-2 border-b border-slate-100 px-2.5 py-1.5">
-            <Search className="h-3.5 w-3.5 text-slate-400" />
+          <div className="flex items-center gap-2 border-b border-line-soft px-2.5 py-1.5">
+            <Search className="h-3.5 w-3.5 text-ink-5" />
             <input
               autoFocus
               value={query}
@@ -243,10 +243,10 @@ export function UnderlineSelect<T extends string>({
               onKeyDown={onSearchKey}
               placeholder="Tìm nhanh..."
               aria-label="Tìm nhanh"
-              className="w-full bg-transparent text-[12.5px] text-slate-900 outline-none placeholder:text-slate-400"
+              className="w-full bg-transparent text-[12.5px] text-ink outline-none placeholder:text-ink-5"
             />
             {query && (
-              <button type="button" onClick={() => setQuery('')} className="text-slate-400 hover:text-slate-600" aria-label="Xoá từ khoá">
+              <button type="button" onClick={() => setQuery('')} className="text-ink-5 hover:text-ink-3" aria-label="Xoá từ khoá">
                 <X className="h-3 w-3" />
               </button>
             )}
@@ -262,18 +262,18 @@ export function UnderlineSelect<T extends string>({
                 onClick={() => pick(opt.value)}
                 onMouseEnter={() => searchable && setActive(i)}
                 className={cn(
-                  'flex w-full items-center justify-between gap-2 px-3 py-1.5 text-left text-[13px] transition hover:bg-slate-100',
-                  searchable && i === active && 'bg-slate-100',
-                  isSel ? 'bg-blue-50/60 font-medium text-blue-700' : 'text-slate-800',
+                  'flex w-full items-center justify-between gap-2 px-3 py-1.5 text-left text-[13px] transition hover:bg-subtle',
+                  searchable && i === active && 'bg-subtle',
+                  isSel ? 'bg-brand-tint/60 font-medium text-brand-ink' : 'text-ink',
                 )}
               >
                 <span className="truncate">{opt.label}</span>
-                {isSel && <Check className="h-3.5 w-3.5 shrink-0 text-blue-600" />}
+                {isSel && <Check className="h-3.5 w-3.5 shrink-0 text-brand-ink" />}
               </button>
             )
           })}
           {filtered.length === 0 && (
-            <p className="px-3 py-3 text-center text-xs text-slate-500">Không có kết quả</p>
+            <p className="px-3 py-3 text-center text-xs text-ink-4">Không có kết quả</p>
           )}
         </div>
       </Popover>
@@ -363,8 +363,8 @@ export function UnderlineDateField({
         className={cn(
           underlineBase,
           'mt-0.5 flex items-center justify-between gap-1',
-          open && 'border-blue-600',
-          error && 'border-red-400',
+          open && 'border-brand',
+          error && 'border-danger',
         )}
       >
         <input
@@ -373,7 +373,7 @@ export function UnderlineDateField({
           onBlur={() => setText(isoToDisplay(value))}
           placeholder="dd / mm / yyyy"
           inputMode="numeric"
-          className="w-full bg-transparent text-[13px] text-slate-900 tabular-nums outline-none placeholder:text-slate-400"
+          className="w-full bg-transparent text-[13px] text-ink tabular-nums outline-none placeholder:text-ink-5"
         />
         <button
           type="button"
@@ -383,12 +383,12 @@ export function UnderlineDateField({
             setOpen((o) => !o)
           }}
           aria-label="Chọn ngày"
-          className="shrink-0 text-slate-500 hover:text-slate-800"
+          className="shrink-0 text-ink-4 hover:text-ink"
         >
           <CalendarDays className="h-3.5 w-3.5" />
         </button>
       </div>
-      {error && <p className="mt-1 text-[11px] text-red-600">{error}</p>}
+      {error && <p className="mt-1 text-[11px] text-danger-ink">{error}</p>}
 
       <Popover open={open} onClose={() => setOpen(false)} anchorRef={wrapRef} className="w-[252px] p-3">
         <div className="select-none">
@@ -404,14 +404,14 @@ export function UnderlineDateField({
                       : new Date(year - 12, month, 1),
                 )
               }
-              className="flex h-7 w-7 items-center justify-center rounded border border-slate-200 text-xs hover:bg-slate-50"
+              className="flex h-7 w-7 items-center justify-center rounded border border-line text-xs hover:bg-canvas"
             >
               ‹
             </button>
             <button
               type="button"
               onClick={() => setView(view === 'days' ? 'months' : 'years')}
-              className="rounded px-2 py-1 text-[13px] font-semibold text-slate-900 hover:bg-slate-100"
+              className="rounded px-2 py-1 text-[13px] font-semibold text-ink hover:bg-subtle"
             >
               {view === 'days'
                 ? `Tháng ${month + 1} Năm ${year}`
@@ -430,7 +430,7 @@ export function UnderlineDateField({
                       : new Date(year + 12, month, 1),
                 )
               }
-              className="flex h-7 w-7 items-center justify-center rounded border border-slate-200 text-xs hover:bg-slate-50"
+              className="flex h-7 w-7 items-center justify-center rounded border border-line text-xs hover:bg-canvas"
             >
               ›
             </button>
@@ -438,7 +438,7 @@ export function UnderlineDateField({
 
           {view === 'days' && (
             <>
-              <div className="grid grid-cols-7 text-center text-[11px] text-slate-500">
+              <div className="grid grid-cols-7 text-center text-[11px] text-ink-4">
                 {WEEKDAYS_VN.map((w) => (
                   <div key={w} className="py-1">
                     {w}
@@ -457,9 +457,9 @@ export function UnderlineDateField({
                         setOpen(false)
                       }}
                       className={cn(
-                        'mx-auto flex h-8 w-8 items-center justify-center rounded-md text-[13px] text-slate-800 hover:bg-slate-100 disabled:pointer-events-none disabled:text-slate-300',
-                        iso === today && iso !== value && 'font-semibold text-blue-600 ring-1 ring-blue-200',
-                        iso === value && 'bg-blue-600 font-semibold text-white hover:bg-blue-600',
+                        'mx-auto flex h-8 w-8 items-center justify-center rounded-md text-[13px] text-ink hover:bg-subtle disabled:pointer-events-none disabled:text-line-strong',
+                        iso === today && iso !== value && 'font-semibold text-brand-ink ring-1 ring-brand-line',
+                        iso === value && 'bg-brand font-semibold text-white hover:bg-brand',
                       )}
                     >
                       {Number(iso.slice(8))}
@@ -482,7 +482,7 @@ export function UnderlineDateField({
                     setCursor(new Date(year, i, 1))
                     setView('days')
                   }}
-                  className={cn('h-9 rounded-md text-[13px] hover:bg-slate-100', i === month && 'bg-blue-50 font-semibold text-blue-700')}
+                  className={cn('h-9 rounded-md text-[13px] hover:bg-subtle', i === month && 'bg-brand-tint font-semibold text-brand-ink')}
                 >
                   Th {i + 1}
                 </button>
@@ -500,7 +500,7 @@ export function UnderlineDateField({
                     setCursor(new Date(yy, month, 1))
                     setView('months')
                   }}
-                  className={cn('h-9 rounded-md text-[13px] hover:bg-slate-100', yy === year && 'bg-blue-50 font-semibold text-blue-700')}
+                  className={cn('h-9 rounded-md text-[13px] hover:bg-subtle', yy === year && 'bg-brand-tint font-semibold text-brand-ink')}
                 >
                   {yy}
                 </button>
@@ -544,11 +544,11 @@ export function VitalUnderlineInput({
           placeholder={unit}
           onChange={(e) => onChange?.(e.target.value.replace(/[^\d.,]/g, ''))}
           className={cn(
-            'w-full bg-transparent text-[13px] text-slate-900 tabular-nums outline-none placeholder:text-slate-400',
-            readOnly && 'text-slate-700',
+            'w-full bg-transparent text-[13px] text-ink tabular-nums outline-none placeholder:text-ink-5',
+            readOnly && 'text-ink-2',
           )}
         />
-        {value && <span className="shrink-0 text-[11.5px] text-slate-500">{unit}</span>}
+        {value && <span className="shrink-0 text-[11.5px] text-ink-4">{unit}</span>}
       </div>
     </div>
   )

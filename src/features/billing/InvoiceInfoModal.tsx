@@ -16,7 +16,7 @@ export const emptyInvoice = (patient: Patient): InvoiceInfo => ({
 })
 
 const input =
-  'h-9 w-full rounded-md border border-slate-200 bg-white px-3 text-[13px] outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15'
+  'h-9 w-full rounded-md border border-line bg-surface px-3 text-[13px] outline-none placeholder:text-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15'
 
 /** Thông tin phát hành hoá đơn điện tử: Cá nhân / Doanh nghiệp (ảnh 032, 033) */
 export function InvoiceInfoModal({ initial, onClose, onSave }: { initial: InvoiceInfo; onClose: () => void; onSave: (inv: InvoiceInfo) => void }) {
@@ -40,12 +40,12 @@ export function InvoiceInfoModal({ initial, onClose, onSave }: { initial: Invoic
 
   const field = (key: keyof InvoiceInfo, label: string, placeholder: string, required = false, hint?: string) => (
     <label className="block">
-      <span className="mb-1 block text-[13px] font-medium text-slate-800">
+      <span className="mb-1 block text-[13px] font-medium text-ink">
         {label}
-        {required && <span className="ml-0.5 text-red-600">*</span>}
+        {required && <span className="ml-0.5 text-danger-ink">*</span>}
       </span>
-      <input value={String(inv[key] ?? '')} placeholder={placeholder} onChange={(e) => set({ [key]: e.target.value })} className={cn(input, touched && errors[key] && 'border-red-400')} />
-      {touched && errors[key] ? <span className="mt-1 block text-xs text-red-600">{errors[key]}</span> : hint && <span className="mt-1 block text-xs text-slate-500">{hint}</span>}
+      <input value={String(inv[key] ?? '')} placeholder={placeholder} onChange={(e) => set({ [key]: e.target.value })} className={cn(input, touched && errors[key] && 'border-danger')} />
+      {touched && errors[key] ? <span className="mt-1 block text-xs text-danger-ink">{errors[key]}</span> : hint && <span className="mt-1 block text-xs text-ink-4">{hint}</span>}
     </label>
   )
 

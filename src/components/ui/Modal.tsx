@@ -94,21 +94,21 @@ export function Modal({ open, onClose, title, description, size = 'md', footer, 
   return (
     <Portal>
       <div
-        className="fixed inset-0 z-50 flex animate-fade-in items-start justify-center overflow-y-auto bg-slate-900/45 p-4 pt-[6vh]"
+        className="fixed inset-0 z-50 flex animate-fade-in items-start justify-center overflow-y-auto bg-overlay/35 p-4 pt-[6vh]"
         onMouseDown={(e) => e.target === e.currentTarget && onClose()}
       >
-        <div role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1} className={cn('flex max-h-[88vh] outline-none w-full animate-pop-in flex-col rounded-xl bg-white shadow-2xl', sizes[size])}>
-          <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
+        <div role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1} className={cn('flex max-h-[88vh] w-full animate-pop-in flex-col rounded-[18px] border border-line bg-surface shadow-pop outline-none', sizes[size])}>
+          <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
             <div>
-              <h2 id={titleId} className="text-base font-semibold text-slate-900">{title}</h2>
-              {description && <p className="mt-0.5 text-[13px] text-slate-500">{description}</p>}
+              <h2 id={titleId} className="text-base font-bold text-ink">{title}</h2>
+              {description && <p className="mt-0.5 text-[13px] text-ink-3">{description}</p>}
             </div>
-            <button type="button" onClick={onClose} className="-mr-1 rounded-md p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-900" aria-label="Đóng">
+            <button type="button" onClick={onClose} className="-mr-1 rounded-lg p-1 text-ink-3 hover:bg-subtle hover:text-ink" aria-label="Đóng">
               <X className="h-4 w-4" />
             </button>
           </div>
           <div className={cn('flex-1 overflow-y-auto px-5 py-5', bodyClassName)}>{children}</div>
-          {footer && <div className="flex items-center justify-end gap-2 border-t border-slate-100 bg-slate-50/60 px-5 py-3">{footer}</div>}
+          {footer && <div className="flex items-center justify-end gap-2 rounded-b-[18px] border-t border-line bg-canvas px-5 py-3">{footer}</div>}
         </div>
       </div>
     </Portal>
@@ -131,19 +131,19 @@ export function Drawer({ open, onClose, title, width = 'w-[340px]', footer, chil
   if (!open) return null
   return (
     <Portal>
-      <div className="fixed inset-0 z-50 animate-fade-in bg-slate-900/60" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-        <aside role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1} className={cn('absolute top-0 right-0 outline-none flex h-full max-w-full animate-slide-in-right flex-col bg-white shadow-2xl', width)}>
-          <div className="flex items-start justify-between gap-3 px-4 pt-4 pb-3">
+      <div className="fixed inset-0 z-50 animate-fade-in bg-overlay/35" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+        <aside role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1} className={cn('absolute top-0 right-0 flex h-full max-w-full animate-slide-in-right flex-col border-l border-line bg-surface shadow-pop outline-none', width)}>
+          <div className="flex items-start justify-between gap-3 border-b border-line px-5 pt-4 pb-3">
             <div className="min-w-0 flex-1">
-              <h2 id={titleId} className="text-[17px] font-semibold text-slate-900">{title}</h2>
+              <h2 id={titleId} className="text-[17px] font-bold text-ink">{title}</h2>
               {headerExtra}
             </div>
-            <button type="button" onClick={onClose} className="rounded-md p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-900" aria-label="Đóng">
+            <button type="button" onClick={onClose} className="rounded-lg p-1 text-ink-3 hover:bg-subtle hover:text-ink" aria-label="Đóng">
               <X className="h-4 w-4" />
             </button>
           </div>
           <div className="flex-1 overflow-y-auto">{children}</div>
-          {footer && <div className="border-t border-slate-100 px-4 py-3">{footer}</div>}
+          {footer && <div className="border-t border-line bg-canvas px-5 py-3">{footer}</div>}
         </aside>
       </div>
     </Portal>

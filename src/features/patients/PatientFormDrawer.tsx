@@ -166,11 +166,11 @@ export function PatientFormDrawer({ patient, onClose, onSaved }: { patient?: Pat
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-50 animate-fade-in bg-slate-900/45" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-        <aside role="dialog" aria-modal="true" aria-label={patient ? 'Chỉnh sửa thông tin người bệnh' : 'Thêm người bệnh'} className="absolute top-0 right-0 bottom-0 flex w-[min(420px,100vw)] animate-slide-in-right flex-col bg-white shadow-2xl">
-          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
-            <h2 className="text-[15px] font-semibold text-slate-900">{patient ? 'Chỉnh sửa thông tin người bệnh' : 'Thêm người bệnh'}</h2>
-            <button type="button" onClick={onClose} className="rounded-md p-1 text-slate-500 hover:bg-slate-100" aria-label="Đóng">
+      <div className="fixed inset-0 z-50 animate-fade-in bg-overlay/45" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+        <aside role="dialog" aria-modal="true" aria-label={patient ? 'Chỉnh sửa thông tin người bệnh' : 'Thêm người bệnh'} className="absolute top-0 right-0 bottom-0 flex w-[min(420px,100vw)] animate-slide-in-right flex-col bg-surface shadow-pop">
+          <div className="flex items-center justify-between border-b border-line-soft px-4 py-3">
+            <h2 className="text-[15px] font-semibold text-ink">{patient ? 'Chỉnh sửa thông tin người bệnh' : 'Thêm người bệnh'}</h2>
+            <button type="button" onClick={onClose} className="rounded-md p-1 text-ink-4 hover:bg-subtle" aria-label="Đóng">
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -182,8 +182,8 @@ export function PatientFormDrawer({ patient, onClose, onSaved }: { patient?: Pat
             <div className="grid grid-cols-[1fr_130px] gap-2">
               <DatePicker label="Ngày sinh" required value={f.dob} max={todayISO()} onChange={(dob) => set({ dob })} error={errors.dob} />
               <div>
-                <span className="mb-1.5 block text-[12.5px] font-medium text-slate-600">Tuổi</span>
-                <div className="flex h-9 overflow-hidden rounded-md border border-slate-200">
+                <span className="mb-1.5 block text-[12.5px] font-medium text-ink-3">Tuổi</span>
+                <div className="flex h-9 overflow-hidden rounded-md border border-line">
                   <input
                     value={age}
                     inputMode="numeric"
@@ -197,7 +197,7 @@ export function PatientFormDrawer({ patient, onClose, onSaved }: { patient?: Pat
                     }}
                     className="w-full min-w-0 px-2 text-[13px] outline-none"
                   />
-                  <select value={ageUnit} onChange={(e) => setAgeUnit(e.target.value as 'year' | 'month')} className="border-l border-slate-200 bg-slate-50 px-1 text-[12.5px]" aria-label="Đơn vị tuổi">
+                  <select value={ageUnit} onChange={(e) => setAgeUnit(e.target.value as 'year' | 'month')} className="border-l border-line bg-canvas px-1 text-[12.5px]" aria-label="Đơn vị tuổi">
                     <option value="year">tuổi</option>
                     <option value="month">tháng</option>
                   </select>
@@ -208,7 +208,7 @@ export function PatientFormDrawer({ patient, onClose, onSaved }: { patient?: Pat
               <div className="flex gap-10 text-[13px]">
                 {(['male', 'female'] as const).map((g) => (
                   <label key={g} className="flex cursor-pointer items-center gap-1.5">
-                    <input type="radio" checked={f.gender === g} onChange={() => set({ gender: g })} className="accent-blue-600" />
+                    <input type="radio" checked={f.gender === g} onChange={() => set({ gender: g })} className="accent-brand" />
                     {g === 'male' ? 'Nam' : 'Nữ'}
                   </label>
                 ))}
@@ -224,17 +224,17 @@ export function PatientFormDrawer({ patient, onClose, onSaved }: { patient?: Pat
             <Select label="Dân tộc" value={f.ethnicity} options={ETHNICITIES.map((e) => ({ value: e, label: e }))} onChange={(ethnicity) => set({ ethnicity })} />
             <Input label="Dị ứng" value={f.allergies} onChange={(allergies) => set({ allergies })} placeholder="Thuốc / thức ăn gây dị ứng (nếu có)" />
 
-            <div className="rounded-lg border border-slate-200">
+            <div className="rounded-lg border border-line">
               <div className="flex items-center justify-between px-3 py-2">
-                <span className="text-[12px] font-bold tracking-wide text-slate-800 uppercase">Thông tin người thân</span>
-                <button type="button" onClick={() => set({ hasRelative: !f.hasRelative })} className="flex items-center gap-1 text-[12px] font-semibold text-emerald-700 uppercase">
+                <span className="text-[12px] font-bold tracking-wide text-ink uppercase">Thông tin người thân</span>
+                <button type="button" onClick={() => set({ hasRelative: !f.hasRelative })} className="flex items-center gap-1 text-[12px] font-semibold text-brand-ink uppercase">
                   {f.hasRelative ? <Minus className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
                   {f.hasRelative ? 'Bỏ' : 'Thêm'}
                 </button>
               </div>
-              {errors.relName && !f.hasRelative && <p className="px-3 pb-2 text-xs text-red-600">{errors.relName}</p>}
+              {errors.relName && !f.hasRelative && <p className="px-3 pb-2 text-xs text-danger-ink">{errors.relName}</p>}
               {f.hasRelative && (
-                <div className="space-y-3 border-t border-slate-100 px-3 py-3">
+                <div className="space-y-3 border-t border-line-soft px-3 py-3">
                   <Input label="Họ và tên" required value={f.relName} onChange={(v) => set({ relName: upperName(v) })} placeholder="HỌ VÀ TÊN" error={errors.relName} />
                   <Input label="Điện thoại" value={f.relPhone} onChange={(v) => set({ relPhone: v.replace(/[^\d\s]/g, '') })} placeholder="Số điện thoại" error={errors.relPhone} />
                   <DatePicker label="Ngày sinh" value={f.relDob} max={todayISO()} onChange={(relDob) => set({ relDob })} />
@@ -247,7 +247,7 @@ export function PatientFormDrawer({ patient, onClose, onSaved }: { patient?: Pat
               )}
             </div>
           </div>
-          <div className="flex justify-end border-t border-slate-100 px-4 py-2.5">
+          <div className="flex justify-end border-t border-line-soft px-4 py-2.5">
             <Button onClick={save}>
               Lưu
             </Button>
@@ -262,12 +262,12 @@ function Field({ label, required, error, children }: { label: string; required?:
   const { ref, labelId, errorId } = useControlLabel<HTMLSpanElement>(error)
   return (
     <div>
-      <span ref={ref} id={labelId} className="mb-1.5 block text-[12.5px] font-medium text-slate-600">
+      <span ref={ref} id={labelId} className="mb-1.5 block text-[12.5px] font-medium text-ink-3">
         {label}
-        {required && <span className="ml-0.5 text-red-600">*</span>}
+        {required && <span className="ml-0.5 text-danger-ink">*</span>}
       </span>
       {children}
-      {error && <span id={errorId} className="mt-1 block text-xs text-red-600">{error}</span>}
+      {error && <span id={errorId} className="mt-1 block text-xs text-danger-ink">{error}</span>}
     </div>
   )
 }
@@ -300,7 +300,7 @@ function Input({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         aria-label={label}
-        className={cn('h-9 w-full rounded-md border px-3 text-[13px] outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/15', error ? 'border-red-400' : 'border-slate-200 focus:border-blue-500')}
+        className={cn('h-9 w-full rounded-md border px-3 text-[13px] outline-none placeholder:text-ink-5 focus:ring-2 focus:ring-brand/15', error ? 'border-danger' : 'border-line focus:border-brand')}
       />
     </Field>
   )

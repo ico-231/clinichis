@@ -7,7 +7,7 @@ import { emrCodeOf, SUBJECT_LABEL } from './emrData'
 import type { EmrRecord, Patient, Visit } from '@/store/types'
 
 const dx = (list: { code: string; name: string }[]) => (list.length ? list.map(formatDiagnosis).join('; ') : '')
-const dotted = (v: ReactNode) => (v ? <span>{v}</span> : <span className="tracking-[2px] text-slate-400">..............................</span>)
+const dotted = (v: ReactNode) => (v ? <span>{v}</span> : <span className="tracking-[2px] text-ink-5">..............................</span>)
 
 /** Bản in "Bệnh án ngoại trú" (ảnh 098–101) */
 export function EmrPrintDoc({ visit, patient, emr }: { visit: Visit; patient: Patient; emr: EmrRecord }) {
@@ -145,7 +145,7 @@ export function EmrPrintDoc({ visit, patient, emr }: { visit: Visit; patient: Pa
           <p className="italic">Ngày {formatDateVN(visit.date)}</p>
           <p className="font-bold">Bác sĩ điều trị</p>
           <p className="mt-8 font-bold">{doctorLabel(visit.doctorId)}</p>
-          {emr.signStatus === 'signed' && <p className="text-[11px] text-emerald-700">(Đã ký số {emr.signedAt ? formatDateTimeVN(emr.signedAt) : ''})</p>}
+          {emr.signStatus === 'signed' && <p className="text-[11px] text-brand-ink">(Đã ký số {emr.signedAt ? formatDateTimeVN(emr.signedAt) : ''})</p>}
         </div>
       </div>
     </div>

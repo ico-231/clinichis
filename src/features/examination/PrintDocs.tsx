@@ -17,7 +17,7 @@ export function PrintPreviewModal({ open, title, onClose, children }: { open: bo
       onClose={onClose}
       size="lg"
       title={title}
-      bodyClassName="bg-slate-100"
+      bodyClassName="bg-subtle"
       footer={
         <>
           <Button variant="outline" onClick={onClose}>
@@ -29,7 +29,7 @@ export function PrintPreviewModal({ open, title, onClose, children }: { open: bo
         </>
       }
     >
-      <div className="print-area mx-auto max-w-[720px] bg-white px-10 py-8 font-doc text-[13.5px] leading-6 text-black shadow-sm">{children}</div>
+      <div className="print-area mx-auto max-w-[720px] bg-surface px-10 py-8 font-doc text-[13.5px] leading-6 text-black shadow-sm">{children}</div>
     </Modal>
   )
 }

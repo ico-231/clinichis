@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
-import { ChevronDown, ChevronRight, Download, FileText, FlaskConical, PanelLeft, Printer, Save } from 'lucide-react'
+import { ChevronDown, ChevronLeft, ChevronRight, Download, FileText, FlaskConical, Printer, Save } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { DocumentsEmptyIllustration } from '@/components/ui/EmptyState'
 import { Tabs } from '@/components/ui/Tabs'
@@ -19,12 +19,11 @@ import type { EmrRecord, Patient, Visit } from '@/store/types'
 type Tab = 'record' | 'treatment' | 'summary'
 type Preview = { kind: 'emr' } | { kind: 'rx' } | { kind: 'cls'; orderId: string }
 
-const box = 'w-full rounded-md border border-slate-200 bg-white px-2.5 text-[13px] outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15'
+const box = 'w-full rounded-[10px] border border-line-strong bg-surface px-2.5 text-[13px] text-ink placeholder:text-ink-4 outline-none focus:border-brand focus:ring-2 focus:ring-brand/15'
 
 /** Chi tiết bệnh án điện tử (ảnh 091–097) */
 export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: Patient; onBack: () => void }) {
-  const { ui } = useClinicState()
-  const { setUI, saveExam, logEmrAccess } = useClinicActions()
+  const { saveExam, logEmrAccess } = useClinicActions()
   const toast = useToast()
   const [emr, setEmr] = useState<EmrRecord>(() => emrOf(visit, patient))
   const [saved, setSaved] = useState(() => JSON.stringify(emrOf(visit, patient)))
@@ -86,36 +85,59 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
   const results = (visit.paraclinicalOrders ?? []).filter((o) => o.resultStatus === 'has_result')
 
   return (
-    <div className="flex h-full flex-col">
-      <header className="flex h-[50px] shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-4">
-        <button type="button" onClick={() => setUI({ sidebarCollapsed: !ui.sidebarCollapsed })} className="rounded-md p-1.5 text-slate-600 hover:bg-slate-100" aria-label="Thu gọn / mở rộng menu">
-          <PanelLeft className="h-4 w-4" />
-        </button>
-        <span className="h-5 w-px bg-slate-200" />
-        <div>
-          <h1 className="text-[14px] font-semibold text-slate-900">Chi tiết bệnh án điện tử</h1>
-          <nav className="flex items-center gap-1 text-[12px] text-slate-500" aria-label="Breadcrumb">
-            <button type="button" onClick={onBack} className="hover:text-slate-900">
-              Danh sách bệnh án
-            </button>
-            <ChevronRight className="h-3 w-3" />
-            <span className="text-slate-800">Chi tiết bệnh án</span>
-          </nav>
+    <div className="flex h-full flex-col bg-canvas">
+      <header className="shrink-0 border-b border-line bg-surface">
+        <div className="mx-auto flex w-full max-w-[1440px] flex-wrap items-center gap-3 px-4 sm:px-6 py-2.5">
+          <button
+            type="button"
+            onClick={onBack}
+            className="rounded-[10px] p-1.5 text-ink-2 transition-colors hover:bg-subtle hover:text-ink"
+            aria-label="Quay lại danh sách bệnh án"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <span className="h-5 w-px bg-line" />
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h1 className="text-[16px] font-bold tracking-[-0.01em] text-ink">Chi tiết bệnh án điện tử</h1>
+              <span className="rounded-full border border-brand-line bg-brand-tint px-2.5 py-0.5 text-[12px] font-semibold text-brand-ink tabular-nums">{code}</span>
+              <span className="text-[13px] font-semibold text-ink-2 uppercase">{patient.fullName}</span>
+            </div>
+            <nav className="mt-0.5 flex items-center gap-1 text-[12px] text-ink-3" aria-label="Breadcrumb">
+              <button type="button" onClick={onBack} className="hover:text-brand-ink">
+                Danh sách bệnh án
+              </button>
+              <ChevronRight className="h-3 w-3" />
+              <span className="font-medium text-ink">Chi tiết bệnh án</span>
+            </nav>
+          </div>
+          {dirty && <span className="rounded-full border border-accent-line bg-accent-tint px-2.5 py-0.5 text-[12px] font-semibold text-accent-ink">● Chưa lưu</span>}
         </div>
-        {dirty && <span className="ml-auto text-xs text-amber-700">● Chưa lưu</span>}
       </header>
 
-      <div className="flex min-h-0 flex-1">
-        <div className="flex w-[min(520px,50%)] shrink-0 flex-col border-r border-slate-200">
-          <dl className="grid grid-cols-3 gap-x-3 gap-y-1.5 border-b border-slate-100 px-4 py-3 text-[12.5px]">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 gap-4 overflow-hidden px-4 sm:px-6 py-3">
+        <div className="flex w-[min(540px,48%)] shrink-0 flex-col overflow-hidden rounded-[16px] border border-line bg-surface">
+          <dl className="grid grid-cols-3 gap-x-3 gap-y-2 border-b border-line bg-canvas/60 px-4 py-3 text-[12.5px]">
             <Info label="Họ và tên" value={<b className="uppercase">{patient.fullName}</b>} />
             <Info label="Giới tính" value={GENDER_LABEL[patient.gender]} />
-            <Info label="Ngày sinh" value={formatDateVN(patient.dob)} />
-            <Info label="Mã bệnh án" value={<span className="text-blue-600">{code}</span>} />
-            <Info label="Mã phiếu khám" value={<span className="text-blue-600">{visit.code}</span>} />
-            <Info label="Trạng thái ký số" value={<span className="rounded bg-slate-100 px-1.5 text-[11.5px]">{SIGN_LABEL[emr.signStatus]}</span>} />
+            <Info label="Ngày sinh" value={<span className="tabular-nums">{formatDateVN(patient.dob)}</span>} />
+            <Info label="Mã bệnh án" value={<span className="font-semibold text-info-ink tabular-nums">{code}</span>} />
+            <Info label="Mã phiếu khám" value={<span className="font-semibold text-info-ink tabular-nums">{visit.code}</span>} />
+            <Info
+              label="Trạng thái ký số"
+              value={
+                <span
+                  className={cn(
+                    'inline-flex rounded-full px-2 py-0.5 text-[11.5px] font-semibold',
+                    emr.signStatus === 'signed' ? 'bg-brand-soft text-brand-ink' : emr.signStatus === 'pending' ? 'bg-accent-soft text-accent-strong' : 'bg-subtle text-ink-3',
+                  )}
+                >
+                  {SIGN_LABEL[emr.signStatus]}
+                </span>
+              }
+            />
           </dl>
-          <div className="px-4 pt-2">
+          <div className="px-4 pt-3">
             <Tabs
               variant="pill"
               className="flex w-full [&>button]:flex-1"
@@ -130,7 +152,7 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
           </div>
 
           {readOnly && (
-            <div className="mx-4 mt-2 flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-[12.5px] text-amber-800" role="status">
+            <div className="mx-4 mt-2.5 flex items-center gap-2 rounded-[12px] border border-accent-line bg-accent-tint px-3 py-2 text-[12.5px] text-accent-strong" role="status">
               <span className="flex-1">
                 {lockedSigned ? 'Bệnh án đã ký số – không thể chỉnh sửa.' : 'Bệnh án đã đóng – chỉ xem.'}
               </span>
@@ -145,7 +167,7 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
             {tab === 'record' && (
               <>
                 <Row label="Loại bệnh án">
-                  <select value={emr.type} disabled className={cn(box, 'h-9 bg-slate-50')}>
+                  <select value={emr.type} disabled className={cn(box, 'h-9 bg-canvas text-ink-3')}>
                     <option value="outpatient_general">Bệnh án Ngoại trú chung</option>
                   </select>
                 </Row>
@@ -154,10 +176,10 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
                 </Row>
                 <div className="grid grid-cols-3 gap-2">
                   <Row label="Ngày tạo">
-                    <input type="date" value={emr.createdAt.slice(0, 10)} onChange={(e) => set({ createdAt: `${e.target.value}${emr.createdAt.slice(10)}` })} className={cn(box, 'h-9')} />
+                    <input type="date" value={emr.createdAt.slice(0, 10)} onChange={(e) => set({ createdAt: `${e.target.value}${emr.createdAt.slice(10)}` })} className={cn(box, 'h-9 tabular-nums')} />
                   </Row>
                   <Row label="Giờ tạo">
-                    <input type="time" value={emr.createdAt.slice(11, 16)} onChange={(e) => set({ createdAt: `${emr.createdAt.slice(0, 11)}${e.target.value}` })} className={cn(box, 'h-9')} />
+                    <input type="time" value={emr.createdAt.slice(11, 16)} onChange={(e) => set({ createdAt: `${emr.createdAt.slice(0, 11)}${e.target.value}` })} className={cn(box, 'h-9 tabular-nums')} />
                   </Row>
                   <Row label="Đối tượng">
                     <select value={emr.subject} onChange={(e) => set({ subject: e.target.value as EmrRecord['subject'] })} className={cn(box, 'h-9')}>
@@ -172,20 +194,20 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
                 <Heading>Hành chính</Heading>
                 <div className="grid grid-cols-2 gap-2">
                   <Row label="Số thẻ BHYT">
-                    <input value={patient.insuranceNumber ?? ''} readOnly placeholder="Chưa cập nhật (sửa ở hồ sơ người bệnh)" className={cn(box, 'h-9 bg-slate-50')} />
+                    <input value={patient.insuranceNumber ?? ''} readOnly placeholder="Chưa cập nhật (sửa ở hồ sơ người bệnh)" className={cn(box, 'h-9 bg-canvas text-ink-3')} />
                   </Row>
                   <Row label="Thời hạn BHYT">
-                    <input type="date" value={emr.insuranceExpiry} onChange={(e) => set({ insuranceExpiry: e.target.value })} className={cn(box, 'h-9')} />
+                    <input type="date" value={emr.insuranceExpiry} onChange={(e) => set({ insuranceExpiry: e.target.value })} className={cn(box, 'h-9 tabular-nums')} />
                   </Row>
                   <Row label="Họ tên người nhà">
-                    <input value={patient.relative?.fullName || patient.guardianName || ''} readOnly className={cn(box, 'h-9 bg-slate-50')} />
+                    <input value={patient.relative?.fullName || patient.guardianName || ''} readOnly className={cn(box, 'h-9 bg-canvas text-ink-3')} />
                   </Row>
                   <Row label="Số điện thoại người nhà">
-                    <input value={patient.relative?.phone ?? ''} readOnly className={cn(box, 'h-9 bg-slate-50')} />
+                    <input value={patient.relative?.phone ?? ''} readOnly className={cn(box, 'h-9 bg-canvas text-ink-3 tabular-nums')} />
                   </Row>
                 </div>
                 <Heading>Đến khám bệnh lúc</Heading>
-                <p className="text-slate-700">{formatDateTimeVN(emr.createdAt)}</p>
+                <p className="text-ink-2 tabular-nums">{formatDateTimeVN(emr.createdAt)}</p>
                 <Row label="Chẩn đoán của nơi giới thiệu">
                   <DiagnosisInput compact value={emr.referralDiagnosis} onChange={(referralDiagnosis) => set({ referralDiagnosis })} placeholder="Tìm kiếm..." />
                 </Row>
@@ -212,10 +234,10 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
                 <Heading>Điều trị ngoại trú</Heading>
                 <div className="grid grid-cols-2 gap-2">
                   <Row label="Từ ngày">
-                    <input type="datetime-local" value={emr.treatFrom} onChange={(e) => set({ treatFrom: e.target.value })} className={cn(box, 'h-9')} />
+                    <input type="datetime-local" value={emr.treatFrom} onChange={(e) => set({ treatFrom: e.target.value })} className={cn(box, 'h-9 tabular-nums')} />
                   </Row>
                   <Row label="Đến ngày">
-                    <input type="datetime-local" value={emr.treatTo} min={emr.treatFrom} onChange={(e) => set({ treatTo: e.target.value })} className={cn(box, 'h-9')} />
+                    <input type="datetime-local" value={emr.treatTo} min={emr.treatFrom} onChange={(e) => set({ treatTo: e.target.value })} className={cn(box, 'h-9 tabular-nums')} />
                   </Row>
                 </div>
               </>
@@ -228,14 +250,17 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
                     <button
                       type="button"
                       onClick={() => setPreview({ kind: 'rx' })}
-                      className={cn('flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left', preview?.kind === 'rx' ? 'border-blue-400 bg-blue-50' : 'border-slate-200 hover:bg-slate-50')}
+                      className={cn(
+                        'flex w-full items-center gap-2 rounded-[10px] border px-3 py-2 text-left transition-colors',
+                        preview?.kind === 'rx' ? 'border-brand bg-brand-tint text-brand-ink' : 'border-line hover:bg-canvas',
+                      )}
                     >
-                      <FileText className="h-4 w-4 text-emerald-700" />
+                      <FileText className="h-4 w-4 text-brand-ink" />
                       <span className="flex-1">
-                        <span className="block font-medium">Toa thuốc</span>
-                        <span className="text-xs text-slate-500">{formatDateTimeVN(visit.finishedAt ?? visit.createdAt)}</span>
+                        <span className="block font-medium text-ink">Toa thuốc</span>
+                        <span className="text-xs text-ink-3 tabular-nums">{formatDateTimeVN(visit.finishedAt ?? visit.createdAt)}</span>
                       </span>
-                      <ChevronRight className="h-4 w-4 text-slate-400" />
+                      <ChevronRight className="h-4 w-4 text-ink-4" />
                     </button>
                   ) : (
                     <Empty text="Lượt khám không có toa thuốc." />
@@ -248,11 +273,14 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
                         key={o.id}
                         type="button"
                         onClick={() => setPreview({ kind: 'cls', orderId: o.id })}
-                        className={cn('mb-1.5 flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left', preview?.kind === 'cls' && preview.orderId === o.id ? 'border-blue-400 bg-blue-50' : 'border-slate-200 hover:bg-slate-50')}
+                        className={cn(
+                          'mb-1.5 flex w-full items-center gap-2 rounded-[10px] border px-3 py-2 text-left transition-colors last:mb-0',
+                          preview?.kind === 'cls' && preview.orderId === o.id ? 'border-brand bg-brand-tint text-brand-ink' : 'border-line hover:bg-canvas',
+                        )}
                       >
-                        <FlaskConical className="h-4 w-4 text-orange-700" />
-                        <span className="flex-1 font-medium">{o.name}</span>
-                        <ChevronRight className="h-4 w-4 text-slate-400" />
+                        <FlaskConical className="h-4 w-4 text-accent-ink" />
+                        <span className="flex-1 font-medium text-ink">{o.name}</span>
+                        <ChevronRight className="h-4 w-4 text-ink-4" />
                       </button>
                     ))
                   ) : (
@@ -305,12 +333,12 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
                     onChange={(on) => set({ signStatus: on ? (emr.signStatus === 'signed' ? 'signed' : 'pending') : 'unsigned', signedAt: on ? emr.signedAt : undefined })}
                   />
                 </div>
-                {emr.signStatus === 'pending' && <p className="text-xs text-amber-700">Bệnh án sẽ được ký số (mô phỏng) khi bấm “Lưu bệnh án”.</p>}
+                {emr.signStatus === 'pending' && <p className="rounded-[10px] border border-accent-line bg-accent-tint px-3 py-1.5 text-xs text-accent-strong">Bệnh án sẽ được ký số (mô phỏng) khi bấm “Lưu bệnh án”.</p>}
               </>
             )}
           </fieldset>
 
-          <div className="flex justify-end gap-2 border-t border-slate-200 px-4 py-2.5">
+          <div className="flex justify-end gap-2 border-t border-line bg-canvas/70 px-4 py-2.5">
             <Button size="sm" variant="outline" leftIcon={<Download className="h-3.5 w-3.5" />} disabled={!visit.emr?.savedAt} onClick={download} title="Tải bản bệnh án đã lưu (HTML)">
               Tải bệnh án
             </Button>
@@ -323,15 +351,15 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
           </div>
         </div>
 
-        <div className="thin-scroll min-w-0 flex-1 overflow-y-auto bg-slate-100 p-4">
+        <div className="thin-scroll min-w-0 flex-1 overflow-y-auto rounded-[16px] border border-line bg-subtle p-5">
           {!preview ? (
             <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
               <DocumentsEmptyIllustration />
-              <p className="text-[14px] font-medium text-slate-700">Chưa có bản xem trước</p>
-              <p className="text-xs text-slate-500">Bản xem trước sẽ xuất hiện ngay sau khi lưu bệnh án.</p>
+              <p className="text-[14px] font-semibold text-ink">Chưa có bản xem trước</p>
+              <p className="text-xs text-ink-3">Bản xem trước sẽ xuất hiện ngay sau khi lưu bệnh án.</p>
             </div>
           ) : (
-            <div id="emr-preview" className="mx-auto max-w-[720px] bg-white px-10 py-8 font-doc text-black shadow-sm">
+            <div id="emr-preview" className="paper mx-auto max-w-[720px] rounded-[8px] bg-surface px-10 py-8 font-doc text-black shadow-sm">
               {preview.kind === 'emr' && <EmrPrintDoc visit={visit} patient={patient} emr={emr} />}
               {preview.kind === 'rx' && <PrescriptionDoc visit={visit} patient={patient} draft={rx} />}
               {preview.kind === 'cls' && <ResultReportDoc visit={visit} patient={patient} order={results.find((o) => o.id === preview.orderId)!} />}
@@ -350,8 +378,8 @@ export function EmrDetail({ visit, patient, onBack }: { visit: Visit; patient: P
 function Info({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div>
-      <dt className="text-slate-500">{label}</dt>
-      <dd className="text-slate-900">{value}</dd>
+      <dt className="text-ink-3">{label}</dt>
+      <dd className="text-ink">{value}</dd>
     </div>
   )
 }
@@ -359,7 +387,7 @@ function Info({ label, value }: { label: string; value: ReactNode }) {
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
-      <span className="mb-1 block text-[12.5px] font-medium text-slate-700">{label}</span>
+      <span className="mb-1 block text-[12.5px] font-medium text-ink-2">{label}</span>
       {children}
     </div>
   )
@@ -374,7 +402,7 @@ function Area({ label, value, onChange }: { label: string; value: string; onChan
 }
 
 function Heading({ children }: { children: ReactNode }) {
-  return <p className="pt-1 text-[12.5px] font-bold tracking-wide text-slate-900 uppercase">{children}</p>
+  return <p className="pt-1 text-[12px] font-bold tracking-[0.04em] text-brand-ink uppercase">{children}</p>
 }
 
 function VitalsLine({ visit }: { visit: Visit }) {
@@ -390,8 +418,8 @@ function VitalsLine({ visit }: { visit: Visit }) {
     <div className="grid grid-cols-5 gap-2">
       {items.map(([k, val, unit]) => (
         <div key={k}>
-          <span className="block text-[12px] text-slate-500">{k}</span>
-          <span className="block rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5 text-[12.5px]">{val || <span className="text-slate-400">{unit}</span>}</span>
+          <span className="block text-[12px] text-ink-3">{k}</span>
+          <span className="block rounded-[10px] border border-line bg-canvas px-2 py-1.5 text-[12.5px] font-medium text-ink tabular-nums">{val || <span className="font-normal text-ink-4">{unit}</span>}</span>
         </div>
       ))}
     </div>
@@ -401,19 +429,19 @@ function VitalsLine({ visit }: { visit: Visit }) {
 function Collapsible({ title, children }: { title: string; children: ReactNode }) {
   const [open, setOpen] = useState(true)
   return (
-    <div className="rounded-md border border-slate-200">
-      <button type="button" onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between px-3 py-2 font-semibold">
+    <div className="rounded-[12px] border border-line bg-surface">
+      <button type="button" onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between px-3 py-2.5 text-[13px] font-semibold text-ink">
         {title}
-        <ChevronDown className={cn('h-4 w-4 transition-transform', !open && '-rotate-90')} />
+        <ChevronDown className={cn('h-4 w-4 text-ink-3 transition-transform', !open && '-rotate-90')} />
       </button>
-      {open && <div className="border-t border-slate-100 p-2">{children}</div>}
+      {open && <div className="border-t border-line-soft p-2.5">{children}</div>}
     </div>
   )
 }
 
 function Empty({ text }: { text: string }) {
   return (
-    <div className="flex flex-col items-center gap-1 py-4 text-center text-xs text-slate-500">
+    <div className="flex flex-col items-center gap-1 py-4 text-center text-xs text-ink-3">
       <DocumentsEmptyIllustration className="h-[48px] w-[60px]" />
       {text}
     </div>
@@ -422,10 +450,10 @@ function Empty({ text }: { text: string }) {
 
 function Switch({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2 text-[13px]">
+    <label className="flex cursor-pointer items-center gap-2 text-[13px] font-medium text-ink-2">
       {label}
-      <button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)} className={cn('relative h-5 w-9 rounded-full transition', checked ? 'bg-blue-600' : 'bg-slate-300')}>
-        <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all', checked ? 'left-[18px]' : 'left-0.5')} />
+      <button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)} className={cn('relative h-5 w-9 rounded-full transition', checked ? 'bg-brand' : 'bg-line-strong')}>
+        <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-surface shadow transition-all', checked ? 'left-[18px]' : 'left-0.5')} />
       </button>
     </label>
   )

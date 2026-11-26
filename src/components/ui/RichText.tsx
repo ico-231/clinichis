@@ -66,9 +66,9 @@ export function RichTextArea({ label, value, onChange, placeholder, className }:
 
   return (
     <div className={cn('flex min-h-0 flex-col', className)}>
-      <span className="mb-0.5 text-[13px] font-medium text-slate-800">{label}</span>
-      <div className="flex min-h-0 flex-1 flex-col rounded-md border border-slate-200 focus-within:border-blue-500">
-        <div className="flex items-center gap-0.5 border-b border-slate-100 px-1.5 py-1">
+      <span className="mb-0.5 text-[13px] font-medium text-ink">{label}</span>
+      <div className="flex min-h-0 flex-1 flex-col rounded-md border border-line focus-within:border-brand">
+        <div className="flex items-center gap-0.5 border-b border-line-soft px-1.5 py-1">
           {TOOLS.map((t, i) => (
             <button
               key={t.cmd}
@@ -77,7 +77,7 @@ export function RichTextArea({ label, value, onChange, placeholder, className }:
               aria-label={t.label}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => run(t.cmd)}
-              className={cn('rounded p-1.5 text-slate-600 hover:bg-slate-100 hover:text-slate-900', i === 2 && 'ml-2')}
+              className={cn('rounded p-1.5 text-ink-3 hover:bg-subtle hover:text-ink', i === 2 && 'ml-2')}
             >
               <t.icon className="h-3.5 w-3.5" />
             </button>

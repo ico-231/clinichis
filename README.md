@@ -17,6 +17,8 @@ thương hiệu riêng **ClinicHIS / Phòng khám Nhi Khoa**.
 | --- | --- |
 | ![Tổng quan: doanh thu, lượt khám, tỉ lệ khách mới/cũ](docs/images/tong-quan.webp) | ![Màn khám: hàng chờ, lịch sử bệnh, sinh hiệu, hỏi bệnh](docs/images/man-kham.webp) |
 
+![Lễ tân ở giao diện tối](docs/images/le-tan-toi.webp)
+
 ## Có gì trong dự án
 
 - **Ứng dụng web (bản 1.0):** 14 mục trên menu, khoảng 24 màn. Chạy hoàn toàn trên trình duyệt, dữ liệu lưu ở
@@ -48,6 +50,9 @@ flowchart LR
 - **Frontend:** React 19, TypeScript, Vite, Tailwind CSS 4, lucide-react. Không dùng thư viện UI, biểu đồ hay router:
   thành phần giao diện tự viết trong `src/components/ui`, biểu đồ là SVG tự vẽ. State nằm trong một store React Context
   + `useReducer` (`src/store/`). Màn Lễ tân tải sẵn, các màn khác tải khi cần (`React.lazy`).
+- **Giao diện:** nền ấm, xanh ngọc làm màu chính, cam san hô làm điểm nhấn, font Be Vietnam Pro. Mọi màu đi qua token
+  trong `src/index.css` (`bg-surface`, `text-ink-3`, `bg-brand`…), không viết mã màu trong component, nên giao diện sáng
+  và tối đổi đồng bộ trên mọi màn, kể cả biểu đồ. Menu ngang trên cùng, màn hẹp hơn 1024px chuyển thành ngăn kéo.
 - **Backend:** handler chuẩn Web `Request`/`Response` trong `server/routes/`. Gói Hobby của Vercel giới hạn 12 hàm nên
   mọi đường dẫn đi qua một hàm duy nhất (`api/router.ts`). Nghiệp vụ dùng chung với frontend (`src/store/`) nên
   hai bên không lệch nhau. Gọi Supabase bằng `fetch` tới PostgREST, không cần thư viện. Việc cần chạy trọn trong một
@@ -89,7 +94,7 @@ App chạy được ngay, không cần backend. Muốn chạy cả API thì xem 
 | **Bệnh án điện tử** | Danh sách; bệnh án, phiếu điều trị, tổng kết; ký; bản in bệnh án ngoại trú; nhật ký truy cập |
 | **Lịch hẹn, Lịch làm việc** | Lịch cố định, nghỉ và linh hoạt, xem theo tuần hoặc tháng |
 | **Báo cáo** | Tổng quan, doanh thu bán hàng, chẩn đoán ICD, dịch vụ chưa thu, hoá đơn, khám bệnh, sổ khám bệnh, lịch sử tải về; xuất CSV |
-| **Hệ thống** | Thông tin phòng khám, tài khoản, giao diện sáng/tối, cài đặt chung (tiền tố mã, lab mặc định), cơ cấu tổ chức, tiền công khám, nhân viên, nhật ký bệnh án |
+| **Hệ thống** | Thông tin phòng khám, tài khoản, giao diện sáng/tối/theo hệ thống, cài đặt chung (tiền tố mã, lab mặc định), cơ cấu tổ chức, tiền công khám, nhân viên, nhật ký bệnh án |
 
 Mọi thao tác đều làm bằng nút, không cần nhớ phím tắt.
 
@@ -102,7 +107,8 @@ Mọi thao tác đều làm bằng nút, không cần nhớ phím tắt.
   bệnh án đã ký bị khoá; cảnh báo trùng hồ sơ khi tạo người bệnh mới; lỗi ở một màn không làm trắng cả ứng dụng.
 - **Truy cập:** hộp thoại giữ focus bàn phím và trả focus khi đóng; ô nhập có nhãn cho trình đọc màn hình; lỗi nhập liệu
   được đọc lên; có link "Bỏ qua menu"; tôn trọng chế độ giảm chuyển động; tương phản màu đạt WCAG AA ở cả nền sáng và tối.
-- **Nhiều cỡ màn hình:** tối ưu cho máy tính từ 1024px; điện thoại vẫn dùng được (menu và hàng chờ khám thành ngăn kéo).
+- **Nhiều cỡ màn hình:** tối ưu cho máy tính từ 1280px, dùng tốt từ 1024px; điện thoại vẫn dùng được (menu và hàng chờ
+  khám thành ngăn kéo, bảng cuộn ngang và ghim cột Trạng thái, Mã KB).
 - **Bảo mật:** CSV xuất ra chống chèn công thức Excel; nội dung định dạng (kết quả CĐHA) được làm sạch trước khi hiển thị;
   khoá Supabase chỉ nằm ở máy chủ; bảng dữ liệu bật RLS và hàm SQL không mở cho khách.
 

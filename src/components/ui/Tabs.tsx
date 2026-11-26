@@ -18,7 +18,7 @@ interface TabsProps<T extends string> {
 export function Tabs<T extends string>({ items, value, onChange, variant = 'underline', className }: TabsProps<T>) {
   if (variant === 'pill') {
     return (
-      <div role="tablist" className={cn('inline-flex rounded-lg bg-slate-100 p-0.5', className)}>
+      <div role="tablist" className={cn('inline-flex rounded-[10px] border border-line-strong bg-surface p-[3px]', className)}>
         {items.map((t) => (
           <button
             key={t.value}
@@ -27,8 +27,8 @@ export function Tabs<T extends string>({ items, value, onChange, variant = 'unde
             aria-selected={t.value === value}
             onClick={() => onChange(t.value)}
             className={cn(
-              'rounded-md px-3 py-1 text-[13px] font-medium transition',
-              t.value === value ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900',
+              'rounded-[7px] px-3 py-1 text-[13px] font-semibold transition',
+              t.value === value ? 'bg-brand text-white' : 'text-ink-2 hover:text-ink',
             )}
           >
             {t.label}
@@ -38,7 +38,7 @@ export function Tabs<T extends string>({ items, value, onChange, variant = 'unde
     )
   }
   return (
-    <div role="tablist" className={cn('flex gap-5 border-b border-slate-200', className)}>
+    <div role="tablist" className={cn('flex gap-5 border-b border-line', className)}>
       {items.map((t) => (
         <button
           key={t.value}
@@ -47,13 +47,13 @@ export function Tabs<T extends string>({ items, value, onChange, variant = 'unde
           aria-selected={t.value === value}
           onClick={() => onChange(t.value)}
           className={cn(
-            '-mb-px flex items-center gap-1.5 border-b-2 pb-2 text-[13px] font-medium transition',
-            t.value === value ? 'border-blue-600 text-blue-700' : 'border-transparent text-slate-500 hover:text-slate-800',
+            '-mb-px flex items-center gap-1.5 border-b-2 pb-2 text-[13px] font-semibold transition',
+            t.value === value ? 'border-brand text-brand-ink' : 'border-transparent text-ink-3 hover:text-ink',
           )}
         >
           {t.label}
           {t.count !== undefined && (
-            <span className={cn('rounded-full px-1.5 text-[11px]', t.value === value ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-500')}>
+            <span className={cn('rounded-full px-1.5 text-[11.5px]', t.value === value ? 'bg-brand-soft text-brand-ink' : 'bg-subtle text-ink-3')}>
               {t.count}
             </span>
           )}

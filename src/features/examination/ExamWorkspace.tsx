@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { CheckCircle2, ClipboardList, ListOrdered, MoreHorizontal, PanelLeft, Pill, Printer, Save, Send } from 'lucide-react'
+import { CheckCircle2, ClipboardList, ListOrdered, MoreHorizontal, Pill, Printer, Save, Send } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
 import { DropdownMenu, MenuItem } from '@/components/ui/DropdownMenu'
@@ -11,12 +11,13 @@ import { paidLineKeys } from '@/store/billing'
 import { ageLabel } from '@/lib/date'
 import { formatMoney, formatPhone } from '@/lib/format'
 import { cn } from '@/lib/cn'
+import { CostSummary } from '@/components/clinic/CostSummary'
 import { NARROW_QUERY, useMediaQuery } from '@/lib/useMediaQuery'
 import { ParaclinicalOrderModal } from '../reception/ParaclinicalOrderModal'
 import { PaymentModal } from '../reception/PaymentModals'
 import { VisitInfoDrawer } from '../visit/VisitInfoDrawer'
 import { ResultViewer } from '../paraclinical/ResultViewer'
-import { formatSummaryCounter } from '../reception/UnderlineControls'
+import { } from '../reception/UnderlineControls'
 import { ClinicalSections, FollowUpSection, InfoSection, NotesSection } from './ExamSections'
 import { ParaclinicalSection } from './ParaclinicalSection'
 import { DiagnosisSection } from './DiagnosisSection'
@@ -54,7 +55,7 @@ export function ExamWorkspace({ visitId }: { visitId: string }) {
 }
 
 function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<ReturnType<typeof useClinicState>['patients'][number]> }) {
-  const { saveExam, openExam, forceNavigate, setNavigationGuard, startReception, setUI } = useClinicActions()
+  const { saveExam, openExam, forceNavigate, setNavigationGuard, startReception } = useClinicActions()
   const narrow = useMediaQuery(NARROW_QUERY)
   const [queueOpen, setQueueOpen] = useState(false)
   const toast = useToast()
@@ -261,7 +262,7 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
   )
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full bg-canvas">
       <QueuePanel
         visit={visit}
         narrow={narrow}
@@ -277,23 +278,18 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
         onAddPatient={() => guardLeave(() => startReception('new'))}
       />
 
-      <div className="flex min-w-0 flex-1 flex-col bg-slate-100">
-        <header className="shrink-0 border-b border-slate-200 bg-white px-4 pt-2 pb-2">
+      <div className="flex min-w-0 flex-1 flex-col bg-canvas">
+        <header className="shrink-0 border-b border-line bg-surface px-5 py-2.5">
           <div className="flex items-center gap-3">
             {narrow && (
-              <>
-                <Button size="icon-sm" variant="ghost" onClick={() => setUI({ sidebarCollapsed: false })} aria-label="Mở menu">
-                  <PanelLeft className="h-4 w-4" />
-                </Button>
-                <Button size="sm" variant="outline" onClick={() => setQueueOpen(true)} leftIcon={<ListOrdered className="h-3.5 w-3.5" />}>
-                  Hàng chờ
-                </Button>
-              </>
+              <Button size="sm" variant="outline" onClick={() => setQueueOpen(true)} leftIcon={<ListOrdered className="h-3.5 w-3.5" />}>
+                Hàng chờ
+              </Button>
             )}
-            <h1 className="min-w-0 flex-1 truncate text-[14px] font-semibold text-slate-900">{title}</h1>
-            {visit.status === 'done' && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">Đã khám</span>}
-            {readOnly && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">Đã huỷ</span>}
-            {dirty && <span className="text-xs text-amber-700">● Chưa lưu</span>}
+            <h1 className="min-w-0 flex-1 truncate text-[14.5px] font-bold text-ink">{title}</h1>
+            {visit.status === 'done' && <span className="rounded-full bg-brand-soft px-2.5 py-0.5 text-xs font-semibold text-brand-ink">Đã khám</span>}
+            {readOnly && <span className="rounded-full bg-subtle px-2.5 py-0.5 text-xs font-semibold text-ink-3">Đã huỷ</span>}
+            {dirty && <span className="text-xs font-semibold text-accent-ink">● Chưa lưu</span>}
             <DropdownMenu
               align="end"
               renderTrigger={({ ref, toggle }) => (
@@ -313,15 +309,15 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
               </MenuItem>
             </DropdownMenu>
           </div>
-          <nav className="thin-scroll mt-1.5 inline-flex max-w-full overflow-x-auto rounded-lg bg-slate-100 p-0.5" aria-label="Các phần khám">
+          <nav className="thin-scroll mt-2 inline-flex max-w-full overflow-x-auto rounded-[10px] border border-line-strong bg-canvas p-[3px]" aria-label="Các phần khám">
             {SECTION_TABS.map((t) => (
               <button
                 key={t.id}
                 type="button"
                 onClick={() => scrollToSection(t.id)}
                 className={cn(
-                  'shrink-0 rounded-md px-3 py-1 text-[13px] font-medium whitespace-nowrap transition',
-                  activeSection === t.id ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600 hover:text-slate-900',
+                  'shrink-0 rounded-[7px] px-3 py-1 text-[13px] whitespace-nowrap transition',
+                  activeSection === t.id ? 'bg-brand font-semibold text-white' : 'font-medium text-ink-2 hover:text-ink',
                 )}
               >
                 {t.label}
@@ -331,59 +327,54 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
         </header>
 
         {readOnly && (
-          <p className="shrink-0 border-b border-amber-200 bg-amber-50 px-4 py-2 text-[13px] text-amber-800" role="status">
+          <p className="shrink-0 border-b border-warn-line bg-warn-soft px-5 py-2 text-[13px] font-medium text-warn-strong" role="status">
             Lượt khám đã huỷ{visit.cancelReason ? ` (${visit.cancelReason})` : ''} – chỉ xem, không chỉnh sửa được.
           </p>
         )}
-        <div ref={scrollerRef} className="thin-scroll relative min-h-0 flex-1 overflow-y-auto">
-          {/* Lượt đã huỷ: khoá mọi ô nhập / nút bên trong */}
-          <fieldset disabled={readOnly} className="contents">
-          <InfoSection draft={draft} update={update} patient={patient} />
-          <ClinicalSections draft={draft} update={update} vitalErrors={vitalErrors} />
-          <ParaclinicalSection
-            draft={liveDraft}
-            update={update}
-            savedOrders={visit.paraclinicalOrders ?? []}
-            isPaid={(id) => paidKeys.has(`paraclinical:${id}`)}
-            onAdd={() => setClsOpen(true)}
-            onViewResult={setViewResultId}
-            onSend={sendOrders}
-            onPrint={() => setPrintKind('orders')}
-          />
-          <DiagnosisSection draft={draft} update={update} />
-          <PrescriptionSection
-            draft={draft}
-            update={update}
-            sentAt={visit.exam?.prescriptionSentAt}
-            onPrint={() => setPrintKind('prescription')}
-            onSend={() => setSendRxOpen(true)}
-          />
-          <FollowUpSection draft={draft} update={update} />
-          <NotesSection draft={draft} update={update} />
-          </fieldset>
+        <div ref={scrollerRef} className="thin-scroll relative min-h-0 flex-1 overflow-y-auto px-5 py-3.5">
+          <div className="mx-auto max-w-[1120px] space-y-3">
+            {/* Lượt đã huỷ: khoá mọi ô nhập / nút bên trong */}
+            <fieldset disabled={readOnly} className="contents">
+              <InfoSection draft={draft} update={update} patient={patient} />
+              <ClinicalSections draft={draft} update={update} vitalErrors={vitalErrors} />
+              <ParaclinicalSection
+                draft={liveDraft}
+                update={update}
+                savedOrders={visit.paraclinicalOrders ?? []}
+                isPaid={(id) => paidKeys.has(`paraclinical:${id}`)}
+                onAdd={() => setClsOpen(true)}
+                onViewResult={setViewResultId}
+                onSend={sendOrders}
+                onPrint={() => setPrintKind('orders')}
+              />
+              <DiagnosisSection draft={draft} update={update} />
+              <PrescriptionSection
+                draft={draft}
+                update={update}
+                sentAt={visit.exam?.prescriptionSentAt}
+                onPrint={() => setPrintKind('prescription')}
+                onSend={() => setSendRxOpen(true)}
+              />
+              <FollowUpSection draft={draft} update={update} />
+              <NotesSection draft={draft} update={update} />
+            </fieldset>
+          </div>
         </div>
 
-        <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-white px-4 py-2.5">
+        <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-line bg-surface px-5 py-2.5">
           <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-4 text-[13.5px] font-semibold text-slate-900 tabular-nums">
-              <span>Th: {formatSummaryCounter(th)}</span>
-              <span>CLS: {formatSummaryCounter(cls)}</span>
-              <span>CK: {formatSummaryCounter(ck)}</span>
-              <span>
-                TT: <span className="text-emerald-700">{formatSummaryCounter(tt)}</span>
-              </span>
-            </div>
+            <CostSummary medication={th} cls={cls} consultation={ck} total={tt} />
             <button
               type="button"
               onClick={openPay}
               disabled={free || readOnly}
               className={cn(
-                'inline-flex h-9 items-center gap-2 rounded-lg border px-3 text-[13px] font-semibold transition',
+                'inline-flex h-9 items-center gap-2 rounded-[10px] border px-3.5 text-[13px] font-semibold transition',
                 free
-                  ? 'cursor-default border-slate-200 bg-slate-50 text-slate-500'
+                  ? 'cursor-default border-line bg-subtle text-ink-3'
                   : fullyPaid
-                    ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
-                    : 'border-blue-300 bg-white text-blue-600 hover:bg-blue-50/50',
+                    ? 'border-brand-line bg-brand-soft text-brand-ink'
+                    : 'border-brand-line bg-surface text-brand-ink hover:bg-brand-tint',
               )}
               title={free ? 'Lượt khám miễn phí – không cần thu tiền' : fullyPaid ? 'Đã thu đủ' : `Còn lại ${formatMoney(remainingAmount({ payments: visit.payments, fee: tt }))}`}
             >
@@ -391,7 +382,7 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
             </button>
           </div>
           <div className={cn('flex items-center gap-2', readOnly && 'hidden')}>
-            <Button variant="success" disabled={!dirty && visit.status !== 'waiting'} onClick={save} leftIcon={<Save className="h-4 w-4" />}>
+            <Button variant="outline" disabled={!dirty && visit.status !== 'waiting'} onClick={save} leftIcon={<Save className="h-4 w-4" />}>
               Lưu
             </Button>
             <Button onClick={() => finish()} leftIcon={<CheckCircle2 className="h-4 w-4" />}>
@@ -426,12 +417,12 @@ function Workspace({ visit, patient }: { visit: Visit; patient: NonNullable<Retu
           </>
         }
       >
-        <p className="text-[13px] text-slate-700">Gửi {draft.prescription.length} thuốc đến:</p>
-        <div className="mt-2 flex items-start justify-between rounded-lg border border-slate-200 px-3 py-2.5 text-[13px]">
-          <span className="text-slate-500">Người bệnh</span>
-          <span className="text-right">
+        <p className="text-[13px] text-ink-2">Gửi {draft.prescription.length} thuốc đến:</p>
+        <div className="mt-2 flex items-start justify-between rounded-[12px] border border-line bg-canvas px-3 py-2.5 text-[13px]">
+          <span className="text-ink-3">Người bệnh</span>
+          <span className="text-right text-ink">
             <b className="uppercase">{patient.fullName}</b> ({formatPhone(patient.phone)})
-            <span className="block text-xs text-slate-500">Gửi qua tin nhắn SMS / Zalo (mô phỏng, chưa kết nối thật)</span>
+            <span className="block text-xs text-ink-3">Gửi qua tin nhắn SMS / Zalo (mô phỏng, chưa kết nối thật)</span>
           </span>
         </div>
       </Modal>

@@ -9,19 +9,19 @@ import type { FixedSlot, FlexSlot, LeaveSlot, ScheduleKind } from '@/store/types
 
 export const WEEKDAY_LABEL = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật']
 export const KIND_LABEL: Record<ScheduleKind, string> = { exam: 'Lịch khám', online: 'Lịch tư vấn trực tuyến' }
-export const KIND_COLOR: Record<ScheduleKind, string> = { exam: 'border-blue-500 bg-blue-50 text-blue-800', online: 'border-emerald-500 bg-emerald-50 text-emerald-800' }
+export const KIND_COLOR: Record<ScheduleKind, string> = { exam: 'border-brand bg-brand-tint text-brand-ink', online: 'border-info bg-info-tint text-info-ink' }
 
 export const newSlotId = () => `sl_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`
 
-const input = 'h-9 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[13px] outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15'
+const input = 'h-9 w-full rounded-[10px] border border-line-strong bg-surface px-2.5 text-[13px] text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/15'
 
 export function Field({ label, required, hint, children }: { label: string; required?: boolean; hint?: string; children: ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 flex items-center gap-1 text-[12.5px] font-medium text-slate-700">
+      <span className="mb-1 flex items-center gap-1 text-[12.5px] font-medium text-ink-2">
         {label}
-        {required && <span className="text-red-600">*</span>}
-        {hint && <AlertCircle className="h-3 w-3 text-slate-400" aria-label={hint} />}
+        {required && <span className="text-accent-ink">*</span>}
+        {hint && <AlertCircle className="h-3 w-3 text-ink-4" aria-label={hint} />}
       </span>
       {children}
     </label>
@@ -43,10 +43,10 @@ export function NumberInput({ value, onChange, placeholder, min = 0 }: { value?:
 
 export function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2 text-[13px] text-slate-700">
+    <label className="flex cursor-pointer items-center gap-2 text-[13px] text-ink-2">
       {label}
-      <button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)} className={cn('relative h-5 w-9 rounded-full transition', checked ? 'bg-blue-600' : 'bg-slate-300')}>
-        <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all', checked ? 'left-[18px]' : 'left-0.5')} />
+      <button type="button" role="switch" aria-checked={checked} onClick={() => onChange(!checked)} className={cn('relative h-5 w-9 rounded-full transition', checked ? 'bg-brand' : 'bg-line-strong')}>
+        <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-surface shadow transition-all', checked ? 'left-[18px]' : 'left-0.5')} />
       </button>
     </label>
   )
@@ -124,7 +124,7 @@ export function WeeklySetupModal({ initial, onClose, onApply }: { initial: Fixed
       description="Khung thời gian được lặp lại cố định theo các thứ trong tuần."
       footer={
         <>
-          {error && <span className="mr-auto text-[12.5px] text-red-600">{error}</span>}
+          {error && <span className="mr-auto text-[12.5px] text-danger-ink">{error}</span>}
           <Button variant="outline" onClick={onClose}>
             Đóng
           </Button>
@@ -146,7 +146,7 @@ export function WeeklySetupModal({ initial, onClose, onApply }: { initial: Fixed
           const list = mine(wd)
           const on = list.length > 0 && dayOn(wd)
           return (
-            <div key={wd} className={cn('rounded-lg border px-3 py-2.5', on ? 'border-slate-300' : 'border-slate-200')}>
+            <div key={wd} className={cn('rounded-[14px] border px-3.5 py-2.5 transition-colors', on ? 'border-brand/40 bg-surface' : 'border-line bg-surface')}>
               <div className="flex items-center gap-3">
                 <button
                   type="button"
@@ -154,15 +154,15 @@ export function WeeklySetupModal({ initial, onClose, onApply }: { initial: Fixed
                   aria-checked={on}
                   aria-label={`Bật lịch ${label}`}
                   onClick={() => (list.length ? setSlots((l) => l.map((s) => (s.weekday === wd && s.kind === kind ? { ...s, enabled: !on } : s))) : addSlot(wd))}
-                  className={cn('relative h-5 w-9 shrink-0 rounded-full transition', on ? 'bg-blue-600' : 'bg-slate-300')}
+                  className={cn('relative h-5 w-9 shrink-0 rounded-full transition', on ? 'bg-brand' : 'bg-line-strong')}
                 >
-                  <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all', on ? 'left-[18px]' : 'left-0.5')} />
+                  <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-surface shadow transition-all', on ? 'left-[18px]' : 'left-0.5')} />
                 </button>
-                <CalendarDays className="h-4 w-4 text-slate-500" />
+                <CalendarDays className="h-4 w-4 text-ink-3" />
                 <div className="flex-1">
-                  <p className="text-[13.5px] font-semibold">{label}</p>
+                  <p className="text-[13.5px] font-semibold text-ink">{label}</p>
                   {list.length > 0 && (
-                    <p className="text-[11.5px] text-slate-500">
+                    <p className="text-[11.5px] text-ink-3 tabular-nums">
                       {list.length} khung giờ · {formatNumber(list.filter((s) => s.enabled).reduce((n, s) => n + slotCount(s), 0))} lượt
                     </p>
                   )}
@@ -180,12 +180,12 @@ export function WeeklySetupModal({ initial, onClose, onApply }: { initial: Fixed
               </div>
               {on &&
                 list.map((s) => (
-                  <div key={s.id} className="mt-2 rounded-md bg-slate-50 p-2.5">
-                    <div className="mb-1.5 flex items-center gap-2 text-[11.5px] text-slate-500">
-                      <span className="rounded bg-white px-1.5 py-0.5 ring-1 ring-slate-200">{s.enabled ? 'Đang bật' : 'Nháp'}</span>
-                      <span>{s.slotMinutes} phút/slot</span>
-                      <span>{formatNumber(slotCount(s))} lượt</span>
-                      <button type="button" onClick={() => setSlots((l) => l.filter((x) => x.id !== s.id))} className="ml-auto rounded p-1 text-red-600 hover:bg-red-50" aria-label="Xoá khung giờ">
+                  <div key={s.id} className="mt-2.5 rounded-[12px] border border-line bg-canvas p-2.5">
+                    <div className="mb-1.5 flex items-center gap-2 text-[11.5px] text-ink-3">
+                      <span className="rounded-md bg-surface px-1.5 py-0.5 font-medium text-ink ring-1 ring-line">{s.enabled ? 'Đang bật' : 'Nháp'}</span>
+                      <span className="tabular-nums">{s.slotMinutes} phút/slot</span>
+                      <span className="tabular-nums">{formatNumber(slotCount(s))} lượt</span>
+                      <button type="button" onClick={() => setSlots((l) => l.filter((x) => x.id !== s.id))} className="ml-auto rounded p-1 text-accent-ink hover:bg-accent-soft" aria-label="Xoá khung giờ">
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
@@ -213,7 +213,7 @@ export function WeeklySetupModal({ initial, onClose, onApply }: { initial: Fixed
                           return n
                         })
                       }
-                      className="mt-2 flex w-full items-center justify-between text-[12.5px] text-slate-600"
+                      className="mt-2 flex w-full items-center justify-between text-[12.5px] font-medium text-ink-3 hover:text-ink"
                     >
                       Cài đặt nâng cao <ChevronDown className={cn('h-3.5 w-3.5 transition-transform', advanced.has(s.id) && 'rotate-180')} />
                     </button>
@@ -288,7 +288,7 @@ export function SlotEditModal({
       footer={
         <div className="flex w-full items-center gap-2">
           <Toggle label="Bật/Tắt lịch" checked={s.enabled} onChange={(enabled) => set({ enabled })} />
-          {error && <span className="ml-2 text-[12px] text-red-600">{error}</span>}
+          {error && <span className="ml-2 text-[12px] text-danger-ink">{error}</span>}
           <span className="ml-auto" />
           {onDelete && (
             <Button variant="danger" size="sm" onClick={onDelete}>
@@ -305,7 +305,7 @@ export function SlotEditModal({
       }
     >
       {isFlex && (
-        <p className="mb-3 rounded-md border border-orange-200 bg-orange-50 px-3 py-2 text-[12px] text-orange-800">
+        <p className="mb-3 rounded-[12px] border border-accent-line bg-accent-tint px-3 py-2 text-[12px] text-accent-strong">
           Lịch khám này chỉ áp dụng cho ngày bạn đã chọn, không lặp lại và không áp dụng cho các ngày khác. Lịch hẹn đã đặt trùng giờ với lịch mới cần được kiểm tra và thông báo lại cho người bệnh.
         </p>
       )}
@@ -365,7 +365,7 @@ export function LeaveModal({ leave, onClose, onSave, onDelete }: { leave: LeaveS
       footer={
         <div className="flex w-full items-center gap-2">
           {onDelete && <Toggle label="Bật/Tắt lịch" checked={l.enabled} onChange={(enabled) => setL((x) => ({ ...x, enabled }))} />}
-          {error && <span className="ml-2 text-[12px] text-red-600">{error}</span>}
+          {error && <span className="ml-2 text-[12px] text-danger-ink">{error}</span>}
           <span className="ml-auto" />
           {onDelete && (
             <Button variant="danger" size="sm" onClick={onDelete}>
@@ -388,8 +388,8 @@ export function LeaveModal({ leave, onClose, onSave, onDelete }: { leave: LeaveS
         </div>
       }
     >
-      <p className="mb-3 flex gap-2 rounded-md border border-orange-200 bg-orange-50 px-3 py-2 text-[12px] text-orange-800">
-        <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-orange-500" />
+      <p className="mb-3 flex gap-2 rounded-[12px] border border-accent-line bg-accent-tint px-3 py-2 text-[12px] text-accent-strong">
+        <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-accent" />
         <span>
           <b>Lưu ý</b>
           <br />
@@ -421,13 +421,13 @@ export function SlotChip({ kind, label, time, onClick, tone }: { kind?: Schedule
         onClick()
       }}
       className={cn(
-        'group flex w-full items-start gap-1 rounded-md border-l-[3px] px-1.5 py-1 text-left text-[11.5px] leading-4',
-        tone === 'leave' ? 'border-red-500 bg-red-50 text-red-800' : KIND_COLOR[kind ?? 'exam'],
+        'group flex w-full items-start gap-1 rounded-[8px] border-l-[3px] px-2 py-1 text-left text-[11.5px] leading-4 transition-opacity hover:opacity-90',
+        tone === 'leave' ? 'border-accent bg-accent-soft text-accent-strong' : KIND_COLOR[kind ?? 'exam'],
       )}
     >
       <span className="min-w-0 flex-1">
-        <span className="block truncate font-medium">{label}</span>
-        <span className="block">{time}</span>
+        <span className="block truncate font-semibold">{label}</span>
+        <span className="block tabular-nums">{time}</span>
       </span>
       <Pencil className="mt-0.5 h-3 w-3 shrink-0 opacity-0 group-hover:opacity-70" />
     </button>

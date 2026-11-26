@@ -43,20 +43,26 @@ export function SystemPage() {
   }, [ui.systemSection])
   const label = GROUPS.flatMap((g) => g.items).find((i) => i.key === key)!.label
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-canvas">
       <PageHeader title={label} />
-      <div className="flex min-h-0 flex-1 max-md:flex-col">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 gap-4 overflow-hidden px-4 sm:px-6 pt-1 pb-4 max-md:flex-col">
         {/* Màn hẹp: danh mục thành thanh tab cuộn ngang phía trên */}
-        <nav className="thin-scroll shrink-0 bg-slate-50/60 p-2 text-[13px] max-md:flex max-md:gap-1 max-md:overflow-x-auto max-md:border-b max-md:border-slate-200 md:w-[200px] md:space-y-3 md:border-r md:border-slate-200" aria-label="Danh mục hệ thống">
+        <nav
+          className="thin-scroll shrink-0 rounded-[16px] border border-line bg-surface p-2.5 text-[13px] max-md:flex max-md:gap-1 max-md:overflow-x-auto md:w-[220px] md:space-y-3"
+          aria-label="Danh mục hệ thống"
+        >
           {GROUPS.map((g, i) => (
             <div key={i} className="max-md:contents">
-              {g.title && <p className="px-2.5 pb-1 text-[11px] font-semibold tracking-wide text-slate-500 uppercase max-md:hidden">{g.title}</p>}
+              {g.title && <p className="px-2.5 pb-1 text-[11px] font-bold tracking-[0.04em] text-ink-4 uppercase max-md:hidden">{g.title}</p>}
               {g.items.map((it) => (
                 <button
                   key={it.key}
                   type="button"
                   onClick={() => setKey(it.key)}
-                  className={cn('rounded-md px-2.5 py-1.5 text-left max-md:shrink-0 max-md:whitespace-nowrap md:w-full', key === it.key ? 'bg-white font-medium text-blue-700 shadow-sm' : 'text-slate-700 hover:bg-white/70')}
+                  className={cn(
+                    'rounded-[10px] px-3 py-2 text-left transition-colors max-md:shrink-0 max-md:whitespace-nowrap md:w-full',
+                    key === it.key ? 'bg-brand-soft font-semibold text-brand-ink' : 'font-medium text-ink-2 hover:bg-canvas hover:text-ink',
+                  )}
                 >
                   {it.label}
                 </button>
@@ -64,7 +70,7 @@ export function SystemPage() {
             </div>
           ))}
         </nav>
-        <div className="thin-scroll min-w-0 flex-1 overflow-y-auto p-4">
+        <div className="thin-scroll min-w-0 flex-1 overflow-y-auto rounded-[16px] border border-line bg-surface p-5">
           {key === 'clinic' && <ClinicSection />}
           {key === 'account' && <AccountSection />}
           {key === 'appearance' && <AppearanceSection />}

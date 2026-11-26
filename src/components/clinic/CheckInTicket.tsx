@@ -58,14 +58,14 @@ function Ticket({ visitId, onClose }: { visitId: string; onClose: () => void }) 
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-[60] flex animate-fade-in items-center justify-center bg-slate-900/50 p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-        <div role="dialog" aria-modal="true" aria-label="Phiếu tiếp nhận" className="w-[240px] animate-pop-in rounded-xl bg-white p-1.5 shadow-2xl">
+      <div className="fixed inset-0 z-[60] flex animate-fade-in items-center justify-center bg-overlay/50 p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+        <div role="dialog" aria-modal="true" aria-label="Phiếu tiếp nhận" className="w-[240px] animate-pop-in rounded-xl bg-surface p-1.5 shadow-pop">
           <div className="flex justify-end">
-            <button type="button" onClick={onClose} className="rounded p-0.5 text-slate-500 hover:bg-slate-100" aria-label="Đóng">
+            <button type="button" onClick={onClose} className="rounded p-0.5 text-ink-4 hover:bg-subtle" aria-label="Đóng">
               <X className="h-3.5 w-3.5" />
             </button>
           </div>
-          <div className="print-area thin-scroll max-h-[70vh] overflow-y-auto border border-slate-200 px-2.5 py-2 text-[10.5px] leading-[15px] text-black">
+          <div className="print-area thin-scroll max-h-[70vh] overflow-y-auto border border-line px-2.5 py-2 text-[10.5px] leading-[15px] text-black">
             <p className="text-center font-doc text-[13px] font-bold uppercase">{CLINIC.name}</p>
             <p className="mb-1.5 text-center text-[9px]">{CLINIC.address}</p>
             <Barcode value={visit.code} />
@@ -92,10 +92,10 @@ function Ticket({ visitId, onClose }: { visitId: string; onClose: () => void }) 
             )}
           </div>
           <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-            <button type="button" onClick={onClose} className="h-8 rounded-md border border-blue-500 text-[12.5px] font-medium text-slate-800 hover:bg-slate-50">
+            <button type="button" onClick={onClose} className="h-8 rounded-md border border-brand text-[12.5px] font-medium text-ink hover:bg-canvas">
               Đóng
             </button>
-            <button type="button" onClick={() => window.print()} className="h-8 rounded-md bg-slate-100 text-[12.5px] font-medium text-slate-800 hover:bg-slate-200">
+            <button type="button" onClick={() => window.print()} className="h-8 rounded-md bg-subtle text-[12.5px] font-medium text-ink hover:bg-line">
               In
             </button>
           </div>

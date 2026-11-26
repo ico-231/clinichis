@@ -29,20 +29,20 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'stt',
     label: 'STT',
     menuLabel: 'STT',
-    width: 68,
+    width: 50,
     sortable: true,
     align: 'center',
-    render: (r) => <span className="font-medium text-orange-700 tabular-nums">{r.visit.queueNumber}</span>,
+    render: (r) => <span className="font-bold text-accent-ink tabular-nums">{r.visit.queueNumber}</span>,
     sortValue: (r) => r.visit.queueNumber,
   },
   {
     key: 'fullName',
     label: 'Họ và tên',
     menuLabel: 'Họ Và Tên',
-    width: 196,
+    width: 170,
     sortable: true,
     render: (r) => (
-      <span className="block truncate font-medium text-slate-900 uppercase">
+      <span className="block truncate font-semibold text-ink uppercase">
         {r.patient.fullName}
       </span>
     ),
@@ -52,10 +52,10 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'dob',
     label: 'Ngày sinh',
     menuLabel: 'Ngày Sinh',
-    width: 164,
+    width: 156,
     sortable: true,
     render: (r) => (
-      <span className="whitespace-nowrap text-slate-800 tabular-nums">
+      <span className="whitespace-nowrap text-ink-2 tabular-nums">
         {formatDateVN(r.patient.dob)}
         {r.patient.dob ? `  -  ${ageLabel(r.patient.dob, r.visit.date)}` : ''}
       </span>
@@ -66,15 +66,15 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'gender',
     label: 'Giới tính',
     menuLabel: 'Giới Tính',
-    width: 92,
+    width: 72,
     render: (r) =>
       r.patient.gender === 'male' ? (
-        <span className="inline-flex items-center gap-1 whitespace-nowrap text-slate-800">
-          <span className="text-[13.5px] font-semibold text-blue-600">♂</span> Nam
+        <span className="inline-flex items-center gap-1 whitespace-nowrap text-ink">
+          <span className="text-[13.5px] font-semibold text-info-ink">♂</span> Nam
         </span>
       ) : (
-        <span className="inline-flex items-center gap-1 whitespace-nowrap text-slate-800">
-          <span className="text-[13.5px] font-semibold text-pink-600">♀</span> Nữ
+        <span className="inline-flex items-center gap-1 whitespace-nowrap text-ink">
+          <span className="text-[13.5px] font-semibold text-accent-ink">♀</span> Nữ
         </span>
       ),
   },
@@ -82,14 +82,14 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'phone',
     label: 'Điện thoại',
     menuLabel: 'Điện Thoại',
-    width: 124,
-    render: (r) => <span className="whitespace-nowrap text-slate-900 tabular-nums">{formatPhone(r.patient.phone)}</span>,
+    width: 110,
+    render: (r) => <span className="whitespace-nowrap text-ink tabular-nums">{formatPhone(r.patient.phone)}</span>,
   },
   {
     key: 'address',
     label: 'Địa chỉ',
     menuLabel: 'Địa Chỉ',
-    width: 240,
+    width: 220,
     render: (r) => (
       <span className="block truncate" title={r.patient.address}>
         {r.patient.address}
@@ -100,19 +100,19 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'visitDate',
     label: 'Ngày khám',
     menuLabel: 'Ngày Khám',
-    width: 112,
+    width: 92,
     sortable: true,
-    render: (r) => <span className="text-slate-900 tabular-nums">{formatDateVN(r.visit.date)}</span>,
+    render: (r) => <span className="text-ink tabular-nums">{formatDateVN(r.visit.date)}</span>,
     sortValue: (r) => r.visit.date + r.visit.time,
   },
   {
     key: 'visitTime',
     label: 'Giờ khám',
     menuLabel: 'Giờ Khám',
-    width: 126,
+    width: 106,
     sortable: true,
     render: (r) => (
-      <span className="whitespace-nowrap text-slate-900 tabular-nums">
+      <span className="whitespace-nowrap text-ink tabular-nums">
         {formatTimeRange(r.visit.time, r.visit.endTime)}
       </span>
     ),
@@ -122,7 +122,7 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'doctor',
     label: 'Bác sĩ',
     menuLabel: 'Bác Sĩ',
-    width: 190,
+    width: 170,
     sortable: true,
     render: (r) => <span className="block truncate">{doctorLabel(r.visit.doctorId)}</span>,
     sortValue: (r) => doctorLabel(r.visit.doctorId),
@@ -131,17 +131,17 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'fee',
     label: 'Phí',
     menuLabel: 'Phí',
-    width: 90,
+    width: 84,
     sortable: true,
     align: 'right',
-    render: (r) => <span className="font-medium text-slate-900 tabular-nums">{formatNumber(r.visit.fee)}</span>,
+    render: (r) => <span className="font-semibold text-ink tabular-nums">{formatNumber(r.visit.fee)}</span>,
     sortValue: (r) => r.visit.fee,
   },
   {
     key: 'payment',
     label: 'Thanh toán',
     menuLabel: 'Thanh Toán',
-    width: 150,
+    width: 140,
     sortable: true,
     render: (r) => <PaymentStatusInline status={r.visit.paymentStatus} />,
     sortValue: (r) => PAYMENT_STATUS_ORDER.indexOf(r.visit.paymentStatus),
@@ -150,11 +150,11 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'note',
     label: 'Ghi chú',
     menuLabel: 'Ghi Chú',
-    width: 160,
+    width: 150,
     sortable: true,
     render: (r) =>
       r.visit.note ? (
-        <span className="block truncate text-slate-700" title={r.visit.note}>
+        <span className="block truncate text-ink-2" title={r.visit.note}>
           {r.visit.note}
         </span>
       ) : null,
@@ -164,10 +164,10 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'patientType',
     label: 'Loại',
     menuLabel: 'Loại',
-    width: 110,
+    width: 100,
     sortable: true,
     render: (r) => (
-      <span className="font-semibold whitespace-nowrap text-slate-900">
+      <span className="font-semibold whitespace-nowrap text-ink">
         {r.visit.visitKind ?? 'Lịch khám'}
       </span>
     ),
@@ -177,7 +177,7 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'room',
     label: 'Phòng khám',
     menuLabel: 'Phòng Khám',
-    width: 168,
+    width: 160,
     sortable: true,
     render: (r) => <span className="block truncate">{roomById(r.visit.roomId)?.name}</span>,
     sortValue: (r) => r.visit.roomId,
@@ -186,7 +186,7 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'category',
     label: 'Phân loại',
     menuLabel: 'Phân Loại',
-    width: 124,
+    width: 118,
     sortable: true,
     render: (r) => CATEGORY_LABEL[r.visit.category],
     sortValue: (r) => r.visit.category,
@@ -195,7 +195,7 @@ export const RECEPTION_COLUMNS: ReceptionColumn[] = [
     key: 'source',
     label: 'Nguồn',
     menuLabel: 'Nguồn',
-    width: 150,
+    width: 140,
     sortable: true,
     render: (r) => <span className="block truncate">{SOURCE_LABEL[r.visit.source]}</span>,
     sortValue: (r) => r.visit.source,

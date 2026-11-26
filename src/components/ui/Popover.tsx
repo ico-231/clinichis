@@ -87,7 +87,7 @@ export function Popover({ open, onClose, anchorRef, align = 'start', matchWidth,
           minWidth: matchWidth ? pos?.width : undefined,
           visibility: pos ? 'visible' : 'hidden',
         }}
-        className={cn('z-[80] animate-pop-in rounded-lg border border-slate-200 bg-white shadow-[0_8px_24px_-6px_rgba(15,23,42,0.18)]', className)}
+        className={cn('z-[80] animate-pop-in rounded-[12px] border border-line bg-surface shadow-pop', className)}
       >
         {children}
       </div>

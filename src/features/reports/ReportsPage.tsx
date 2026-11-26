@@ -7,6 +7,8 @@ import { DropdownMenu, MenuItem } from '@/components/ui/DropdownMenu'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Pagination } from '@/components/ui/Pagination'
 import { Select } from '@/components/ui/Select'
+import { DatePicker } from '@/components/ui/DatePicker'
+import { TextField } from '@/components/ui/Field'
 import { useToast } from '@/components/ui/Toast'
 import { Donut, HBars, MiniArea, SERIES, StackedBarLine, CATEGORICAL } from '@/components/charts/Charts'
 import { useClinicState } from '@/store/ClinicStore'
@@ -44,23 +46,29 @@ export function ReportsPage() {
   const [key, setKey] = useState<ReportKey>('overview')
   const item = MENU.find((m) => m.key === key)!
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-canvas">
       <PageHeader title={item.label} />
-      <div className="flex min-h-0 flex-1 max-md:flex-col">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 gap-4 overflow-hidden px-4 sm:px-6 pt-1 pb-4 max-md:flex-col">
         {/* Màn hẹp: danh mục thành thanh tab cuộn ngang phía trên */}
-        <nav className="thin-scroll shrink-0 bg-slate-50/60 p-2 text-[13px] max-md:flex max-md:gap-1 max-md:overflow-x-auto max-md:border-b max-md:border-slate-200 md:w-[180px] md:space-y-0.5 md:border-r md:border-slate-200" aria-label="Danh mục báo cáo">
+        <nav
+          className="thin-scroll shrink-0 rounded-[16px] border border-line bg-surface p-2 text-[13px] max-md:flex max-md:gap-1 max-md:overflow-x-auto md:w-[210px] md:space-y-0.5"
+          aria-label="Danh mục báo cáo"
+        >
           {MENU.map((m) => (
             <button
               key={m.key}
               type="button"
               onClick={() => setKey(m.key)}
-              className={cn('rounded-md px-2.5 py-1.5 text-left max-md:shrink-0 max-md:whitespace-nowrap md:w-full', key === m.key ? 'bg-white font-medium text-blue-700 shadow-sm' : 'text-slate-700 hover:bg-white/70')}
+              className={cn(
+                'rounded-[10px] px-3 py-2 text-left transition-colors max-md:shrink-0 max-md:whitespace-nowrap md:w-full',
+                key === m.key ? 'bg-brand-soft font-semibold text-brand-ink' : 'font-medium text-ink-2 hover:bg-canvas hover:text-ink',
+              )}
             >
               {m.label}
             </button>
           ))}
         </nav>
-        <div className="thin-scroll min-w-0 flex-1 overflow-y-auto p-3">
+        <div className="thin-scroll min-w-0 flex-1 overflow-y-auto pr-0.5">
           {key === 'overview' && <OverviewReport />}
           {key === 'sales' && <SalesReport />}
           {key === 'icd' && <IcdReport />}
@@ -70,7 +78,7 @@ export function ReportsPage() {
           {key === 'book' && <ExamBook />}
           {key === 'downloads' && <DownloadHistory />}
           {!item.ready && (
-            <div className="flex h-full items-center justify-center">
+            <div className="flex h-full items-center justify-center rounded-[16px] border border-line bg-surface">
               <EmptyState title={`${item.label} đang chờ thiết kế`} description="Chưa có ảnh tham chiếu cho báo cáo này – giữ trang chờ theo kế hoạch." />
             </div>
           )}
@@ -86,10 +94,10 @@ export function ReportsPage() {
 
 function Card({ title, right, children, className }: { title?: ReactNode; right?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <div className={cn('rounded-xl border border-slate-200 bg-white p-3', className)}>
+    <div className={cn('rounded-[16px] border border-line bg-surface p-4', className)}>
       {(title || right) && (
-        <div className="mb-2 flex items-center justify-between gap-2">
-          <p className="text-[14px] font-semibold text-slate-900">{title}</p>
+        <div className="mb-2.5 flex items-center justify-between gap-2">
+          <p className="text-[14.5px] font-bold text-ink">{title}</p>
           {right}
         </div>
       )}
@@ -100,24 +108,24 @@ function Card({ title, right, children, className }: { title?: ReactNode; right?
 
 function Stat({ label, value, hint, accent }: { label: string; value: ReactNode; hint?: string; accent?: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-3 py-2.5">
-      <p className="flex items-center gap-1 text-[12.5px] text-slate-600">
+    <div className="rounded-[16px] border border-line bg-surface px-4 py-3.5">
+      <p className="flex items-center gap-1.5 text-[12.5px] font-medium text-ink-3">
         {label}
-        {hint && <Info className="h-3 w-3 text-slate-400" aria-label={hint} />}
+        {hint && <Info className="h-3.5 w-3.5 text-ink-4" aria-label={hint} />}
       </p>
-      <p className={cn('text-[19px] font-semibold tabular-nums', accent ?? 'text-slate-900')}>{value}</p>
+      <p className={cn('mt-1 text-[21px] font-extrabold tracking-[-0.02em] tabular-nums', accent ?? 'text-ink')}>{value}</p>
     </div>
   )
 }
 
 function Table({ head, children, minWidth = 760 }: { head: ReactNode[]; children: ReactNode; minWidth?: number }) {
   return (
-    <div className="thin-scroll overflow-x-auto rounded-lg border border-slate-200">
+    <div className="thin-scroll overflow-x-auto rounded-[14px] border border-line bg-surface">
       <table className="w-full text-[13px]" style={{ minWidth }}>
-        <thead className="bg-slate-50 text-[12.5px] text-slate-600">
+        <thead className="border-b border-line bg-subtle text-[12.5px] font-semibold text-ink-3">
           <tr>
             {head.map((h, i) => (
-              <th key={i} className="px-2.5 py-2 text-left font-medium whitespace-nowrap">
+              <th key={i} className="px-3 py-2.5 text-left font-semibold whitespace-nowrap">
                 {h}
               </th>
             ))}
@@ -129,20 +137,15 @@ function Table({ head, children, minWidth = 760 }: { head: ReactNode[]; children
   )
 }
 
-const td = 'border-t border-slate-100 px-2.5 py-2'
+const td = 'border-t border-line-soft px-3 py-2.5'
 const tdR = cn(td, 'text-right tabular-nums')
 
 function Toolbar({ children }: { children: ReactNode }) {
-  return <div className="mb-3 flex flex-wrap items-end gap-2">{children}</div>
+  return <div className="mb-3 flex flex-wrap items-end gap-2 pt-1.5">{children}</div>
 }
 
 function DateBox({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-[11.5px] text-slate-500">{label}</span>
-      <input type="date" value={value} onChange={(e) => onChange(e.target.value)} className="h-9 rounded-md border border-slate-200 px-2 text-[13px] outline-none focus:border-blue-500" />
-    </label>
-  )
+  return <DatePicker label={label} value={value} onChange={onChange} className="w-[160px]" />
 }
 
 function ExportBtn({ onClick, label = 'Xuất Excel' }: { onClick: () => void; label?: string }) {
@@ -202,25 +205,25 @@ function OverviewReport() {
 
   const change = (cur: number, prev: number) => {
     // Kỳ trước không có số liệu thì không so sánh được (tránh "▲ 100%" gây hiểu nhầm)
-    if (!prev) return <span className="text-[11.5px] text-slate-500">Kỳ trước chưa có số liệu</span>
+    if (!prev) return <span className="text-[11.5px] text-ink-4">Kỳ trước chưa có số liệu</span>
     const p = pctChange(cur, prev)
-    return <span className={cn('text-[11.5px]', p >= 0 ? 'text-emerald-700' : 'text-red-600')}>{p >= 0 ? '▲' : '▼'} {Math.abs(p)}% so với cùng kỳ</span>
+    return <span className={cn('text-[11.5px] font-medium tabular-nums', p >= 0 ? 'text-brand-ink' : 'text-accent-ink')}>{p >= 0 ? '▲' : '▼'} {Math.abs(p)}% so với cùng kỳ</span>
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3.5">
       <div className="flex justify-end">
         <DateRangePicker value={range} onChange={setRange} />
       </div>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {(
           [
-            ['Tổng người bệnh', d.total, '#2563eb', d.series.map((x) => x.old + x.new)],
-            ['Khách hàng mới', d.newCount, '#10b981', d.series.map((x) => x.new)],
-            ['Khách hàng cũ', d.oldCount, '#f97316', d.series.map((x) => x.old)],
+            ['Tổng người bệnh', d.total, 'var(--chart-info)', d.series.map((x) => x.old + x.new)],
+            ['Khách hàng mới', d.newCount, 'var(--chart-new)', d.series.map((x) => x.new)],
+            ['Khách hàng cũ', d.oldCount, 'var(--chart-visits)', d.series.map((x) => x.old)],
           ] as const
         ).map(([t, v, c, vals]) => (
-          <Card key={t} title={t} right={<b className="tabular-nums">{formatNumber(v)}</b>}>
+          <Card key={t} title={t} right={<b className="text-[18px] font-extrabold text-ink tabular-nums">{formatNumber(v)}</b>}>
             <MiniArea values={[...vals]} color={c} label={`${t} theo ngày`} />
           </Card>
         ))}
@@ -246,7 +249,7 @@ function OverviewReport() {
         <Card
           title="Tần suất & tỉ lệ giữ khách"
           right={
-            <select value={freqMonths} onChange={(e) => setFreqMonths(e.target.value as '3' | '6' | '12')} className="h-8 rounded-md border border-slate-200 px-2 text-[12.5px]" aria-label="Khoảng thời gian">
+            <select value={freqMonths} onChange={(e) => setFreqMonths(e.target.value as '3' | '6' | '12')} className="h-8 rounded-[10px] border border-line-strong bg-surface px-2.5 text-[12.5px] font-medium text-ink outline-none focus:border-brand" aria-label="Khoảng thời gian">
               <option value="3">3 tháng</option>
               <option value="6">6 tháng</option>
               <option value="12">12 tháng</option>
@@ -255,15 +258,15 @@ function OverviewReport() {
         >
           <div className="grid grid-cols-2 gap-3 text-[12.5px]">
             <div>
-              <p className="text-slate-600">Số lần khám trung bình</p>
-              <p className="text-[18px] font-semibold">
-                {d.avgVisits.toFixed(2)} <span className="text-[12px] font-normal text-blue-600">lần/người bệnh</span>
+              <p className="text-ink-3">Số lần khám trung bình</p>
+              <p className="text-[18px] font-bold text-ink tabular-nums">
+                {d.avgVisits.toFixed(2)} <span className="text-[12px] font-medium text-brand-ink">lần/người bệnh</span>
               </p>
               {change(d.avgVisits, d.prevAvgVisits)}
             </div>
             <div>
-              <p className="text-slate-600">Số tiền chi trả trung bình</p>
-              <p className="text-[18px] font-semibold">{formatNumber(Math.round(d.avgSpend))}</p>
+              <p className="text-ink-3">Số tiền chi trả trung bình</p>
+              <p className="text-[18px] font-bold text-ink tabular-nums">{formatNumber(Math.round(d.avgSpend))}</p>
               {change(d.avgSpend, d.prevAvgSpend)}
             </div>
           </div>
@@ -324,7 +327,7 @@ function SalesReport() {
     <>
       <Toolbar>
         <div>
-          <span className="mb-1 block text-[11.5px] text-slate-500">Loại kỳ báo cáo</span>
+          <span className="mb-1 block text-[11.5px] font-medium text-ink-3">Loại kỳ báo cáo</span>
           <DateRangePicker value={range} onChange={setRange} />
         </div>
         <Select label="Phạm vi doanh thu" value="clinic" options={[{ value: 'clinic', label: 'Phòng khám' }]} onChange={() => {}} className="w-[150px]" />
@@ -350,8 +353,8 @@ function SalesReport() {
       <div className="mb-3 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="Tổng số đơn bán" value={formatNumber(sum('count'))} hint="Số phiếu thu trong kỳ" />
         <Stat label="Doanh thu gốc" value={`${formatNumber(sum('gross'))}đ`} hint="Trước giảm giá" />
-        <Stat label="Giảm giá" value={`${formatNumber(sum('discount'))}đ`} accent="text-orange-700" />
-        <Stat label="Doanh thu thuần" value={`${formatNumber(sum('net'))}đ`} accent="text-emerald-700" hint="Sau giảm giá và hoàn tiền" />
+        <Stat label="Giảm giá" value={`${formatNumber(sum('discount'))}đ`} accent="text-accent-ink" />
+        <Stat label="Doanh thu thuần" value={`${formatNumber(sum('net'))}đ`} accent="text-brand-ink" hint="Sau giảm giá và hoàn tiền" />
       </div>
       <Card title="Doanh thu theo ngày">
         <Table head={['', 'Thời gian', 'Số đơn bán', 'Phòng khám', 'Doanh thu gốc', 'Giảm giá', 'Hoàn tiền', 'Doanh thu thuần']}>
@@ -364,43 +367,43 @@ function SalesReport() {
           )}
           {rows.map((r) => (
             <FragmentRows key={r.date}>
-              <tr className="cursor-pointer hover:bg-slate-50" onClick={() => setOpen(open === r.date ? null : r.date)}>
-                <td className={td}>{open === r.date ? '−' : '+'}</td>
-                <td className={td}>{formatDateVN(r.date)}</td>
+              <tr className="cursor-pointer transition-colors hover:bg-brand-wash" onClick={() => setOpen(open === r.date ? null : r.date)}>
+                <td className={cn(td, 'font-semibold text-ink-3')}>{open === r.date ? '−' : '+'}</td>
+                <td className={cn(td, 'font-medium text-ink tabular-nums')}>{formatDateVN(r.date)}</td>
                 <td className={tdR}>{r.count}</td>
                 <td className={tdR}>{formatNumber(r.gross)}</td>
                 <td className={tdR}>{formatNumber(r.gross)}</td>
-                <td className={cn(tdR, 'text-orange-700')}>{formatNumber(r.discount)}</td>
+                <td className={cn(tdR, 'font-medium text-accent-ink')}>{formatNumber(r.discount)}</td>
                 <td className={tdR}>{formatNumber(r.refund)}</td>
-                <td className={cn(tdR, 'text-emerald-700')}>{formatNumber(r.net)}</td>
+                <td className={cn(tdR, 'font-semibold text-brand-ink')}>{formatNumber(r.net)}</td>
               </tr>
               {open === r.date &&
                 r.list.map((e, i) => (
-                  <tr key={i} className="bg-slate-50/60 text-[12.5px]">
+                  <tr key={i} className="bg-canvas text-[12.5px]">
                     <td className={td} />
-                    <td className={td} colSpan={2}>
+                    <td className={cn(td, 'font-medium text-ink tabular-nums')} colSpan={2}>
                       {e.code ?? '—'} · {e.visit.code}
                     </td>
-                    <td className={td} colSpan={2}>
+                    <td className={cn(td, 'text-ink-3')} colSpan={2}>
                       {e.kind === 'refund' ? 'Hoàn tiền' : PAYMENT_METHOD_LABEL[e.method]} · {formatDateTimeVN(e.at)}
                     </td>
                     <td className={tdR}>{formatNumber(e.discount)}</td>
                     <td className={tdR}>{e.kind === 'refund' ? formatNumber(e.amount) : 0}</td>
-                    <td className={tdR}>{formatNumber(netOf(e))}</td>
+                    <td className={cn(tdR, 'font-medium text-ink')}>{formatNumber(netOf(e))}</td>
                   </tr>
                 ))}
             </FragmentRows>
           ))}
           {rows.length > 0 && (
-            <tr className="font-semibold">
+            <tr className="bg-canvas/70 font-semibold">
               <td className={td} />
               <td className={td}>Tổng cộng</td>
               <td className={tdR}>{sum('count')}</td>
               <td className={tdR}>{formatNumber(sum('gross'))}</td>
               <td className={tdR}>{formatNumber(sum('gross'))}</td>
-              <td className={cn(tdR, 'text-orange-700')}>{formatNumber(sum('discount'))}</td>
+              <td className={cn(tdR, 'text-accent-ink')}>{formatNumber(sum('discount'))}</td>
               <td className={tdR}>{formatNumber(rows.reduce((s, r) => s + r.refund, 0))}</td>
-              <td className={cn(tdR, 'text-emerald-700')}>{formatNumber(sum('net'))}</td>
+              <td className={cn(tdR, 'text-brand-ink')}>{formatNumber(sum('net'))}</td>
             </tr>
           )}
         </Table>
@@ -439,10 +442,7 @@ function IcdReport() {
       <Toolbar>
         <DateBox label="Từ ngày" value={from} onChange={setFrom} />
         <DateBox label="Đến ngày" value={to} onChange={setTo} />
-        <label className="block">
-          <span className="mb-1 block text-[11.5px] text-slate-500">Tên chẩn đoán</span>
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Tìm theo tên chẩn đoán" aria-label="Tìm theo tên chẩn đoán" className="h-9 w-[220px] rounded-md border border-slate-200 px-2.5 text-[13px] outline-none focus:border-blue-500" />
-        </label>
+        <TextField label="Tên chẩn đoán" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Tìm theo tên chẩn đoán" wrapperClassName="w-[220px]" />
         <Select label="ICD-10" value={code} options={[{ value: 'all', label: 'Lọc theo mã ICD' }, ...ICD10.map((d) => ({ value: d.code, label: `${d.code} – ${d.name}` }))]} onChange={setCode} className="w-[200px]" menuMinWidth={360} />
         <Select
           label="Loại chẩn đoán"
@@ -541,33 +541,33 @@ function UnpaidReport() {
           list.forEach((x) => byDoctor.set(x.visit.doctorId, [...(byDoctor.get(x.visit.doctorId) ?? []), x]))
           return (
             <FragmentRows key={date}>
-              <tr className="bg-slate-500 font-semibold text-white">
-                <td className="px-2.5 py-1.5" colSpan={5}>
+              <tr className="bg-[#292524] font-semibold text-white">
+                <td className="px-3 py-2" colSpan={5}>
                   – NGÀY: {formatDateVN(date)} ({new Set(list.map((x) => x.patient.id)).size})
                 </td>
-                <td className="px-2.5 py-1.5 text-right tabular-nums">{formatNumber(list.reduce((s, x) => s + x.line.unitPrice * x.line.quantity, 0))}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{formatNumber(list.reduce((s, x) => s + x.line.unitPrice * x.line.quantity, 0))}</td>
               </tr>
               {[...byDoctor.entries()].map(([did, dl]) => (
                 <FragmentRows key={did}>
-                  <tr className="bg-slate-100 font-semibold">
-                    <td className="px-2.5 py-1.5 pl-6" colSpan={5}>
+                  <tr className="bg-subtle font-semibold text-ink">
+                    <td className="px-3 py-2 pl-6" colSpan={5}>
                       – BÁC SĨ: {doctorLabel(did).toUpperCase()}
                     </td>
-                    <td className="px-2.5 py-1.5 text-right tabular-nums">{formatNumber(dl.reduce((s, x) => s + x.line.unitPrice * x.line.quantity, 0))}</td>
+                    <td className="px-3 py-2 text-right tabular-nums">{formatNumber(dl.reduce((s, x) => s + x.line.unitPrice * x.line.quantity, 0))}</td>
                   </tr>
                   {dl.map((x, i) => (
-                    <tr key={`${x.visit.id}${x.line.refId}`}>
-                      <td className={td}>{i + 1}</td>
+                    <tr key={`${x.visit.id}${x.line.refId}`} className="transition-colors hover:bg-brand-wash">
+                      <td className={cn(td, 'text-ink-3 tabular-nums')}>{i + 1}</td>
                       <td className={td}>
-                        {x.line.name}
-                        <span className="ml-1 text-xs text-slate-500">
+                        <span className="font-medium text-ink">{x.line.name}</span>
+                        <span className="ml-1 text-xs text-ink-3">
                           · {x.patient.fullName} ({x.patient.code})
                         </span>
                       </td>
-                      <td className={td}>{x.line.unit}</td>
+                      <td className={cn(td, 'text-ink-2')}>{x.line.unit}</td>
                       <td className={tdR}>{formatNumber(x.line.unitPrice)}</td>
                       <td className={tdR}>{x.line.quantity}</td>
-                      <td className={tdR}>{formatNumber(x.line.unitPrice * x.line.quantity)}</td>
+                      <td className={cn(tdR, 'font-medium text-ink')}>{formatNumber(x.line.unitPrice * x.line.quantity)}</td>
                     </tr>
                   ))}
                 </FragmentRows>
@@ -620,7 +620,7 @@ function InvoicesReport() {
     <>
       <Toolbar>
         <div>
-          <span className="mb-1 block text-[11.5px] text-slate-500">Kỳ</span>
+          <span className="mb-1 block text-[11.5px] font-medium text-ink-3">Kỳ</span>
           <DateRangePicker value={range} onChange={(r) => (setRange(r), setPage(1))} />
         </div>
         <Select
@@ -642,8 +642,8 @@ function InvoicesReport() {
           className="w-[150px]"
         />
         <div className="relative">
-          <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-          <input value={q} onChange={(e) => (setQ(e.target.value), setPage(1))} placeholder="Tìm theo tên khách hàng, mã hoá đơn..." aria-label="Tìm theo tên khách hàng, mã hoá đơn" className="h-9 w-[260px] rounded-md border border-slate-200 pr-2 pl-8 text-[13px] outline-none focus:border-blue-500" />
+          <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-4" />
+          <input value={q} onChange={(e) => (setQ(e.target.value), setPage(1))} placeholder="Tìm theo tên khách hàng, mã hoá đơn..." aria-label="Tìm theo tên khách hàng, mã hoá đơn" className="h-9 w-[280px] rounded-[10px] border border-line-strong bg-surface pr-3 pl-9 text-[13.5px] text-ink outline-none transition placeholder:text-ink-4 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15" />
         </div>
         <ExportBtn
           label="Tải về"
@@ -667,19 +667,19 @@ function InvoicesReport() {
           </tr>
         )}
         {pageRows.map(({ v, p, patient }, i) => (
-          <tr key={p.id}>
-            <td className={td}>{(page - 1) * pageSize + i + 1}</td>
+          <tr key={p.id} className="transition-colors hover:bg-brand-wash">
+            <td className={cn(td, 'text-ink-3 tabular-nums')}>{(page - 1) * pageSize + i + 1}</td>
             <td className={td}>
-              <button type="button" onClick={() => setOpen({ visitId: v.id, paymentId: p.id })} className="text-blue-600 hover:underline">
+              <button type="button" onClick={() => setOpen({ visitId: v.id, paymentId: p.id })} className="font-semibold text-info-ink hover:underline tabular-nums">
                 {p.code ?? p.id.toUpperCase()}
               </button>
             </td>
-            <td className={cn(td, 'font-medium uppercase')}>{patient?.fullName}</td>
-            <td className={td}>{formatDateTimeVN(p.at).split(' ').reverse().join(' ')}</td>
-            <td className={td}>{PAYMENT_METHOD_LABEL[p.method]}</td>
-            <td className={tdR}>{formatNumber(p.amount)}</td>
+            <td className={cn(td, 'font-semibold text-ink uppercase')}>{patient?.fullName}</td>
+            <td className={cn(td, 'text-ink-2 tabular-nums')}>{formatDateTimeVN(p.at).split(' ').reverse().join(' ')}</td>
+            <td className={cn(td, 'text-ink-2')}>{PAYMENT_METHOD_LABEL[p.method]}</td>
+            <td className={cn(tdR, 'font-semibold text-ink')}>{formatNumber(p.amount)}</td>
             <td className={td}>
-              <span className={cn('rounded-full px-2 py-0.5 text-[11.5px]', p.invoice?.status === 'issued' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600')}>
+              <span className={cn('inline-block rounded-full px-2.5 py-0.5 text-[11.5px]', p.invoice?.status === 'issued' ? 'bg-brand-soft font-semibold text-brand-ink' : 'bg-subtle font-medium text-ink-3')}>
                 {p.invoice?.status === 'issued' ? 'Đã phát hành' : 'Chưa phát hành'}
               </span>
             </td>
@@ -687,7 +687,7 @@ function InvoicesReport() {
               <DropdownMenu
                 align="end"
                 renderTrigger={({ ref, toggle }) => (
-                  <button ref={ref} type="button" onClick={toggle} className="rounded p-1 text-slate-500 hover:bg-slate-100" aria-label="Thao tác">
+                  <button ref={ref} type="button" onClick={toggle} className="rounded-[8px] p-1.5 text-ink-2 hover:bg-subtle" aria-label="Thao tác">
                     <MoreHorizontal className="h-4 w-4" />
                   </button>
                 )}
@@ -706,7 +706,9 @@ function InvoicesReport() {
           </tr>
         ))}
       </Table>
-      <Pagination page={page} pageCount={pageCount} pageSize={pageSize} total={rows.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
+      <div className="mt-2.5 rounded-[14px] border border-line bg-surface px-4">
+        <Pagination page={page} pageCount={pageCount} pageSize={pageSize} total={rows.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
+      </div>
       {open && <ReceiptModal visitId={open.visitId} paymentId={open.paymentId} onClose={() => setOpen(null)} />}
     </>
   )
@@ -769,32 +771,32 @@ function ExamReport() {
           const byDoc = [...new Set(list.map((i) => i.visit.doctorId))]
           return (
             <FragmentRows key={d}>
-              <tr className="cursor-pointer bg-blue-100/70 font-semibold" onClick={() => setOpenDay(openDay === d ? null : d)}>
-                <td className="px-2.5 py-1.5">{openDay === d ? '−' : '+'}</td>
-                <td className="px-2.5 py-1.5" colSpan={2}>
+              <tr className="cursor-pointer bg-brand-tint font-semibold text-brand-ink transition-colors hover:bg-brand-soft" onClick={() => setOpenDay(openDay === d ? null : d)}>
+                <td className="px-3 py-2">{openDay === d ? '−' : '+'}</td>
+                <td className="px-3 py-2 tabular-nums" colSpan={2}>
                   Ngày: {formatDateVN(d)} ({list.length})
                 </td>
-                <td className="px-2.5 py-1.5 text-right tabular-nums">{formatNumber(sum(list, 'ck'))}</td>
-                <td className="px-2.5 py-1.5 text-right tabular-nums">{formatNumber(sum(list, 'cls'))}</td>
-                <td className="px-2.5 py-1.5 text-right tabular-nums">0</td>
-                <td className="px-2.5 py-1.5 text-right tabular-nums">{formatNumber(sum(list, 'disc'))}</td>
-                <td className="px-2.5 py-1.5 text-right tabular-nums">{formatNumber(sum(list, 'total'))}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{formatNumber(sum(list, 'ck'))}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{formatNumber(sum(list, 'cls'))}</td>
+                <td className="px-3 py-2 text-right tabular-nums">0</td>
+                <td className="px-3 py-2 text-right tabular-nums">{formatNumber(sum(list, 'disc'))}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{formatNumber(sum(list, 'total'))}</td>
               </tr>
               {openDay === d &&
                 byDoc.map((did) => {
                   const dl = list.filter((i) => i.visit.doctorId === did)
                   return (
                     <FragmentRows key={did}>
-                      <tr className="bg-blue-50 font-semibold">
+                      <tr className="bg-canvas font-semibold text-ink">
                         <td />
-                        <td className="px-2.5 py-1.5" colSpan={2}>
+                        <td className="px-3 py-2" colSpan={2}>
                           Bác sĩ: {doctorLabel(did)} ({dl.length})
                         </td>
-                        <td className="px-2.5 py-1.5 text-right tabular-nums">{formatNumber(sum(dl, 'ck'))}</td>
-                        <td className="px-2.5 py-1.5 text-right tabular-nums">{formatNumber(sum(dl, 'cls'))}</td>
-                        <td className="px-2.5 py-1.5 text-right tabular-nums">0</td>
-                        <td className="px-2.5 py-1.5 text-right tabular-nums">{formatNumber(sum(dl, 'disc'))}</td>
-                        <td className="px-2.5 py-1.5 text-right tabular-nums">{formatNumber(sum(dl, 'total'))}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{formatNumber(sum(dl, 'ck'))}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{formatNumber(sum(dl, 'cls'))}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">0</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{formatNumber(sum(dl, 'disc'))}</td>
+                        <td className="px-3 py-2 text-right tabular-nums">{formatNumber(sum(dl, 'total'))}</td>
                       </tr>
                       {dl.map((i, n) => (
                         <tr key={i.visit.id}>
@@ -892,7 +894,7 @@ function ExamBook() {
           }
         />
       </Toolbar>
-      <Table head={head.map((h, i) => <span key={h}>{h}<span className="block text-[10.5px] font-normal text-slate-500">({i + 1})</span></span>)} minWidth={1600}>
+      <Table head={head.map((h, i) => <span key={h}>{h}<span className="block text-[10.5px] font-normal text-ink-4">({i + 1})</span></span>)} minWidth={1600}>
         {days.length === 0 && (
           <tr>
             <td colSpan={head.length}>
@@ -904,13 +906,13 @@ function ExamBook() {
           const list = items.filter((i) => i.visit.date === d)
           return (
             <FragmentRows key={d}>
-              <tr className="font-semibold">
-                <td className="px-2.5 py-1.5" colSpan={head.length}>
+              <tr className="bg-canvas font-semibold text-ink">
+                <td className="px-3 py-2 tabular-nums" colSpan={head.length}>
                   • Ngày: {formatDateVN(d)} ({new Set(list.map((x) => x.patient.id)).size} người bệnh)
                 </td>
               </tr>
               {list.map((x, i) => (
-                <tr key={x.visit.id} className="align-top">
+                <tr key={x.visit.id} className="align-top transition-colors hover:bg-brand-wash">
                   {rowOf(x, i).map((c, k) => (
                     <td key={k} className={cn(td, 'text-[12.5px]', k >= 10 && 'max-w-[220px]')}>
                       {c}
@@ -960,16 +962,16 @@ function DownloadHistory() {
           </tr>
         )}
         {list.map((d, i) => (
-          <tr key={d.id}>
-            <td className={td}>{i + 1}</td>
-            <td className={td}>{d.name}</td>
+          <tr key={d.id} className="transition-colors hover:bg-brand-wash">
+            <td className={cn(td, 'text-ink-3 tabular-nums')}>{i + 1}</td>
+            <td className={cn(td, 'font-medium text-ink')}>{d.name}</td>
             <td className={td}>
-              <span className="rounded bg-emerald-50 px-1.5 py-0.5 text-[12px] text-emerald-700">Excel (CSV)</span>
+              <span className="inline-block rounded-full bg-brand-soft px-2.5 py-0.5 text-[11.5px] font-semibold text-brand-ink">Excel (CSV)</span>
             </td>
             <td className={td}>
-              <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[11.5px] text-white">Thành công</span>
+              <span className="inline-block rounded-full bg-brand px-2.5 py-0.5 text-[11.5px] font-semibold text-white">Thành công</span>
             </td>
-            <td className={td}>{formatDateTimeVN(d.at)}</td>
+            <td className={cn(td, 'text-ink-2 tabular-nums')}>{formatDateTimeVN(d.at)}</td>
             <td className={td}>
               <Button
                 size="sm"

@@ -87,16 +87,16 @@ export function PatientsPage() {
   const safePage = Math.min(Math.max(page, 1), Math.max(pageCount, 1))
   const pageRows = rows.slice((safePage - 1) * pageSize, safePage * pageSize)
   const header = (key: SortKey, label: string, cls = '') => (
-    <th className={cn('px-2 py-2.5 text-left font-medium', cls)}>
-      <button type="button" onClick={() => setSort((s) => ({ key, dir: s.key === key ? (s.dir === 1 ? -1 : 1) : 1 }))} className="flex items-center gap-1 hover:text-slate-900">
+    <th className={cn('px-3 py-2.5 text-left font-semibold', cls)}>
+      <button type="button" onClick={() => setSort((s) => ({ key, dir: s.key === key ? (s.dir === 1 ? -1 : 1) : 1 }))} className="flex items-center gap-1 hover:text-ink">
         {label}
-        {sort.key === key ? sort.dir === 1 ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" /> : <ChevronsUpDown className="h-3 w-3 opacity-40" />}
+        {sort.key === key ? sort.dir === 1 ? <ArrowUp className="h-3 w-3 text-brand-ink" /> : <ArrowDown className="h-3 w-3 text-brand-ink" /> : <ChevronsUpDown className="h-3 w-3 opacity-40" />}
       </button>
     </th>
   )
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-canvas">
       <PageHeader
         title="Quản lý người bệnh"
         actions={
@@ -105,86 +105,92 @@ export function PatientsPage() {
           </Button>
         }
       />
-      <div className="flex min-h-0 flex-1 flex-col px-2">
-        <div className="flex flex-wrap items-end gap-2 px-2 pt-4 pb-3">
-          <div className="relative w-[280px]">
-            <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 pt-1 pb-4">
+        <div className="flex flex-wrap items-end gap-2">
+          <div className="relative w-full sm:w-[280px]">
+            <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-4" />
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (setQuery(input), setPage(1))}
-              placeholder="Tìm theo số điện thoại hoặc họ tên"
+              placeholder="Tìm tên hoặc số điện thoại"
               aria-label="Tìm theo số điện thoại hoặc họ tên"
-              className="h-9 w-full rounded-md bg-slate-100 pr-3 pl-8 text-[13px] outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+              className="h-9 w-full rounded-[10px] border border-line-strong bg-surface pr-8 pl-9 text-[13.5px] text-ink outline-none transition placeholder:text-ink-4 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
             />
           </div>
           <DatePicker label="Từ ngày" value={from} max={to} onChange={(v) => (setFrom(v), setPage(1))} className="w-[160px]" />
           <DatePicker label="Đến ngày" value={to} min={from} onChange={(v) => (setTo(v), setPage(1))} className="w-[160px]" />
-          <Button onClick={() => (setQuery(input), setPage(1))}>Tìm kiếm</Button>
+          <Button className="w-[74px]" onClick={() => (setQuery(input), setPage(1))}>
+            Tìm
+          </Button>
         </div>
 
-        <div className="thin-scroll min-h-0 flex-1 overflow-auto rounded-lg border border-slate-200 bg-white">
-          <table className="w-full min-w-[980px] text-[13px]">
-            <thead className="sticky top-0 z-10 bg-slate-50 text-[12.5px] text-slate-600">
-              <tr>
-                <th className="w-10" />
-                {header('code', 'Mã NB')}
-                {header('name', 'Họ và tên')}
-                {header('dob', 'Ngày sinh')}
-                {header('age', 'Tuổi')}
-                <th className="px-2 py-2.5 text-left font-medium">Giới tính</th>
-                {header('address', 'Địa chỉ')}
-                {header('lastVisit', 'Tg khám gần nhất')}
-                {header('created', 'Ngày tạo')}
-              </tr>
-            </thead>
-            <tbody>
-              {pageRows.length === 0 && (
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[16px] border border-line bg-surface">
+          <div className="thin-scroll min-h-0 flex-1 overflow-auto">
+            <table className="w-full min-w-[980px] text-[13px]">
+              <thead className="sticky top-0 z-10 border-b border-line bg-subtle text-[12.5px] font-semibold text-ink-3">
                 <tr>
-                  <td colSpan={9}>
-                    <EmptyState />
-                  </td>
+                  <th className="w-10" />
+                  {header('code', 'Mã NB')}
+                  {header('name', 'Họ và tên')}
+                  {header('dob', 'Ngày sinh')}
+                  {header('age', 'Tuổi')}
+                  <th className="px-3 py-2.5 text-left font-semibold">Giới tính</th>
+                  {header('address', 'Địa chỉ')}
+                  {header('lastVisit', 'Tg khám gần nhất')}
+                  {header('created', 'Ngày tạo')}
                 </tr>
-              )}
-              {pageRows.map((p) => (
-                <tr key={p.id} onClick={() => setOpenId(p.id)} className="cursor-pointer border-t border-slate-100 hover:bg-slate-50">
-                  <td className="px-2 text-center" onClick={(e) => e.stopPropagation()}>
-                    <DropdownMenu
-                      align="start"
-                      renderTrigger={({ ref, toggle }) => (
-                        <button ref={ref} type="button" onClick={toggle} className="rounded p-1 text-slate-500 hover:bg-slate-100" aria-label="Thao tác">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </button>
-                      )}
-                    >
-                      <MenuItem icon={<Eye className="h-3.5 w-3.5" />} onSelect={() => setOpenId(p.id)}>
-                        Xem hồ sơ
-                      </MenuItem>
-                      <MenuItem icon={<Pencil className="h-3.5 w-3.5" />} onSelect={() => setFormFor(p)}>
-                        Chỉnh sửa
-                      </MenuItem>
-                      <MenuItem icon={<Trash2 className="h-3.5 w-3.5" />} danger onSelect={() => tryDelete(p)}>
-                        Xoá
-                      </MenuItem>
-                    </DropdownMenu>
-                  </td>
-                  <td className="px-2 py-2 font-medium text-blue-600">{p.code}</td>
-                  <td className="px-2 py-2">
-                    <span className="block font-semibold uppercase">{p.fullName}</span>
-                    <span className="text-xs text-slate-500">{formatPhone(p.phone)}</span>
-                  </td>
-                  <td className="px-2 py-2">{formatDateVN(p.dob)}</td>
-                  <td className="px-2 py-2">{ageInYears(p.dob) >= 2 ? `${ageInYears(p.dob)} tuổi` : ageLabel(p.dob)}</td>
-                  <td className="px-2 py-2">{GENDER_LABEL[p.gender]}</td>
-                  <td className="max-w-[260px] truncate px-2 py-2" title={p.address}>{p.address}</td>
-                  <td className="px-2 py-2">{lastVisit.get(p.id) ? formatDateVN(lastVisit.get(p.id)!.slice(0, 10)) : '--'}</td>
-                  <td className="px-2 py-2">{formatDateVN(p.createdAt.slice(0, 10))}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-line-soft">
+                {pageRows.length === 0 && (
+                  <tr>
+                    <td colSpan={9}>
+                      <EmptyState />
+                    </td>
+                  </tr>
+                )}
+                {pageRows.map((p) => (
+                  <tr key={p.id} onClick={() => setOpenId(p.id)} className="cursor-pointer transition-colors hover:bg-brand-wash">
+                    <td className="px-2 text-center" onClick={(e) => e.stopPropagation()}>
+                      <DropdownMenu
+                        align="start"
+                        renderTrigger={({ ref, toggle }) => (
+                          <button ref={ref} type="button" onClick={toggle} className="rounded-[8px] p-1.5 text-ink-2 hover:bg-subtle" aria-label="Thao tác">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </button>
+                        )}
+                      >
+                        <MenuItem icon={<Eye className="h-3.5 w-3.5" />} onSelect={() => setOpenId(p.id)}>
+                          Xem hồ sơ
+                        </MenuItem>
+                        <MenuItem icon={<Pencil className="h-3.5 w-3.5" />} onSelect={() => setFormFor(p)}>
+                          Chỉnh sửa
+                        </MenuItem>
+                        <MenuItem icon={<Trash2 className="h-3.5 w-3.5" />} danger onSelect={() => tryDelete(p)}>
+                          Xoá
+                        </MenuItem>
+                      </DropdownMenu>
+                    </td>
+                    <td className="px-3 py-2.5 font-semibold text-info-ink hover:underline tabular-nums">{p.code}</td>
+                    <td className="px-3 py-2.5">
+                      <span className="block font-semibold text-ink uppercase">{p.fullName}</span>
+                      <span className="text-xs text-ink-3 tabular-nums">{formatPhone(p.phone)}</span>
+                    </td>
+                    <td className="px-3 py-2.5 text-ink-2 tabular-nums">{formatDateVN(p.dob)}</td>
+                    <td className="px-3 py-2.5 text-ink-2 tabular-nums">{ageInYears(p.dob) >= 2 ? `${ageInYears(p.dob)} tuổi` : ageLabel(p.dob)}</td>
+                    <td className="px-3 py-2.5 text-ink-2">{GENDER_LABEL[p.gender]}</td>
+                    <td className="max-w-[260px] truncate px-3 py-2.5 text-ink-2" title={p.address}>{p.address}</td>
+                    <td className="px-3 py-2.5 text-ink-2 tabular-nums">{lastVisit.get(p.id) ? formatDateVN(lastVisit.get(p.id)!.slice(0, 10)) : '--'}</td>
+                    <td className="px-3 py-2.5 text-ink-2 tabular-nums">{formatDateVN(p.createdAt.slice(0, 10))}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="border-t border-line px-4">
+            <Pagination page={safePage} pageCount={pageCount} pageSize={pageSize} total={rows.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
+          </div>
         </div>
-        <Pagination page={safePage} pageCount={pageCount} pageSize={pageSize} total={rows.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
       </div>
 
       {formFor && <PatientFormDrawer patient={formFor === 'new' ? undefined : formFor} onClose={() => setFormFor(null)} />}

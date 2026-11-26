@@ -85,22 +85,22 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
       }
     >
       {changedAfterSend && (
-        <div className="mb-2 flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-[12.5px] text-amber-800">
+        <div className="mb-2 flex items-center gap-2 rounded-md border border-warn-line bg-warn-tint px-3 py-2 text-[12.5px] text-warn-strong">
           <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
           Thông tin chỉ định cận lâm sàng đã thay đổi. Nhấn “Gửi chỉ định” hoặc “Hoàn thành” để cập nhật thông tin mới nhất đến nơi thực hiện.
         </div>
       )}
 
       {tab === 'results' && results.length > 0 ? (
-        <ul className="divide-y divide-slate-100 rounded-md border border-slate-200">
+        <ul className="divide-y divide-line-soft rounded-md border border-line">
           {results.map((o) => (
             <li key={o.id} className="flex items-center gap-3 px-3 py-2">
-              <span className={cn('flex h-8 w-8 items-center justify-center rounded-lg', o.category === 'imaging' ? 'bg-violet-50 text-violet-600' : 'bg-orange-50 text-orange-700')}>
+              <span className={cn('flex h-8 w-8 items-center justify-center rounded-lg', o.category === 'imaging' ? 'bg-violet-50 text-violet-600' : 'bg-accent-tint text-accent-ink')}>
                 {o.category === 'imaging' ? <ScanLine className="h-4 w-4" /> : <FlaskConical className="h-4 w-4" />}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-[13px] font-medium text-slate-900">{o.name}</span>
-                <span className="block truncate text-xs text-slate-500">{o.result?.conclusion ? `Kết luận: ${htmlToText(o.result.conclusion)}` : `${o.result?.files.length ?? 0} tệp kết quả`}</span>
+                <span className="block truncate text-[13px] font-medium text-ink">{o.name}</span>
+                <span className="block truncate text-xs text-ink-4">{o.result?.conclusion ? `Kết luận: ${htmlToText(o.result.conclusion)}` : `${o.result?.files.length ?? 0} tệp kết quả`}</span>
               </span>
               <Button size="sm" variant="outline" leftIcon={<Eye className="h-3.5 w-3.5" />} onClick={() => onViewResult(o.id)}>
                 Xem kết quả
@@ -109,23 +109,23 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
           ))}
         </ul>
       ) : tab === 'results' ? (
-        <div className="flex flex-col items-center gap-2 rounded-md border border-dashed border-slate-200 py-6 text-center">
+        <div className="flex flex-col items-center gap-2 rounded-md border border-dashed border-line py-6 text-center">
           <DocumentsEmptyIllustration />
-          <p className="text-[13px] font-medium text-slate-700">Chưa có kết quả cận lâm sàng</p>
-          <p className="max-w-md text-xs text-slate-500">Kết quả sẽ hiển thị khi phòng xét nghiệm / chẩn đoán hình ảnh trả kết quả cho các chỉ định đã gửi.</p>
+          <p className="text-[13px] font-medium text-ink-2">Chưa có kết quả cận lâm sàng</p>
+          <p className="max-w-md text-xs text-ink-4">Kết quả sẽ hiển thị khi phòng xét nghiệm / chẩn đoán hình ảnh trả kết quả cho các chỉ định đã gửi.</p>
         </div>
       ) : orders.length === 0 ? (
         <div className="flex flex-col items-center gap-2 py-5 text-center">
           <DocumentsEmptyIllustration />
-          <p className="text-[13px] text-slate-600">Chưa có chỉ định cận lâm sàng. Thêm chỉ định để bắt đầu.</p>
+          <p className="text-[13px] text-ink-3">Chưa có chỉ định cận lâm sàng. Thêm chỉ định để bắt đầu.</p>
           <Button size="sm" variant="soft" leftIcon={<Plus className="h-3.5 w-3.5" />} onClick={onAdd}>
             Thêm chỉ định
           </Button>
         </div>
       ) : (
         <>
-          <div className="overflow-hidden rounded-md border border-slate-200">
-            <div className="grid grid-cols-[1fr_170px_120px] bg-slate-50 px-3 py-2 text-[12.5px] font-medium text-slate-500">
+          <div className="overflow-hidden rounded-md border border-line">
+            <div className="grid grid-cols-[1fr_170px_120px] bg-canvas px-3 py-2 text-[12.5px] font-medium text-ink-4">
               <span>Tên chỉ định</span>
               <span>Trạng thái</span>
               <span className="text-right">Thao tác</span>
@@ -135,7 +135,7 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
               const subtotal = g.items.reduce((s, o) => s + o.unitPrice * o.quantity, 0)
               const done = g.items.filter((o) => o.resultStatus === 'has_result').length
               return (
-                <div key={pid} className="border-t border-slate-200">
+                <div key={pid} className="border-t border-line">
                   <button
                     type="button"
                     onClick={() =>
@@ -146,39 +146,39 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
                         return n
                       })
                     }
-                    className="flex w-full items-center gap-2 bg-slate-50/60 px-3 py-2 text-left"
+                    className="flex w-full items-center gap-2 bg-canvas/60 px-3 py-2 text-left"
                   >
-                    <ChevronDown className={cn('h-4 w-4 text-slate-500 transition-transform', isCollapsed && '-rotate-90')} />
-                    <span className="flex-1 text-[13px] font-semibold text-slate-900">
+                    <ChevronDown className={cn('h-4 w-4 text-ink-4 transition-transform', isCollapsed && '-rotate-90')} />
+                    <span className="flex-1 text-[13px] font-semibold text-ink">
                       {g.name}
-                      <span className="ml-2 text-xs font-normal text-slate-500">{g.address}</span>
+                      <span className="ml-2 text-xs font-normal text-ink-4">{g.address}</span>
                     </span>
-                    <span className="hidden h-1.5 w-24 overflow-hidden rounded-full bg-slate-200 sm:block">
-                      <span className="block h-full bg-blue-500" style={{ width: `${(done / g.items.length) * 100}%` }} />
+                    <span className="hidden h-1.5 w-24 overflow-hidden rounded-full bg-line sm:block">
+                      <span className="block h-full bg-brand" style={{ width: `${(done / g.items.length) * 100}%` }} />
                     </span>
-                    <span className="text-xs text-slate-500">
-                      {done}/{g.items.length} hoàn thành · Tạm tính: <b className="text-slate-800">{formatMoney(subtotal)}</b>
+                    <span className="text-xs text-ink-4">
+                      {done}/{g.items.length} hoàn thành · Tạm tính: <b className="text-ink">{formatMoney(subtotal)}</b>
                     </span>
                   </button>
                   {!isCollapsed &&
                     g.items.map((o) => (
-                      <div key={o.id} className="grid grid-cols-[1fr_170px_120px] items-center border-t border-slate-100 px-3 py-2">
+                      <div key={o.id} className="grid grid-cols-[1fr_170px_120px] items-center border-t border-line-soft px-3 py-2">
                         <div className="flex min-w-0 items-center gap-3">
                           <span
                             className={cn(
                               'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
-                              o.category === 'imaging' ? 'bg-violet-50 text-violet-600' : 'bg-orange-50 text-orange-700',
+                              o.category === 'imaging' ? 'bg-violet-50 text-violet-600' : 'bg-accent-tint text-accent-ink',
                             )}
                           >
                             {o.category === 'imaging' ? <ScanLine className="h-4 w-4" /> : <FlaskConical className="h-4 w-4" />}
                           </span>
                           <div className="min-w-0">
-                            <p className="truncate text-[13px] font-medium text-slate-900">
+                            <p className="truncate text-[13px] font-medium text-ink">
                               {o.name}
-                              {o.quantity > 1 && <span className="ml-1 text-slate-500">×{o.quantity}</span>}
+                              {o.quantity > 1 && <span className="ml-1 text-ink-4">×{o.quantity}</span>}
                             </p>
-                            <p className="text-[12.5px] text-emerald-700">{formatMoney(o.unitPrice * o.quantity)}</p>
-                            {o.instruction && <p className="truncate text-xs text-slate-500">HD: {o.instruction}</p>}
+                            <p className="text-[12.5px] text-brand-ink">{formatMoney(o.unitPrice * o.quantity)}</p>
+                            {o.instruction && <p className="truncate text-xs text-ink-4">HD: {o.instruction}</p>}
                           </div>
                         </div>
                         <div className="flex flex-col items-start gap-1">
@@ -220,16 +220,16 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
           </div>
 
           <label className="mt-2 flex items-center gap-3">
-            <span className="shrink-0 text-[13px] text-slate-700">Ghi chú cho phòng lab</span>
+            <span className="shrink-0 text-[13px] text-ink-2">Ghi chú cho phòng lab</span>
             <input value={draft.labNote} onChange={(e) => update({ labNote: e.target.value })} placeholder="Nhập ghi chú" className={cn(boxInput, 'h-9')} />
           </label>
 
           <button
             type="button"
             onClick={onAdd}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-slate-300 py-2.5 text-[13px] font-medium text-blue-600 hover:border-blue-400 hover:bg-blue-50/40"
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-md border border-dashed border-line-strong py-2.5 text-[13px] font-medium text-brand-ink hover:border-brand hover:bg-brand-tint/40"
           >
-            <span className="flex h-5 w-5 items-center justify-center rounded bg-blue-600 text-white">
+            <span className="flex h-5 w-5 items-center justify-center rounded bg-brand text-white">
               <Plus className="h-3.5 w-3.5" />
             </span>
             Thêm chỉ định
@@ -241,7 +241,7 @@ export function ParaclinicalSection({ draft, update, savedOrders, isPaid, onAdd,
 }
 
 function Count({ n }: { n: number }) {
-  return <span className="rounded-full bg-slate-200/80 px-1.5 text-[11px] text-slate-600">{n}</span>
+  return <span className="rounded-full bg-line/80 px-1.5 text-[11px] text-ink-3">{n}</span>
 }
 
 function Pill({ tone, icon, children }: { tone: 'green' | 'orange'; icon: React.ReactNode; children: React.ReactNode }) {
@@ -249,7 +249,7 @@ function Pill({ tone, icon, children }: { tone: 'green' | 'orange'; icon: React.
     <span
       className={cn(
         'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11.5px] font-medium',
-        tone === 'green' ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-orange-700',
+        tone === 'green' ? 'bg-brand-soft text-brand-ink' : 'bg-accent-tint text-accent-ink',
       )}
     >
       {icon}

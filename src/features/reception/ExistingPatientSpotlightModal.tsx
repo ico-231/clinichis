@@ -43,14 +43,22 @@ function SpotlightBody({
   const results = useMemo(() => {
     const q = normalizeText(query)
     const digits = query.replace(/\D/g, '')
-    const matched = patients.filter((p) => {
-      if (!q && !digits) return true
-      const hay = normalizeText(`${p.fullName} ${p.code} ${p.address} ${p.province ?? ''} ${p.ward ?? ''}`)
-      const phoneMatch = digits.length >= 1 && p.phone.includes(digits)
-      const yearMatch = digits.length >= 2 && p.dob.slice(0, 4).includes(digits)
-      return (q && hay.includes(q)) || phoneMatch || yearMatch
-    })
-    return matched.slice(0, 25)
+    if (!q && !digits) return patients.slice(0, 25)
+    // Xếp hạng: trùng đầu một chữ trong tên > có trong tên > mã / SĐT > năm sinh > địa chỉ
+    const ranked: { p: (typeof patients)[number]; rank: number }[] = []
+    for (const p of patients) {
+      const name = normalizeText(p.fullName)
+      const place = normalizeText(`${p.address} ${p.province ?? ''} ${p.ward ?? ''}`)
+      let rank = -1
+      if (q && name.split(/\s+/).some((w) => w.startsWith(q))) rank = 0
+      else if (q && name.includes(q)) rank = 1
+      else if ((q && normalizeText(p.code).includes(q)) || (digits.length >= 1 && p.phone.includes(digits))) rank = 2
+      else if (digits.length >= 2 && p.dob.slice(0, 4).includes(digits)) rank = 3
+      else if (q && place.includes(q)) rank = 4
+      if (rank >= 0) ranked.push({ p, rank })
+    }
+    ranked.sort((a, b) => a.rank - b.rank || a.p.fullName.localeCompare(b.p.fullName, 'vi'))
+    return ranked.slice(0, 25).map((r) => r.p)
   }, [patients, query])
 
   useEffect(() => {
@@ -75,7 +83,7 @@ function SpotlightBody({
   return (
     <Portal>
       <div
-        className="fixed inset-0 z-50 flex animate-fade-in items-start justify-center bg-slate-900/55 p-4 pt-[24vh]"
+        className="fixed inset-0 z-50 flex animate-fade-in items-start justify-center bg-overlay/35 p-4 pt-[24vh]"
         onMouseDown={(e) => e.target === e.currentTarget && onClose()}
       >
         <div
@@ -83,18 +91,18 @@ function SpotlightBody({
           aria-modal="true"
           aria-label="Tìm người bệnh cũ"
           onKeyDown={handleKeyDown}
-          className="w-full max-w-[500px] animate-pop-in overflow-hidden rounded-2xl bg-white shadow-2xl"
+          className="w-full max-w-[500px] animate-pop-in overflow-hidden rounded-[18px] border border-line bg-surface shadow-pop"
         >
           {/* Thanh tìm kiếm */}
-          <div className="flex items-center gap-2.5 border-b border-slate-100 px-4 py-3">
-            <Search className="h-4 w-4 shrink-0 text-slate-400" />
+          <div className="flex items-center gap-2.5 border-b border-line px-4 py-3">
+            <Search className="h-4 w-4 shrink-0 text-ink-3" />
             <input
               autoFocus
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Tìm tên, số điện thoại người bệnh..."
               aria-label="Tìm tên, số điện thoại người bệnh"
-              className="w-full bg-transparent text-[13.5px] text-slate-900 outline-none placeholder:text-slate-400"
+              className="w-full bg-transparent text-[13.5px] text-ink outline-none placeholder:text-ink-3/60"
             />
           </div>
 
@@ -112,21 +120,21 @@ function SpotlightBody({
                     onMouseEnter={() => setActiveIndex(idx)}
                     onClick={() => onSelectPatient(p)}
                     className={cn(
-                      'flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left transition-colors',
-                      active ? 'bg-slate-100/90' : 'hover:bg-slate-50',
+                      'flex w-full items-center justify-between gap-3 rounded-[10px] px-3 py-2.5 text-left transition-colors',
+                      active ? 'bg-brand-soft/60' : 'hover:bg-subtle',
                     )}
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[13.5px] font-semibold text-slate-900 uppercase">{p.fullName}</p>
-                      <p className="mt-0.5 text-[12.5px] text-slate-600 tabular-nums">
+                      <p className="truncate text-[13.5px] font-semibold text-ink uppercase">{p.fullName}</p>
+                      <p className="mt-0.5 text-[12.5px] text-ink-3 tabular-nums">
                         {formatPhone(p.phone)}
                         {birthYear ? ` - ${birthYear}` : ''}
                       </p>
-                      {addr && <p className="mt-0.5 truncate text-[11.5px] text-slate-500">{addr}</p>}
+                      {addr && <p className="mt-0.5 truncate text-[11.5px] text-ink-4">{addr}</p>}
                     </div>
                     {active && (
                       <span className="inline-flex shrink-0 items-center gap-1.5">
-                        <span className="flex h-4.5 w-4.5 items-center justify-center rounded-full bg-slate-300/80 text-white">
+                        <span className="flex h-4.5 w-4.5 items-center justify-center rounded-full bg-line-strong/80 text-white">
                           <ArrowRight className="h-3 w-3" />
                         </span>
                       </span>
@@ -135,18 +143,18 @@ function SpotlightBody({
                 )
               })
             ) : (
-              <div className="px-3 py-7 text-center text-[13px] text-slate-500">
+              <div className="px-3 py-7 text-center text-[13px] text-ink-4">
                 Không tìm thấy hồ sơ người bệnh phù hợp.
               </div>
             )}
           </div>
 
           {/* Chân modal: nút Thêm bệnh mới */}
-          <div className="border-t border-slate-100 px-4 py-2.5">
+          <div className="border-t border-line-soft px-4 py-2.5">
             <button
               type="button"
               onClick={() => onCreateNew(query.trim())}
-              className="inline-flex items-center gap-2 text-[12.5px] font-semibold text-slate-800 transition hover:text-blue-600"
+              className="inline-flex items-center gap-2 text-[12.5px] font-semibold text-ink transition hover:text-brand-ink"
             >
               <span>Thêm bệnh mới</span>
             </button>

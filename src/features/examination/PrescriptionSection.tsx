@@ -84,7 +84,7 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
       title="Đơn thuốc"
       right={
         <>
-          {sentAt && <span className="text-xs text-emerald-700">Đã gửi {formatDateTimeVN(sentAt)}</span>}
+          {sentAt && <span className="text-xs text-brand-ink">Đã gửi {formatDateTimeVN(sentAt)}</span>}
           <DropdownMenu
             align="end"
             renderTrigger={({ ref, toggle }) => (
@@ -110,7 +110,7 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
       }
     >
       {draft.allergy && (
-        <p role="note" className="mb-2 flex items-start gap-1.5 rounded-md border border-red-200 bg-red-50 px-2.5 py-1.5 text-[12.5px] text-red-700">
+        <p role="note" className="mb-2 flex items-start gap-1.5 rounded-md border border-danger-line bg-danger-soft px-2.5 py-1.5 text-[12.5px] text-danger-ink">
           <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           <span>
             <b>Lưu ý dị ứng:</b> {draft.allergyNote || 'người bệnh có tiền sử dị ứng'}
@@ -125,15 +125,15 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
       {items.length === 0 ? (
         <div className="mt-3 flex flex-col items-center gap-2 py-4 text-center">
           <DocumentsEmptyIllustration />
-          <p className="text-[13px] text-slate-600">Chưa có thuốc trong đơn. Thêm thuốc hoặc chọn đơn mẫu để kê đơn.</p>
+          <p className="text-[13px] text-ink-3">Chưa có thuốc trong đơn. Thêm thuốc hoặc chọn đơn mẫu để kê đơn.</p>
           <Button size="sm" variant="outline" leftIcon={<Plus className="h-3.5 w-3.5" />} onClick={() => searchRef.current?.focus()}>
             Thêm thuốc
           </Button>
         </div>
       ) : (
-        <div className="thin-scroll mt-3 overflow-x-auto rounded-md border border-slate-200">
+        <div className="thin-scroll mt-3 overflow-x-auto rounded-md border border-line">
           <table className="w-full min-w-[900px] text-[13px]">
-            <thead className="bg-slate-50 text-[12.5px] text-slate-600">
+            <thead className="bg-canvas text-[12.5px] text-ink-3">
               <tr>
                 <th className="w-8" />
                 <th className="px-2 py-2 text-left font-medium">Tên thuốc</th>
@@ -150,15 +150,15 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
             </thead>
             <tbody>
               {items.map((it) => (
-                <tr key={it.id} className="border-t border-slate-100 align-top">
+                <tr key={it.id} className="border-t border-line-soft align-top">
                   <td className="px-1 pt-2.5 text-center">
-                    <button type="button" onClick={() => setItems(items.filter((x) => x.id !== it.id))} className="text-red-600 hover:text-red-700" aria-label={`Xoá ${it.name}`}>
+                    <button type="button" onClick={() => setItems(items.filter((x) => x.id !== it.id))} className="text-danger-ink hover:text-danger-ink" aria-label={`Xoá ${it.name}`}>
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </td>
                   <td className="px-2 py-2">
-                    <p className="font-semibold text-slate-900">{it.name}</p>
-                    <p className="text-xs text-slate-500">{it.activeIngredient}</p>
+                    <p className="font-semibold text-ink">{it.name}</p>
+                    <p className="text-xs text-ink-4">{it.activeIngredient}</p>
                   </td>
                   <td className="px-2 py-1.5">
                     <NumberCell label={`Số ngày dùng ${it.name}`} value={it.days} min={1} onChange={(days) => patchItem(it.id, { days: Math.max(1, Math.round(days)) })} />
@@ -174,7 +174,7 @@ export function PrescriptionSection({ draft, update, sentAt, onPrint, onSend }: 
                   <td className="px-2 py-1.5">
                     <div className="flex items-center gap-1">
                       <NumberCell label={`Số lượng ${it.name}`} value={it.quantity} onChange={(quantity) => patchItem(it.id, { quantity: Math.max(0, Math.round(quantity)) })} />
-                      <span className="shrink-0 text-xs text-slate-500">{it.quantityUnit}</span>
+                      <span className="shrink-0 text-xs text-ink-4">{it.quantityUnit}</span>
                     </div>
                   </td>
                   <td className="px-2 py-1.5">
@@ -218,7 +218,7 @@ function NumberCell({ label, value, onChange, step = 1, min = 0 }: { label: stri
       min={min}
       onChange={(e) => onChange(Number(e.target.value.replace(',', '.')) || 0)}
       onFocus={(e) => e.target.select()}
-      className="h-8 w-full border-b border-slate-300 bg-transparent text-center tabular-nums outline-none focus:border-blue-600"
+      className="h-8 w-full border-b border-line-strong bg-transparent text-center tabular-nums outline-none focus:border-brand"
     />
   )
 }
@@ -226,7 +226,7 @@ function NumberCell({ label, value, onChange, step = 1, min = 0 }: { label: stri
 function UnitSelect({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   const options = DOSE_UNITS.includes(value) ? DOSE_UNITS : [value, ...DOSE_UNITS]
   return (
-    <select aria-label={label} value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full border-b border-slate-300 bg-transparent outline-none focus:border-blue-600">
+    <select aria-label={label} value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full border-b border-line-strong bg-transparent outline-none focus:border-brand">
       {options.map((u) => (
         <option key={u}>{u}</option>
       ))}
@@ -250,7 +250,7 @@ function DrugSearch({ onPick, inputRef }: { onPick: (d: Drug) => void; inputRef:
   }
   return (
     <div ref={anchorRef} className="relative min-w-[260px] flex-1">
-      <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+      <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-ink-5" />
       <input
         ref={inputRef}
         value={q}
@@ -278,7 +278,7 @@ function DrugSearch({ onPick, inputRef }: { onPick: (d: Drug) => void; inputRef:
       />
       <Popover open={open} onClose={() => setOpen(false)} anchorRef={anchorRef} matchWidth className="py-1">
         <ul className="max-h-80 overflow-auto" role="listbox">
-          {results.length === 0 && <li className="px-3 py-3 text-[13px] text-slate-500">Không tìm thấy thuốc phù hợp.</li>}
+          {results.length === 0 && <li className="px-3 py-3 text-[13px] text-ink-4">Không tìm thấy thuốc phù hợp.</li>}
           {results.map((d, i) => (
             <li key={d.id}>
               <button
@@ -287,13 +287,13 @@ function DrugSearch({ onPick, inputRef }: { onPick: (d: Drug) => void; inputRef:
                 aria-selected={i === active}
                 onMouseEnter={() => setActive(i)}
                 onClick={() => pick(d)}
-                className={cn('flex w-full items-start gap-2.5 px-3 py-2 text-left', i === active && 'bg-slate-100')}
+                className={cn('flex w-full items-start gap-2.5 px-3 py-2 text-left', i === active && 'bg-subtle')}
               >
-                <Pill className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
+                <Pill className="mt-0.5 h-4 w-4 shrink-0 text-brand-ink" />
                 <span className="min-w-0 text-[12.5px] leading-5">
-                  <b className="text-[13px] text-slate-900">{d.name}</b>
-                  <span className="block text-slate-600">Hoạt chất: {d.activeIngredient}</span>
-                  <span className="block text-slate-500">
+                  <b className="text-[13px] text-ink">{d.name}</b>
+                  <span className="block text-ink-3">Hoạt chất: {d.activeIngredient}</span>
+                  <span className="block text-ink-4">
                     Hàm lượng: {d.strength}. Dạng bào chế: {d.form}. Đường dùng: {d.route}
                   </span>
                 </span>
@@ -319,14 +319,14 @@ function TemplatePicker({ onPick }: { onPick: (t: PrescriptionTemplate) => void 
       </Button>
       <Popover open={open} onClose={() => setOpen(false)} anchorRef={ref} className="w-[340px] p-2">
         <div className="relative">
-          <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+          <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-ink-5" />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Tìm theo tên đơn mẫu..." aria-label="Tìm theo tên đơn mẫu" className={cn(boxInput, 'h-8 pl-8')} />
         </div>
         {list.length === 0 ? (
           <div className="flex flex-col items-center gap-1 py-5 text-center">
             <DocumentsEmptyIllustration className="h-[56px] w-[70px]" />
-            <p className="text-[13px] font-medium text-slate-700">Hiện không có đơn mẫu nào</p>
-            <p className="text-xs text-slate-500">Lưu đơn đang kê ở “Thao tác khác” để tạo mới.</p>
+            <p className="text-[13px] font-medium text-ink-2">Hiện không có đơn mẫu nào</p>
+            <p className="text-xs text-ink-4">Lưu đơn đang kê ở “Thao tác khác” để tạo mới.</p>
           </div>
         ) : (
           <ul className="mt-1 max-h-64 overflow-auto">
@@ -338,10 +338,10 @@ function TemplatePicker({ onPick }: { onPick: (t: PrescriptionTemplate) => void 
                     onPick(t)
                     setOpen(false)
                   }}
-                  className="w-full rounded-md px-2.5 py-2 text-left hover:bg-slate-100"
+                  className="w-full rounded-md px-2.5 py-2 text-left hover:bg-subtle"
                 >
-                  <span className="block text-[13px] font-medium text-slate-900">{t.name}</span>
-                  <span className="block truncate text-xs text-slate-500">
+                  <span className="block text-[13px] font-medium text-ink">{t.name}</span>
+                  <span className="block truncate text-xs text-ink-4">
                     {t.items.length} thuốc · {t.items.map((i) => i.name).join(', ')}
                   </span>
                 </button>
@@ -387,7 +387,7 @@ function SaveTemplateModal({ draft, onClose }: { draft: ExamDraft; onClose: () =
       }
     >
       <label className="block">
-        <span className="mb-1 block text-[13px] font-medium text-slate-800">Tên đơn mẫu</span>
+        <span className="mb-1 block text-[13px] font-medium text-ink">Tên đơn mẫu</span>
         <input autoFocus value={name} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && save()} className={cn(boxInput, 'h-9')} />
       </label>
     </Modal>

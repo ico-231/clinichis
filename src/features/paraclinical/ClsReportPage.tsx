@@ -61,16 +61,16 @@ export function ClsReportPage() {
   const pageCount = Math.ceil(rows.length / pageSize)
   const safePage = Math.min(Math.max(page, 1), Math.max(pageCount, 1))
   const pageRows = rows.slice((safePage - 1) * pageSize, safePage * pageSize)
-  const td = 'border-t border-slate-100 px-2.5 py-2'
+  const td = 'border-t border-line-soft px-3 py-2.5'
 
   return (
-    <div className="flex h-full flex-col">
-      <PageHeader title="Báo cáo" />
-      <div className="thin-scroll flex-1 space-y-3 overflow-y-auto p-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-[16px] font-semibold text-slate-900">Doanh thu cận lâm sàng</h2>
+    <div className="flex h-full flex-col bg-canvas">
+      <PageHeader
+        title="Báo cáo cận lâm sàng"
+        subtitle="Doanh thu theo phiếu chỉ định cận lâm sàng"
+        actions={
           <Button
-            leftIcon={<Upload className="h-3.5 w-3.5" />}
+            leftIcon={<Upload className="h-4 w-4" />}
             onClick={() =>
               exportCsv({
                 report: 'Doanh thu cận lâm sàng',
@@ -83,115 +83,145 @@ export function ClsReportPage() {
           >
             Xuất Excel
           </Button>
-        </div>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <Stat label="Số phiếu chỉ định" value={formatNumber(stats.orders)} />
-          <Stat label="Số người bệnh" value={formatNumber(stats.patients)} />
-          <Stat label="Doanh thu tại lab nội bộ" value={`${formatNumber(stats.internal)}đ`} />
-          <Stat label="Giá trị gửi lab vệ tinh" value={`${formatNumber(stats.outgoing)}đ`} />
-        </div>
-
-        <div className="flex flex-wrap items-end gap-2">
-          <div className="relative min-w-[240px] flex-1">
-            <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-            <input value={q} onChange={(e) => (setQ(e.target.value), setPage(1))} placeholder="Tìm kiếm mã phiếu khám, mã phiếu chỉ định" aria-label="Tìm kiếm mã phiếu khám, mã phiếu chỉ định" className="h-9 w-full rounded-md border border-slate-200 pr-3 pl-8 text-[13px] outline-none focus:border-blue-500" />
+        }
+      />
+      <div className="thin-scroll min-h-0 flex-1 overflow-y-auto">
+        <div className="mx-auto w-full max-w-[1440px] space-y-3.5 px-4 sm:px-6 pt-1 pb-6">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <Stat label="Số phiếu chỉ định" value={formatNumber(stats.orders)} />
+            <Stat label="Số người bệnh" value={formatNumber(stats.patients)} />
+            <Stat label="Doanh thu tại lab nội bộ" value={`${formatNumber(stats.internal)}đ`} accent="teal" />
+            <Stat label="Giá trị gửi lab vệ tinh" value={`${formatNumber(stats.outgoing)}đ`} accent="coral" />
           </div>
-          <DateRangePicker value={range} onChange={(r) => (setRange(r), setPage(1))} />
-          <Select
-            label="Trạng thái thực hiện"
-            value={perform}
-            options={[{ value: 'all', label: 'Tất cả' }, ...(['pending', 'in_progress', 'done', 'cancelled'] as PerformStatus[]).map((k) => ({ value: k, label: PERFORM_STATUS[k].label }))]}
-            onChange={(v) => (setPerform(v), setPage(1))}
-            className="w-[150px]"
-          />
-          <Select
-            label="Trạng thái thanh toán"
-            value={pay}
-            options={[
-              { value: 'all', label: 'Tất cả' },
-              { value: 'paid', label: 'Đã thanh toán' },
-              { value: 'unpaid', label: 'Chưa thanh toán' },
-            ]}
-            onChange={(v) => (setPay(v), setPage(1))}
-            className="w-[150px]"
-          />
-          <Button variant="outline" leftIcon={<ListFilter className="h-3.5 w-3.5" />} onClick={() => setAdvOpen(true)}>
-            Nâng cao
-          </Button>
-        </div>
 
-        <div className="flex flex-wrap gap-1">
-          {(
-            [
-              ['all', 'Tất cả'],
-              ['internal', 'Nội bộ'],
-              ['incoming', 'Nhận từ ngoài'],
-              ['outgoing', 'Gửi ra ngoài'],
-            ] as const
-          ).map(([k, l]) => (
-            <button key={k} type="button" onClick={() => (setScope(k), setPage(1))} className={cn('rounded-md px-3 py-1 text-[13px]', scope === k ? 'bg-white font-medium shadow-sm ring-1 ring-slate-200' : 'text-slate-600 hover:bg-white')}>
-              {l} <span className="ml-1 rounded-full bg-slate-100 px-1.5 text-[11px]">{tabCount[k]}</span>
-            </button>
-          ))}
-        </div>
+          <div className="flex flex-wrap items-end gap-2">
+            <div className="relative min-w-[240px] flex-1">
+              <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-4" />
+              <input
+                value={q}
+                onChange={(e) => (setQ(e.target.value), setPage(1))}
+                placeholder="Tìm kiếm mã phiếu khám, mã phiếu chỉ định"
+                aria-label="Tìm kiếm mã phiếu khám, mã phiếu chỉ định"
+                className="h-9 w-full rounded-[10px] border border-line-strong bg-surface pr-8 pl-9 text-[13.5px] text-ink outline-none transition placeholder:text-ink-4 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
+              />
+            </div>
+            <DateRangePicker value={range} onChange={(r) => (setRange(r), setPage(1))} />
+            <Select
+              label="Trạng thái thực hiện"
+              value={perform}
+              options={[{ value: 'all', label: 'Tất cả' }, ...(['pending', 'in_progress', 'done', 'cancelled'] as PerformStatus[]).map((k) => ({ value: k, label: PERFORM_STATUS[k].label }))]}
+              onChange={(v) => (setPerform(v), setPage(1))}
+              className="w-[155px]"
+            />
+            <Select
+              label="Trạng thái thanh toán"
+              value={pay}
+              options={[
+                { value: 'all', label: 'Tất cả' },
+                { value: 'paid', label: 'Đã thanh toán' },
+                { value: 'unpaid', label: 'Chưa thanh toán' },
+              ]}
+              onChange={(v) => (setPay(v), setPage(1))}
+              className="w-[160px]"
+            />
+            <Button variant="outline" leftIcon={<ListFilter className="h-3.5 w-3.5" />} onClick={() => setAdvOpen(true)} className={cn((adv.kind !== 'all' || adv.performedAt !== 'all') && 'border-brand bg-brand-tint text-brand-ink')}>
+              Nâng cao
+            </Button>
+          </div>
 
-        <div className="thin-scroll overflow-x-auto rounded-lg border border-slate-200 bg-white">
-          <table className="w-full min-w-[1100px] text-[13px]">
-            <thead className="bg-slate-50 text-[12.5px] text-slate-600">
-              <tr>
-                {['', 'Mã chỉ định', 'Người bệnh', 'Nơi chỉ định', 'Nơi thực hiện', 'Phân loại', 'Ngày chỉ định', 'Thanh toán', 'Tổng tiền dịch vụ', 'Giảm giá', 'Tổng tiền'].map((h) => (
-                  <th key={h} className="px-2.5 py-2 text-left font-medium whitespace-nowrap">
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {pageRows.length === 0 && (
-                <tr>
-                  <td colSpan={11}>
-                    <EmptyState />
-                  </td>
-                </tr>
-              )}
-              {pageRows.map((g) => (
-                <Fragment key={g.key}>
-                  <tr className="cursor-pointer hover:bg-slate-50" onClick={() => setOpen(open === g.key ? null : g.key)}>
-                    <td className={td}>{open === g.key ? '−' : '+'}</td>
-                    <td className={td}>{g.code}</td>
-                    <td className={cn(td, 'font-medium uppercase')}>{g.patient.fullName}</td>
-                    <td className={td}>Nội bộ</td>
-                    <td className={td}>{g.internal ? 'Tại phòng lab nội bộ' : g.providerName}</td>
-                    <td className={td}>
-                      <span className={cn('rounded-full px-2 py-0.5 text-[11.5px]', g.internal ? 'bg-slate-100 text-slate-700' : 'bg-violet-50 text-violet-700')}>{g.internal ? 'Nội bộ' : 'Gửi ra ngoài'}</span>
-                    </td>
-                    <td className={td}>{formatDateVN(g.visit.date)}</td>
-                    <td className={cn(td, g.paid ? 'text-emerald-700' : 'text-orange-700')}>{g.paid ? 'Đã thanh toán' : 'Chưa thanh toán'}</td>
-                    <td className={cn(td, 'text-right tabular-nums')}>{formatNumber(g.total)}</td>
-                    <td className={cn(td, 'text-right tabular-nums')}>{formatNumber(discountOf(g))}</td>
-                    <td className={cn(td, 'text-right font-semibold tabular-nums')}>{formatNumber(g.total - discountOf(g))}</td>
-                  </tr>
-                  {open === g.key &&
-                    g.items.map((o) => (
-                      <tr key={o.id} className="bg-slate-50/70 text-[12.5px]">
-                        <td className={td} />
-                        <td className={td} colSpan={4}>
-                          {o.name} <span className="text-slate-500">× {o.quantity}</span>
-                        </td>
-                        <td className={td}>{o.category === 'imaging' ? 'CĐHA' : 'Xét nghiệm'}</td>
-                        <td className={td}>{PERFORM_STATUS[performOf(o)].label}</td>
-                        <td className={td}>{isLinePaid(g.visit, { kind: 'paraclinical', refId: o.id }) ? 'Đã thanh toán' : 'Chưa thanh toán'}</td>
-                        <td className={cn(td, 'text-right tabular-nums')} colSpan={3}>
-                          {formatNumber(o.unitPrice * o.quantity)}
-                        </td>
-                      </tr>
+          <div className="flex flex-wrap gap-1.5">
+            {(
+              [
+                ['all', 'Tất cả'],
+                ['internal', 'Nội bộ'],
+                ['incoming', 'Nhận từ ngoài'],
+                ['outgoing', 'Gửi ra ngoài'],
+              ] as const
+            ).map(([k, l]) => {
+              const active = scope === k
+              return (
+                <button
+                  key={k}
+                  type="button"
+                  onClick={() => (setScope(k), setPage(1))}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[12.5px] font-semibold transition-colors',
+                    active ? 'border-brand bg-brand text-white shadow-xs' : 'border-line bg-surface text-ink-2 hover:border-brand/40 hover:text-brand-ink',
+                  )}
+                >
+                  <span>{l}</span>
+                  <span className={cn('rounded-full px-1.5 py-0.5 text-[11px] leading-none tabular-nums', active ? 'bg-surface/20 text-white' : 'bg-subtle text-ink-3')}>{tabCount[k]}</span>
+                </button>
+              )
+            })}
+          </div>
+
+          <div className="overflow-hidden rounded-[16px] border border-line bg-surface">
+            <div className="thin-scroll overflow-x-auto">
+              <table className="w-full min-w-[1100px] text-[13px]">
+                <thead className="border-b border-line bg-subtle text-[12.5px] font-semibold text-ink-3">
+                  <tr>
+                    {['', 'Mã chỉ định', 'Người bệnh', 'Nơi chỉ định', 'Nơi thực hiện', 'Phân loại', 'Ngày chỉ định', 'Thanh toán', 'Tổng tiền dịch vụ', 'Giảm giá', 'Tổng tiền'].map((h) => (
+                      <th key={h} className="px-3 py-2.5 text-left font-semibold whitespace-nowrap">
+                        {h}
+                      </th>
                     ))}
-                </Fragment>
-              ))}
-            </tbody>
-          </table>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pageRows.length === 0 && (
+                    <tr>
+                      <td colSpan={11}>
+                        <EmptyState />
+                      </td>
+                    </tr>
+                  )}
+                  {pageRows.map((g) => (
+                    <Fragment key={g.key}>
+                      <tr className="cursor-pointer transition-colors hover:bg-brand-wash" onClick={() => setOpen(open === g.key ? null : g.key)}>
+                        <td className={cn(td, 'font-semibold text-ink-3')}>{open === g.key ? '−' : '+'}</td>
+                        <td className={cn(td, 'font-semibold text-info-ink tabular-nums')}>{g.code}</td>
+                        <td className={cn(td, 'font-semibold text-ink uppercase')}>{g.patient.fullName}</td>
+                        <td className={cn(td, 'text-ink-2')}>Nội bộ</td>
+                        <td className={cn(td, 'text-ink-2')}>{g.internal ? 'Tại phòng lab nội bộ' : g.providerName}</td>
+                        <td className={td}>
+                          <span className={cn('inline-block rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold', g.internal ? 'bg-subtle text-ink-2' : 'bg-accent-soft text-accent-strong')}>
+                            {g.internal ? 'Nội bộ' : 'Gửi ra ngoài'}
+                          </span>
+                        </td>
+                        <td className={cn(td, 'text-ink-2 tabular-nums')}>{formatDateVN(g.visit.date)}</td>
+                        <td className={cn(td, 'font-medium', g.paid ? 'text-brand-ink' : 'text-accent-ink')}>{g.paid ? 'Đã thanh toán' : 'Chưa thanh toán'}</td>
+                        <td className={cn(td, 'text-right text-ink-2 tabular-nums')}>{formatNumber(g.total)}</td>
+                        <td className={cn(td, 'text-right text-ink-2 tabular-nums')}>{formatNumber(discountOf(g))}</td>
+                        <td className={cn(td, 'text-right font-semibold text-ink tabular-nums')}>{formatNumber(g.total - discountOf(g))}</td>
+                      </tr>
+                      {open === g.key &&
+                        g.items.map((o) => (
+                          <tr key={o.id} className="bg-canvas text-[12.5px]">
+                            <td className={td} />
+                            <td className={cn(td, 'font-medium text-ink')} colSpan={4}>
+                              {o.name} <span className="text-ink-3 tabular-nums">× {o.quantity}</span>
+                            </td>
+                            <td className={cn(td, 'text-ink-2')}>{o.category === 'imaging' ? 'CĐHA' : 'Xét nghiệm'}</td>
+                            <td className={cn(td, 'text-ink-2')}>{PERFORM_STATUS[performOf(o)].label}</td>
+                            <td className={cn(td, 'font-medium', isLinePaid(g.visit, { kind: 'paraclinical', refId: o.id }) ? 'text-brand-ink' : 'text-accent-ink')}>
+                              {isLinePaid(g.visit, { kind: 'paraclinical', refId: o.id }) ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                            </td>
+                            <td className={cn(td, 'text-right font-medium text-ink tabular-nums')} colSpan={3}>
+                              {formatNumber(o.unitPrice * o.quantity)}
+                            </td>
+                          </tr>
+                        ))}
+                    </Fragment>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="border-t border-line px-4">
+              <Pagination page={safePage} pageCount={pageCount} pageSize={pageSize} total={rows.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
+            </div>
+          </div>
         </div>
-        <Pagination page={safePage} pageCount={pageCount} pageSize={pageSize} total={rows.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
       </div>
 
       {advOpen && (
@@ -207,10 +237,10 @@ function AdvancedForm({ value, onApply }: { value: { kind: 'all' | 'imaging' | '
   const [d, setD] = useState(value)
   const group = <K extends keyof typeof d>(k: K, title: string, opts: [(typeof d)[K], string][]) => (
     <fieldset>
-      <legend className="mb-1 text-[13px] font-semibold">{title}</legend>
+      <legend className="mb-1.5 text-[13px] font-semibold text-ink">{title}</legend>
       {opts.map(([v, l]) => (
-        <label key={String(v)} className="flex items-center gap-2 py-0.5 text-[13px]">
-          <input type="radio" name={String(k)} checked={d[k] === v} onChange={() => setD((x) => ({ ...x, [k]: v }))} className="accent-blue-600" />
+        <label key={String(v)} className="flex cursor-pointer items-center gap-2 py-0.5 text-[13px] text-ink-2">
+          <input type="radio" name={String(k)} checked={d[k] === v} onChange={() => setD((x) => ({ ...x, [k]: v }))} className="accent-brand" />
           {l}
         </label>
       ))}
@@ -238,13 +268,15 @@ function AdvancedForm({ value, onApply }: { value: { kind: 'all' | 'imaging' | '
   )
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({ label, value, accent = 'default' }: { label: string; value: string; accent?: 'default' | 'teal' | 'coral' }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-3 py-2.5">
-      <p className="flex items-center gap-1 text-[12.5px] text-slate-600">
-        {label} <Info className="h-3 w-3 text-slate-400" />
+    <div className="rounded-[16px] border border-line bg-surface px-4 py-3.5">
+      <p className="flex items-center gap-1.5 text-[12.5px] font-medium text-ink-3">
+        {label} <Info className="h-3.5 w-3.5 text-ink-4" />
       </p>
-      <p className="text-[19px] font-semibold tabular-nums">{value}</p>
+      <p className={cn('mt-1 text-[22px] font-extrabold tracking-[-0.02em] tabular-nums', accent === 'teal' ? 'text-brand-ink' : accent === 'coral' ? 'text-accent-ink' : 'text-ink')}>
+        {value}
+      </p>
     </div>
   )
 }

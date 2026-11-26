@@ -75,13 +75,13 @@ export function Select<T extends string>({
         className={cn(
           inputBase,
           'flex items-center justify-between gap-2 text-left',
-          open && 'border-blue-500 ring-2 ring-blue-500/15',
+          open && 'border-brand ring-2 ring-brand/15',
           error && inputError,
           triggerClassName,
         )}
       >
-        <span className={cn('truncate', !selected && 'text-slate-400')}>{selected?.label ?? placeholder}</span>
-        <ChevronDown className={cn('h-4 w-4 shrink-0 text-slate-500 transition-transform', open && 'rotate-180')} />
+        <span className={cn('truncate', !selected && 'text-ink-3/70')}>{selected?.label ?? placeholder}</span>
+        <ChevronDown className={cn('h-4 w-4 shrink-0 text-ink-3 transition-transform', open && 'rotate-180')} />
       </button>
       <Popover open={open} onClose={() => setOpen(false)} anchorRef={anchorRef} matchWidth className="py-1">
         <ul role="listbox" className="max-h-72 overflow-auto" style={{ minWidth: menuMinWidth }}>
@@ -96,13 +96,13 @@ export function Select<T extends string>({
                   onMouseEnter={() => setActive(i)}
                   onClick={() => choose(o.value)}
                   className={cn(
-                    'flex w-full items-center gap-3 px-3 py-[7px] text-left text-[13px] text-slate-800',
-                    i === active && 'bg-slate-100',
+                    'flex w-full items-center gap-3 px-3 py-[7px] text-left text-[13px] text-ink',
+                    i === active && 'bg-subtle',
                   )}
                 >
                   <span className="flex-1 truncate">{o.label}</span>
-                  {o.hint && <span className="text-xs text-slate-500">{o.hint}</span>}
-                  {isSelected ? <Check className="h-4 w-4 shrink-0 text-slate-900" /> : <span className="w-4" />}
+                  {o.hint && <span className="text-xs text-ink-3">{o.hint}</span>}
+                  {isSelected ? <Check className="h-4 w-4 shrink-0 text-brand-ink" /> : <span className="w-4" />}
                 </button>
               </li>
             )

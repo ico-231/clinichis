@@ -21,10 +21,22 @@ interface ReceptionTableProps {
   emptyAction?: React.ReactNode
 }
 
+/** Hai cột đầu ghim bên trái khi cuộn ngang (giữ ngữ cảnh khi bảng rộng hơn màn hình) */
 const FIXED_LEFT = [
-  { key: 'status', label: 'Trạng thái', width: 192 },
-  { key: 'code', label: 'Mã KB', width: 176 },
+  { key: 'status', label: 'Trạng thái', width: 150, left: 0 },
+  { key: 'code', label: 'Mã KB', width: 162, left: 150 },
 ]
+
+/** Nhãn ngắn trong pill của bảng (bộ lọc phía trên vẫn dùng nhãn đầy đủ) */
+const SHORT_STATUS: Partial<Record<VisitStatus, string>> = { registered: 'Đã đăng ký' }
+
+const STATUS_PILL: Record<VisitStatus, string> = {
+  registered: 'bg-warn-soft text-warn-strong hover:brightness-95',
+  waiting: 'bg-accent-line text-accent-strong hover:brightness-95',
+  in_progress: 'bg-info-soft text-info-strong hover:brightness-95',
+  done: 'bg-brand-soft text-brand-ink',
+  cancelled: 'bg-subtle text-ink-3',
+}
 
 export function ReceptionTable({
   rows,
@@ -40,7 +52,8 @@ export function ReceptionTable({
   const columns = RECEPTION_COLUMNS.filter((c) => visibleColumns.includes(c.key))
   const totalWidth = FIXED_LEFT.reduce((s, c) => s + c.width, 0) + columns.reduce((s, c) => s + c.width, 0)
 
-  const th = 'h-[38px] border-r border-slate-200 px-2.5 text-left text-[13px] font-medium whitespace-nowrap text-slate-700 last:border-r-0'
+  const th = 'h-[38px] px-2.5 text-left text-[12.5px] font-semibold whitespace-nowrap text-ink-3'
+  const stickyTh = (i: number) => cn('sticky z-20 bg-subtle', i === FIXED_LEFT.length - 1 && 'shadow-[inset_-1px_0_0_var(--color-line)]')
 
   return (
     <div className="thin-scroll relative h-full overflow-auto">
@@ -53,15 +66,15 @@ export function ReceptionTable({
             <col key={c.key} style={{ width: c.width }} />
           ))}
         </colgroup>
-        <thead className="sticky top-0 z-10 bg-white">
+        <thead className="sticky top-0 z-10 bg-subtle">
           <tr>
-            {FIXED_LEFT.map((c) => (
-              <th key={c.key} className={cn(th, 'border-b')}>
+            {FIXED_LEFT.map((c, i) => (
+              <th key={c.key} className={cn(th, 'border-b border-line', stickyTh(i))} style={{ left: c.left }}>
                 {c.label}
               </th>
             ))}
             {columns.map((c) => (
-              <HeaderCell key={c.key} column={c} sort={sort} onSort={onSort} className={cn(th, 'border-b')} />
+              <HeaderCell key={c.key} column={c} sort={sort} onSort={onSort} className={cn(th, 'border-b border-line')} />
             ))}
           </tr>
         </thead>
@@ -69,18 +82,20 @@ export function ReceptionTable({
           {rows.map((row) => {
             const { visit } = row
             const highlighted = visit.id === highlightId
-            const currentStatusLabel =
-              VISIT_STATUS_FILTER.find((s) => s.value === visit.status)?.label ?? 'Đã đăng ký khám'
+            const fullStatusLabel = VISIT_STATUS_FILTER.find((s) => s.value === visit.status)?.label ?? 'Đã đăng ký khám'
+            const currentStatusLabel = SHORT_STATUS[visit.status] ?? fullStatusLabel
+            // Nền đặc (không trong suốt) để cột ghim che được nội dung cuộn bên dưới
             const td = cn(
-              'h-[40px] border-r border-b border-slate-100 px-2.5 py-1.5 text-[13px] text-slate-800 transition-colors last:border-r-0',
-              highlighted ? 'bg-blue-50/80' : 'group-hover:bg-slate-50/80',
+              'h-[41px] border-b border-line px-2.5 py-1.5 text-[13px] text-ink transition-colors',
+              highlighted ? 'bg-brand-soft' : 'bg-surface group-hover:bg-brand-wash',
             )
+            const stickyTd = (i: number) => cn('sticky z-[1]', i === FIXED_LEFT.length - 1 && 'shadow-[inset_-1px_0_0_var(--color-line)]')
             return (
-              <tr key={visit.id} onClick={() => onOpen(visit.id)} className={cn('group cursor-pointer', visit.status === 'cancelled' && 'text-slate-400')}>
-                {/* Cột Trạng thái: pill dropdown đổi trạng thái trực tiếp */}
-                <td className={td} onClick={(e) => e.stopPropagation()}>
-                  {STATUS_ACTIONS[visit.status].length === 0 ? (
-                    <span className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/90 px-2.5 text-[12px] font-medium whitespace-nowrap text-slate-800">
+              <tr key={visit.id} onClick={() => onOpen(visit.id)} className={cn('group cursor-pointer', visit.status === 'cancelled' && 'text-ink-3')}>
+                {/* Cột Trạng thái: pill pastel 6C */}
+                <td className={cn(td, stickyTd(0))} style={{ left: FIXED_LEFT[0].left }} onClick={(e) => e.stopPropagation()} title={fullStatusLabel}>
+                  {STATUS_PILL[visit.status] && STATUS_ACTIONS[visit.status].length === 0 ? (
+                    <span className={cn('inline-flex h-7 max-w-full items-center gap-1.5 rounded-full px-2.5 text-[12px] font-semibold whitespace-nowrap', STATUS_PILL[visit.status])}>
                       <VisitStatusIcon status={visit.status} className="h-3.5 w-3.5 shrink-0" />
                       <span className="truncate">{currentStatusLabel}</span>
                     </span>
@@ -94,13 +109,14 @@ export function ReceptionTable({
                           type="button"
                           onClick={toggle}
                           className={cn(
-                            'inline-flex h-7 max-w-full items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/90 px-2.5 text-[12px] font-medium whitespace-nowrap text-slate-800 transition hover:border-slate-300 hover:bg-slate-100',
-                            open && 'border-blue-400 ring-2 ring-blue-500/15',
+                            'inline-flex h-7 max-w-full items-center gap-1.5 rounded-full px-2.5 text-[12px] font-semibold whitespace-nowrap transition',
+                            STATUS_PILL[visit.status],
+                            open && 'ring-2 ring-brand/25',
                           )}
                         >
                           <VisitStatusIcon status={visit.status} className="h-3.5 w-3.5 shrink-0" />
                           <span className="truncate">{currentStatusLabel}</span>
-                          <ChevronDown className="h-3 w-3 shrink-0 text-slate-400" />
+                          <ChevronDown className="h-3 w-3 shrink-0 opacity-70" />
                         </button>
                       )}
                     >
@@ -114,8 +130,8 @@ export function ReceptionTable({
                 </td>
 
                 {/* Cột Mã KB */}
-                <td className={td}>
-                  <span className="font-medium text-blue-600 underline decoration-blue-600/40 underline-offset-2 tabular-nums group-hover:decoration-blue-600">
+                <td className={cn(td, stickyTd(1))} style={{ left: FIXED_LEFT[1].left }}>
+                  <span className="font-medium text-info-ink tabular-nums group-hover:underline">
                     {visit.code}
                   </span>
                 </td>
@@ -169,10 +185,10 @@ function HeaderCell({ column, sort, onSort, className }: { column: ReceptionColu
       <button
         type="button"
         onClick={() => onSort(column.key)}
-        className={cn('flex h-full w-full items-center gap-1.5 px-2.5 hover:bg-slate-50', column.align === 'right' ? 'justify-end' : column.align === 'center' ? 'justify-center' : 'justify-between')}
+        className={cn('flex h-full w-full items-center gap-1.5 px-2.5 hover:bg-line/60', column.align === 'right' ? 'justify-end' : column.align === 'center' ? 'justify-center' : 'justify-between')}
       >
-        <span className={cn(active && 'text-blue-700')}>{column.label}</span>
-        <Icon className={cn('h-3.5 w-3.5 shrink-0', active ? 'text-blue-600' : 'text-slate-400')} />
+        <span className={cn(active && 'text-brand-ink')}>{column.label}</span>
+        <Icon className={cn('h-3.5 w-3.5 shrink-0', active ? 'text-brand-ink' : 'text-ink-5')} />
       </button>
     </th>
   )

@@ -11,7 +11,8 @@ import { useVisitRows, type VisitRow } from '@/store/selectors'
 import { PAYMENT_STATUS, PAYMENT_STATUS_ORDER, VISIT_STATUS, VISIT_STATUS_FILTER } from '@/store/catalog'
 import { DEFAULT_COLUMNS } from '@/store/seed'
 import { todayISO } from '@/lib/date'
-import { normalizeText } from '@/lib/format'
+import { formatNumber, normalizeText } from '@/lib/format'
+import { cn } from '@/lib/cn'
 import { ReceptionTable } from '../reception/ReceptionTable'
 import { CancelVisitModal, PaymentModal } from '../reception/PaymentModals'
 import { VisitDetailDrawer } from '../reception/VisitDetailDrawer'
@@ -19,6 +20,15 @@ import { previousRange } from '../reports/reportData'
 import { PendingProfileBanner } from './SchedulePage'
 import { nextSort, sortVisitRows } from '../reception/useReceptionData'
 import type { PaymentStatus, ReceptionViewState, VisitStatus } from '@/store/types'
+
+const STATUS_PILLS: { value: 'all' | VisitStatus; label: string }[] = [
+  { value: 'all', label: 'Tất cả' },
+  { value: 'registered', label: 'Đã đăng ký khám' },
+  { value: 'waiting', label: 'Chờ khám' },
+  { value: 'in_progress', label: 'Đang khám' },
+  { value: 'done', label: 'Đã khám' },
+  { value: 'cancelled', label: 'Huỷ khám' },
+]
 
 /** Lịch hẹn: các lượt đặt trước qua website / ứng dụng / Zalo / tổng đài (ảnh 074) */
 export function AppointmentsPage() {
@@ -39,19 +49,34 @@ export function AppointmentsPage() {
   const [cancelId, setCancelId] = useState<string | null>(null)
 
   const booked = useMemo(() => rows.filter((r) => r.visit.category === 'booked'), [rows])
-  const filtered = useMemo(() => {
+  const scopedBooked = useMemo(() => {
     const q = normalizeText(query)
     const digits = q.replace(/\D/g, '')
-    const list = booked.filter(({ visit: v, patient: p }) => {
-        if (v.date < from || v.date > to) return false
-        if (status !== 'all' && v.status !== status) return false
-        if (payment !== 'all' && v.paymentStatus !== payment) return false
-        if (q && !normalizeText(`${p.fullName} ${p.code} ${v.code}`).includes(q) && !(digits.length >= 3 && p.phone.includes(digits))) return false
-        return true
-      })
+    return booked.filter(({ visit: v, patient: p }) => {
+      if (v.date < from || v.date > to) return false
+      if (payment !== 'all' && v.paymentStatus !== payment) return false
+      if (q && !normalizeText(`${p.fullName} ${p.code} ${v.code}`).includes(q) && !(digits.length >= 3 && p.phone.includes(digits))) return false
+      return true
+    })
+  }, [booked, query, from, to, payment])
+
+  const counts = useMemo(() => {
+    const c = { all: scopedBooked.length, registered: 0, waiting: 0, in_progress: 0, done: 0, cancelled: 0 }
+    for (const { visit: v } of scopedBooked) {
+      if (v.status === 'registered') c.registered++
+      else if (v.status === 'waiting') c.waiting++
+      else if (v.status === 'in_progress') c.in_progress++
+      else if (v.status === 'done') c.done++
+      else if (v.status === 'cancelled') c.cancelled++
+    }
+    return c
+  }, [scopedBooked])
+
+  const filtered = useMemo(() => {
+    const list = status === 'all' ? [...scopedBooked] : scopedBooked.filter(({ visit: v }) => v.status === status)
     // Mặc định theo giờ hẹn trong ngày; bấm tiêu đề cột để sắp xếp khác
     return sort ? sortVisitRows(list, sort) : list.sort((a, b) => b.visit.date.localeCompare(a.visit.date) || a.visit.time.localeCompare(b.visit.time))
-  }, [booked, query, from, to, status, payment, sort])
+  }, [scopedBooked, status, sort])
   const prev = previousRange(from, to)
   const prevCount = booked.filter((r) => r.visit.date >= prev.from && r.visit.date <= prev.to).length
   const pageCount = Math.ceil(filtered.length / pageSize)
@@ -63,74 +88,99 @@ export function AppointmentsPage() {
     toast({ title: `${row.patient.fullName} → ${VISIT_STATUS[to2].label}` })
   }
 
-  const cards = [
-    { label: 'Danh sách lịch hẹn', value: filtered.length, prev: prevCount, icon: <CalendarCheck2 className="h-4 w-4" /> },
-  ]
-
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-canvas">
       <PageHeader title="Lịch hẹn" />
       <PendingProfileBanner />
-      <div className="grid grid-cols-1 gap-3 px-3 pt-3 md:grid-cols-3">
-        {cards.map((c) => (
-          <div key={c.label} className="flex items-start justify-between rounded-xl border border-slate-200 bg-white px-3 py-2.5">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 pt-1 pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3.5 rounded-[16px] border border-line bg-surface px-4 py-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] border border-brand-line bg-brand-tint text-brand-ink">
+              <CalendarCheck2 className="h-5 w-5" />
+            </span>
             <div>
-              <p className="text-[12.5px] font-semibold text-slate-800">{c.label}</p>
-              <p className="text-[19px] font-semibold text-blue-600">{c.value}</p>
-              <p className="text-[11.5px] text-slate-500">Kỳ trước: {c.prev}</p>
+              <p className="text-[12px] font-medium text-ink-3">Danh sách lịch hẹn</p>
+              <div className="flex items-baseline gap-2.5">
+                <span className="text-[24px] leading-tight font-extrabold tracking-[-0.02em] text-ink tabular-nums">{formatNumber(filtered.length)}</span>
+                <span className="text-[12px] text-ink-4 tabular-nums">Kỳ trước: {formatNumber(prevCount)}</span>
+              </div>
             </div>
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500 text-white">{c.icon}</span>
           </div>
-        ))}
-      </div>
-      <div className="flex flex-wrap items-end gap-2 px-3 pt-3 pb-3">
-        <div className="relative w-[220px]">
-          <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && (setQuery(input), setPage(1))}
-            placeholder="Tìm theo tên, số điện thoại..."
-            aria-label="Tìm theo tên, số điện thoại"
-            className="h-9 w-full rounded-md bg-slate-100 pr-7 pl-8 text-[13px] outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20"
-          />
-          {input && (
-            <button type="button" onClick={() => (setInput(''), setQuery(''))} className="absolute top-1/2 right-2 -translate-y-1/2 text-slate-400" aria-label="Xoá tìm kiếm">
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
+
+          <div className="flex flex-wrap items-center gap-1.5">
+            {STATUS_PILLS.map((pill) => {
+              const active = status === pill.value
+              const n = counts[pill.value as keyof typeof counts] ?? 0
+              return (
+                <button
+                  key={pill.value}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => (setStatus(pill.value), setPage(1))}
+                  className={cn(
+                    'inline-flex h-[33px] items-center gap-1.5 rounded-full border px-3 text-[13px] font-semibold transition',
+                    active ? 'border-inverse bg-inverse text-on-inverse' : 'border-line-strong bg-surface text-ink-2 hover:bg-subtle',
+                  )}
+                >
+                  <span>{pill.label}</span>
+                  <b className="tabular-nums">({n})</b>
+                </button>
+              )
+            })}
+          </div>
         </div>
-        <DatePicker label="Từ" value={from} max={to} onChange={(v) => (setFrom(v), setPage(1))} className="w-[150px]" />
-        <DatePicker label="Đến" value={to} min={from} onChange={(v) => (setTo(v), setPage(1))} className="w-[150px]" />
-        <Select label="Trạng thái" value={status} options={[{ value: 'all', label: 'Tất cả' }, ...VISIT_STATUS_FILTER]} onChange={(v) => (setStatus(v), setPage(1))} className="w-[150px]" />
-        <Select
-          label="Thanh toán"
-          value={payment}
-          options={[{ value: 'all', label: 'Tất cả' }, ...PAYMENT_STATUS_ORDER.map((p) => ({ value: p, label: PAYMENT_STATUS[p].label }))]}
-          onChange={(v) => (setPayment(v), setPage(1))}
-          className="w-[150px]"
-        />
-        <Button onClick={() => (setQuery(input), setPage(1))} className="w-[72px]">
-          Tìm
-        </Button>
-      </div>
-      <div className="min-h-0 flex-1 overflow-hidden px-3">
-        <div className="h-full overflow-hidden rounded-lg border border-slate-200 bg-white">
-          <ReceptionTable
-            rows={filtered.slice((safePage - 1) * pageSize, safePage * pageSize)}
-            visibleColumns={DEFAULT_COLUMNS}
-            sort={sort}
-            onSort={(key) => (setSort((s) => nextSort(s, key)), setPage(1))}
-            highlightId={null}
-            onOpen={setDetailId}
-            onChangeStatus={onChangeStatus}
-            onPay={setPayId}
+
+        <div className="flex flex-wrap items-end gap-2">
+          <div className="relative w-full sm:w-[280px]">
+            <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-4" />
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && (setQuery(input), setPage(1))}
+              placeholder="Tìm tên, số điện thoại"
+              aria-label="Tìm theo tên, số điện thoại"
+              className="h-9 w-full rounded-[10px] border border-line-strong bg-surface pr-8 pl-9 text-[13.5px] text-ink outline-none transition placeholder:text-ink-4 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
+            />
+            {input && (
+              <button type="button" onClick={() => (setInput(''), setQuery(''))} className="absolute top-1/2 right-2 -translate-y-1/2 text-ink-4 hover:text-ink" aria-label="Xoá tìm kiếm">
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+          <DatePicker label="Từ" value={from} max={to} onChange={(v) => (setFrom(v), setPage(1))} className="w-[150px]" />
+          <DatePicker label="Đến" value={to} min={from} onChange={(v) => (setTo(v), setPage(1))} className="w-[150px]" />
+          <Select label="Trạng thái" value={status} options={[{ value: 'all', label: 'Tất cả' }, ...VISIT_STATUS_FILTER]} onChange={(v) => (setStatus(v), setPage(1))} className="w-[160px]" />
+          <Select
+            label="Thanh toán"
+            value={payment}
+            options={[{ value: 'all', label: 'Tất cả' }, ...PAYMENT_STATUS_ORDER.map((p) => ({ value: p, label: PAYMENT_STATUS[p].label }))]}
+            onChange={(v) => (setPayment(v), setPage(1))}
+            className="w-[160px]"
           />
+          <Button variant="primary" size="sm" className="h-9 px-4" onClick={() => (setQuery(input), setPage(1))}>
+            Tìm
+          </Button>
+        </div>
+
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[16px] border border-line bg-surface">
+          <div className="min-h-0 flex-1 overflow-hidden">
+            <ReceptionTable
+              rows={filtered.slice((safePage - 1) * pageSize, safePage * pageSize)}
+              visibleColumns={DEFAULT_COLUMNS}
+              sort={sort}
+              onSort={(key) => (setSort((s) => nextSort(s, key)), setPage(1))}
+              highlightId={null}
+              onOpen={setDetailId}
+              onChangeStatus={onChangeStatus}
+              onPay={setPayId}
+            />
+          </div>
+          <div className="border-t border-line px-4">
+            <Pagination page={safePage} pageCount={pageCount} pageSize={pageSize} total={filtered.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
+          </div>
         </div>
       </div>
-      <div className="px-3">
-        <Pagination page={safePage} pageCount={pageCount} pageSize={pageSize} total={filtered.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
-      </div>
+
       <VisitDetailDrawer visitId={detailId} onClose={() => setDetailId(null)} onOpenVisit={setDetailId} onPay={setPayId} onCancel={setCancelId} />
       <PaymentModal visitId={payId} onClose={() => setPayId(null)} />
       <CancelVisitModal visitId={cancelId} onClose={() => setCancelId(null)} />

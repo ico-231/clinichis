@@ -42,7 +42,7 @@ export function defaultProfile(): ClinicProfile {
   }
 }
 
-const input = 'h-9 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[13px] outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15'
+const input = 'h-9 w-full rounded-[10px] border border-line-strong bg-surface px-2.5 text-[13px] text-ink placeholder:text-ink-4 outline-none focus:border-brand focus:ring-2 focus:ring-brand/15'
 const DEGREES = ['Bác sĩ', 'Bác sĩ chuyên khoa I', 'Bác sĩ chuyên khoa II', 'Thạc sĩ', 'Tiến sĩ', 'Phó giáo sư', 'Giáo sư']
 const SPECIALTIES = ['Nhi khoa', 'Nội khoa', 'Tai mũi họng', 'Da liễu', 'Dinh dưỡng', 'Hô hấp']
 
@@ -74,19 +74,19 @@ export function ClinicInfoPage() {
   }, [p, setClinicProfile])
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-canvas">
       <PageHeader
         title="Thông tin phòng khám"
         actions={
-          <span className={cn('rounded-full px-2.5 py-0.5 text-[12px] font-medium', p.status === 'pending' ? 'bg-orange-50 text-orange-700 ring-1 ring-orange-200' : 'bg-slate-100 text-slate-600')}>
+          <span className={cn('rounded-full px-3 py-1 text-[12px] font-semibold', p.status === 'pending' ? 'border border-accent-line bg-accent-tint text-accent-strong' : 'bg-subtle text-ink-3')}>
             {p.status === 'pending' ? '◌ Chờ phê duyệt' : 'Bản nháp'}
           </span>
         }
       />
       <PendingProfileBanner />
-      <div className="flex min-h-0 flex-1">
-        <div className="flex w-[min(560px,55%)] shrink-0 flex-col border-r border-slate-200">
-          <div className="thin-scroll flex-1 space-y-3 overflow-y-auto p-3 text-[13px]">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 gap-4 overflow-hidden px-4 sm:px-6 pt-1 pb-4">
+        <div className="flex w-[min(560px,52%)] shrink-0 flex-col overflow-hidden rounded-[16px] border border-line bg-surface">
+          <div className="thin-scroll flex-1 space-y-3 overflow-y-auto p-4 text-[13px]">
             <Field label="Ảnh đại diện">
               <ImagePick value={p.avatar} onChange={(avatar) => set({ avatar })} hint="Hỗ trợ định dạng PNG, JPEG dung lượng không quá 5MB" />
             </Field>
@@ -166,12 +166,12 @@ export function ClinicInfoPage() {
               <ImagePick value={p.certificate} onChange={(certificate) => set({ certificate })} hint="PNG, JPEG không quá 5MB" wide />
             </Field>
             <Field label="Hình ảnh">
-              <p className="mb-1 text-xs text-slate-500">Chọn tối đa 5 ảnh, định dạng png, jpg.</p>
+              <p className="mb-1 text-xs text-ink-3">Chọn tối đa 5 ảnh, định dạng png, jpg.</p>
               <div className="flex flex-wrap gap-2">
                 {p.images.map((img, i) => (
-                  <div key={i} className="group relative h-20 w-20 overflow-hidden rounded-md border border-slate-200">
+                  <div key={i} className="group relative h-20 w-20 overflow-hidden rounded-[10px] border border-line">
                     <img src={img} alt={`Hình ${i + 1}`} className="h-full w-full object-cover" />
-                    <button type="button" onClick={() => set({ images: p.images.filter((_, k) => k !== i) })} className="absolute top-1 right-1 rounded bg-white/90 p-0.5 text-red-600 opacity-0 group-hover:opacity-100 focus-visible:opacity-100" aria-label="Xoá ảnh">
+                    <button type="button" onClick={() => set({ images: p.images.filter((_, k) => k !== i) })} className="absolute top-1 right-1 rounded bg-surface/95 p-0.5 text-accent-ink opacity-0 group-hover:opacity-100 focus-visible:opacity-100" aria-label="Xoá ảnh">
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -180,50 +180,50 @@ export function ClinicInfoPage() {
               </div>
             </Field>
           </div>
-          <div className="border-t border-slate-200 px-3 py-2.5">
+          <div className="border-t border-line bg-canvas/70 px-4 py-2.5">
             <Button onClick={publish}>
               Đăng thông tin
             </Button>
           </div>
         </div>
 
-        <div className="thin-scroll min-w-0 flex-1 overflow-y-auto bg-slate-50 p-4">
-          <p className="mb-3 text-center text-[12.5px] text-slate-600">Thông tin phòng khám, lịch khám sẽ được hiển thị trên trang đặt lịch để người bệnh có thể tìm kiếm và đặt lịch khám.</p>
-          <div className="mx-auto max-w-[620px] space-y-4 rounded-xl bg-white p-5 shadow-sm">
+        <div className="thin-scroll min-w-0 flex-1 overflow-y-auto rounded-[16px] border border-line bg-subtle p-5">
+          <p className="mb-3 text-center text-[12.5px] text-ink-3">Thông tin phòng khám, lịch khám sẽ được hiển thị trên trang đặt lịch để người bệnh có thể tìm kiếm và đặt lịch khám.</p>
+          <div className="mx-auto max-w-[620px] space-y-4 rounded-[16px] border border-line bg-surface p-5 shadow-xs">
             <div className="flex gap-4">
               {p.avatar ? (
                 <img src={p.avatar} alt="Ảnh đại diện" className="h-28 w-28 shrink-0 rounded-full object-cover" />
               ) : (
-                <span className="flex h-28 w-28 shrink-0 items-center justify-center rounded-full bg-blue-100 text-2xl font-semibold text-blue-700">{initials(p.doctorName || 'BS')}</span>
+                <span className="flex h-28 w-28 shrink-0 items-center justify-center rounded-full border-2 border-brand-line bg-brand-tint text-2xl font-bold text-brand-ink">{initials(p.doctorName || 'BS')}</span>
               )}
               <div className="min-w-0">
-                <p className="text-[18px] font-semibold text-slate-900">
+                <p className="text-[18px] font-bold text-ink">
                   {p.degree} {p.doctorName}
                 </p>
                 <p className="mt-1 flex items-center gap-2 text-[12.5px]">
-                  <span className="flex items-center gap-1 font-medium text-blue-600">
+                  <span className="flex items-center gap-1 font-semibold text-brand-ink">
                     <BadgeCheck className="h-4 w-4" /> Bác sĩ
                   </span>
-                  <b>{years} năm kinh nghiệm</b>
+                  <b className="text-ink tabular-nums">{years} năm kinh nghiệm</b>
                 </p>
                 <dl className="mt-2 grid grid-cols-[90px_1fr] gap-y-1 text-[12.5px]">
-                  <dt className="text-slate-500">Chuyên khoa</dt>
-                  <dd className="font-semibold">{p.specialty}</dd>
-                  <dt className="text-slate-500">Chức vụ</dt>
-                  <dd>{p.position}</dd>
-                  <dt className="text-slate-500">Nơi công tác</dt>
-                  <dd>{p.workplace}</dd>
+                  <dt className="text-ink-3">Chuyên khoa</dt>
+                  <dd className="font-semibold text-ink">{p.specialty}</dd>
+                  <dt className="text-ink-3">Chức vụ</dt>
+                  <dd className="text-ink-2">{p.position}</dd>
+                  <dt className="text-ink-3">Nơi công tác</dt>
+                  <dd className="text-ink-2">{p.workplace}</dd>
                 </dl>
               </div>
             </div>
-            <Preview title="Giới thiệu">{p.introduction ? <RichView html={p.introduction} className="text-[13px]" /> : <p className="text-[13px] text-slate-500">Bác sĩ</p>}</Preview>
+            <Preview title="Giới thiệu">{p.introduction ? <RichView html={p.introduction} className="text-[13px]" /> : <p className="text-[13px] text-ink-3">Bác sĩ</p>}</Preview>
             {p.prices.length > 0 && (
               <Preview title="Bảng giá">
                 <ul className="text-[13px]">
                   {p.prices.map((x, i) => (
-                    <li key={i} className="flex justify-between border-b border-dashed border-slate-200 py-1">
-                      <span>{x.name}</span>
-                      <b>{formatNumber(x.price)}đ</b>
+                    <li key={i} className="flex justify-between border-b border-dashed border-line py-1.5">
+                      <span className="text-ink-2">{x.name}</span>
+                      <b className="text-ink tabular-nums">{formatNumber(x.price)}đ</b>
                     </li>
                   ))}
                 </ul>
@@ -232,20 +232,20 @@ export function ClinicInfoPage() {
             {p.workingHours.length > 0 && (
               <Preview title="Thời gian làm việc">
                 {p.workingHours.map((w, i) => (
-                  <p key={i} className="text-[13px]">
-                    {w.days}: <b>{w.hours}</b>
+                  <p key={i} className="text-[13px] text-ink-2">
+                    {w.days}: <b className="text-ink tabular-nums">{w.hours}</b>
                   </p>
                 ))}
               </Preview>
             )}
-            <div className="w-[220px] rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 p-4 text-white">
+            <div className="w-[240px] rounded-[14px] bg-brand p-4 text-white">
               <p className="font-semibold">Địa chỉ</p>
               <p className="mt-1 text-[12.5px] opacity-90">{[p.address, p.ward, p.province].filter(Boolean).join(', ')}</p>
               <a
                 href={`https://www.google.com/maps/search/${encodeURIComponent([p.address, p.ward, p.province].filter(Boolean).join(', '))}`}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-3 inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[12px] font-medium text-blue-700"
+                className="mt-3 inline-flex items-center gap-1 rounded-full bg-surface px-3 py-1 text-[12px] font-semibold text-brand-ink"
               >
                 <MapPin className="h-3.5 w-3.5" /> Mở bản đồ
               </a>
@@ -253,7 +253,7 @@ export function ClinicInfoPage() {
             {p.images.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {p.images.map((img, i) => (
-                  <img key={i} src={img} alt={`Hình phòng khám ${i + 1}`} className="h-24 w-32 rounded-md object-cover" />
+                  <img key={i} src={img} alt={`Hình phòng khám ${i + 1}`} className="h-24 w-32 rounded-[10px] object-cover" />
                 ))}
               </div>
             )}
@@ -268,9 +268,9 @@ function Field({ label, required, children }: { label: string; required?: boolea
   const { ref, labelId } = useControlLabel<HTMLSpanElement>()
   return (
     <div>
-      <span ref={ref} id={labelId} className="mb-1 block text-[12.5px] font-medium text-slate-700">
+      <span ref={ref} id={labelId} className="mb-1 block text-[12.5px] font-medium text-ink-2">
         {label}
-        {required && <span className="text-red-600">*</span>}
+        {required && <span className="text-accent-ink">*</span>}
       </span>
       {children}
     </div>
@@ -280,7 +280,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
 function Preview({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section>
-      <p className="mb-1 text-[14px] font-semibold text-slate-900">{title}</p>
+      <p className="mb-1 text-[14px] font-bold text-ink">{title}</p>
       {children}
     </section>
   )
@@ -307,7 +307,7 @@ export function ImagePick({ value, onChange, hint, wide, tile }: { value?: strin
   if (tile)
     return (
       <>
-        <button type="button" onClick={() => ref.current?.click()} className="flex h-20 w-20 items-center justify-center rounded-md border border-dashed border-slate-300 text-slate-400 hover:bg-slate-50" aria-label="Thêm ảnh">
+        <button type="button" onClick={() => ref.current?.click()} className="flex h-20 w-20 items-center justify-center rounded-[12px] border border-dashed border-line-strong bg-canvas text-ink-4 hover:bg-subtle" aria-label="Thêm ảnh">
           <ImagePlus className="h-5 w-5" />
         </button>
         {pick}
@@ -315,7 +315,7 @@ export function ImagePick({ value, onChange, hint, wide, tile }: { value?: strin
     )
   return (
     <div className="flex items-center gap-3">
-      <div className={cn('flex shrink-0 items-center justify-center overflow-hidden rounded-md border border-slate-200 bg-slate-50 text-slate-400', wide ? 'h-20 w-28' : 'h-16 w-16')}>
+      <div className={cn('flex shrink-0 items-center justify-center overflow-hidden rounded-[12px] border border-line bg-canvas text-ink-4', wide ? 'h-20 w-28' : 'h-16 w-16')}>
         {value ? <img src={value} alt="Ảnh đã chọn" className="h-full w-full object-cover" /> : <ImagePlus className="h-5 w-5" />}
       </div>
       <div>
@@ -323,11 +323,11 @@ export function ImagePick({ value, onChange, hint, wide, tile }: { value?: strin
           Tải lên
         </Button>
         {value && (
-          <button type="button" onClick={() => onChange(undefined)} className="ml-2 text-[12px] text-red-600 hover:underline">
+          <button type="button" onClick={() => onChange(undefined)} className="ml-2 text-[12px] font-medium text-accent-ink hover:underline">
             Xoá
           </button>
         )}
-        {hint && <p className="mt-1 text-[11.5px] text-slate-500">{hint}</p>}
+        {hint && <p className="mt-1 text-[11.5px] text-ink-3">{hint}</p>}
       </div>
       {pick}
     </div>
@@ -348,10 +348,10 @@ function ListEditor({ label, items, cols, onChange, numericCol }: { label: strin
                 placeholder={c}
                 inputMode={k === numericCol ? 'numeric' : undefined}
                 onChange={(e) => onChange(items.map((r, j) => (j === i ? r.map((v, kk) => (kk === k ? (k === numericCol ? e.target.value.replace(/\D/g, '') : e.target.value) : v)) : r)))}
-                className={cn(input.replace('w-full', ''), k === numericCol ? 'w-[120px] shrink-0 text-right' : 'min-w-0 flex-1')}
+                className={cn(input.replace('w-full', ''), k === numericCol ? 'w-[120px] shrink-0 text-right tabular-nums' : 'min-w-0 flex-1')}
               />
             ))}
-            <button type="button" onClick={() => onChange(items.filter((_, j) => j !== i))} className="shrink-0 rounded-md border border-slate-200 px-2 text-red-600 hover:bg-red-50" aria-label="Xoá dòng">
+            <button type="button" onClick={() => onChange(items.filter((_, j) => j !== i))} className="shrink-0 rounded-[10px] border border-line px-2 text-accent-ink hover:bg-accent-soft" aria-label="Xoá dòng">
               <Trash2 className="h-3.5 w-3.5" />
             </button>
           </div>

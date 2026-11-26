@@ -72,14 +72,14 @@ function CancelForm({ visitId, onClose }: { visitId: string; onClose: () => void
         </>
       }
     >
-      <p className="mb-2 text-[12.5px] font-medium text-slate-700">Lý do huỷ</p>
+      <p className="mb-2 text-[12.5px] font-medium text-ink-2">Lý do huỷ</p>
       <div className="mb-4 flex flex-wrap gap-1.5">
         {CANCEL_REASONS.map((r) => (
           <button
             key={r}
             type="button"
             onClick={() => setReason(r)}
-            className={cn('rounded-full border px-2.5 py-1 text-[12px] transition', reason === r ? 'border-red-300 bg-red-50 text-red-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50')}
+            className={cn('rounded-full border px-2.5 py-1 text-[12px] font-medium transition', reason === r ? 'border-accent-line bg-accent-soft text-accent-ink' : 'border-line-strong text-ink-2 hover:bg-subtle')}
           >
             {r}
           </button>
@@ -95,9 +95,9 @@ function CancelForm({ visitId, onClose }: { visitId: string; onClose: () => void
         error={touched && !reason.trim() ? 'Vui lòng nhập lý do huỷ' : undefined}
       />
       {paid > 0 && (
-        <div className="mt-4 space-y-3 rounded-lg border border-slate-200 bg-slate-50/70 p-3">
+        <div className="mt-4 space-y-3 rounded-[12px] border border-line bg-canvas p-3">
           <Checkbox checked={refund} onChange={setRefund} label={`Hoàn tiền ${formatMoney(paid)} cho người bệnh`} description="Trạng thái thanh toán sẽ chuyển sang “Đã hoàn tiền”" />
-          {refund && <Select label="Hình thức hoàn" value={method} options={toOptions(PAYMENT_METHOD_LABEL)} onChange={setMethod} triggerClassName="bg-white" />}
+          {refund && <Select label="Hình thức hoàn" value={method} options={toOptions(PAYMENT_METHOD_LABEL)} onChange={setMethod} triggerClassName="bg-surface" />}
         </div>
       )}
     </Modal>

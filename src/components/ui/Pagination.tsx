@@ -13,11 +13,17 @@ interface PaginationProps {
 
 export function Pagination({ page, pageCount, pageSize, total, onPageChange, onPageSizeChange }: PaginationProps) {
   const btn =
-    'flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:pointer-events-none disabled:text-slate-300'
+    'flex h-8 w-8 items-center justify-center rounded-[10px] border border-line-strong bg-surface text-ink-2 transition hover:bg-subtle disabled:pointer-events-none disabled:text-ink-5'
   return (
     <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 px-1 py-3">
-      <p className="text-[13.5px] font-semibold text-slate-900">
-        {total > 0 ? `Tổng ${total} kết quả` : ''}
+      <p className="text-[13px] text-ink-3">
+        {total > 0 ? (
+          <>
+            Tổng <b className="font-semibold text-ink tabular-nums">{total}</b> kết quả
+          </>
+        ) : (
+          ''
+        )}
       </p>
       <div className="flex flex-wrap items-center gap-x-7 gap-y-2 max-sm:w-full max-sm:justify-between max-sm:gap-x-3">
         <div className="flex items-center gap-3">
@@ -28,9 +34,9 @@ export function Pagination({ page, pageCount, pageSize, total, onPageChange, onP
             className="w-[72px]"
             triggerClassName="h-8"
           />
-          <span className="text-[13px] text-slate-700 max-sm:hidden">dòng</span>
+          <span className="text-[13px] text-ink-3 max-sm:hidden">dòng</span>
         </div>
-        <span className="text-[13px] font-medium text-slate-800 tabular-nums">
+        <span className="text-[13px] font-medium text-ink tabular-nums">
           {pageCount === 0 ? 'Trang 0 / 0' : `Trang ${page}/${pageCount}`}
         </span>
         <div className="flex items-center gap-1.5">

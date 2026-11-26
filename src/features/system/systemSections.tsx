@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react'
-import { Eye, EyeOff, Lock, MoreHorizontal, Pencil, PlusCircle, Search, Trash2, Unlock } from 'lucide-react'
+import { Eye, EyeOff, Lock, MoreHorizontal, Pencil, PlusCircle, Trash2, Unlock } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { ConfirmDiscardModal } from '@/components/ui/ConfirmDiscardModal'
 import { DatePicker } from '@/components/ui/DatePicker'
@@ -24,7 +24,7 @@ import { localDate } from '../reports/reportData'
 import type { OrgItem, Service, SignStatus, StaffMember, SystemSettings } from '@/store/types'
 import { useControlLabel } from '@/lib/useControlLabel'
 
-const input = 'h-9 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[13px] outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 disabled:bg-slate-50 disabled:text-slate-500'
+const input = 'h-9 w-full rounded-[10px] border border-line-strong bg-surface px-2.5 text-[13px] text-ink placeholder:text-ink-4 outline-none focus:border-brand focus:ring-2 focus:ring-brand/15 disabled:bg-canvas disabled:text-ink-4'
 const SIGN_PROVIDERS = ['Viettel', 'VNPT', 'FPT', 'BKAV']
 const newId = (p: string) => `${p}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`
 
@@ -39,28 +39,28 @@ function Field({ label, required, hint, error, children }: { label: string; requ
   const { ref, labelId, errorId } = useControlLabel<HTMLSpanElement>(error)
   return (
     <div>
-      <span ref={ref} id={labelId} className="mb-1 block text-[12.5px] font-medium text-slate-700">
+      <span ref={ref} id={labelId} className="mb-1 block text-[12.5px] font-medium text-ink-2">
         {label}
-        {required && <span className="text-red-600">*</span>}
+        {required && <span className="text-accent-ink">*</span>}
       </span>
       {children}
-      {error ? <span id={errorId} className="mt-1 block text-xs text-red-600">{error}</span> : hint && <span className="mt-1 block text-[11.5px] text-slate-500">{hint}</span>}
+      {error ? <span id={errorId} className="mt-1 block text-xs text-accent-ink">{error}</span> : hint && <span className="mt-1 block text-[11.5px] text-ink-3">{hint}</span>}
     </div>
   )
 }
 
 function Switch({ checked, onChange, label, disabled }: { checked: boolean; onChange: (v: boolean) => void; label: string; disabled?: boolean }) {
   return (
-    <label className={cn('flex items-center gap-2.5 text-[13px] text-slate-700', disabled && 'opacity-50')}>
+    <label className={cn('flex items-center gap-2.5 text-[13px] text-ink-2', disabled && 'opacity-50')}>
       <button
         type="button"
         role="switch"
         aria-checked={checked}
         disabled={disabled}
         onClick={() => onChange(!checked)}
-        className={cn('relative h-5 w-9 shrink-0 rounded-full transition', checked ? 'bg-blue-600' : 'bg-slate-300')}
+        className={cn('relative h-5 w-9 shrink-0 rounded-full transition', checked ? 'bg-brand' : 'bg-line-strong')}
       >
-        <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-all', checked ? 'left-[18px]' : 'left-0.5')} />
+        <span className={cn('absolute top-0.5 h-4 w-4 rounded-full bg-surface shadow transition-all', checked ? 'left-[18px]' : 'left-0.5')} />
       </button>
       {label}
     </label>
@@ -70,8 +70,8 @@ function Switch({ checked, onChange, label, disabled }: { checked: boolean; onCh
 function SubTitle({ title, desc }: { title: string; desc?: string }) {
   return (
     <div className="mb-2">
-      <p className="text-[14.5px] font-semibold text-slate-900">{title}</p>
-      {desc && <p className="text-[12.5px] text-slate-500">{desc}</p>}
+      <p className="text-[14.5px] font-bold text-ink">{title}</p>
+      {desc && <p className="text-[12.5px] text-ink-3">{desc}</p>}
     </div>
   )
 }
@@ -168,7 +168,7 @@ export function AccountSection() {
     <Field label={label}>
       <div className="relative">
         <input type={show ? 'text' : 'password'} value={pw[k]} onChange={(e) => setPw((x) => ({ ...x, [k]: e.target.value }))} placeholder={ph} autoComplete="new-password" className={cn(input, 'pr-9')} />
-        <button type="button" onClick={() => setShow((s) => !s)} className="absolute top-1/2 right-2 -translate-y-1/2 text-slate-400" aria-label={show ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}>
+        <button type="button" onClick={() => setShow((s) => !s)} className="absolute top-1/2 right-2.5 -translate-y-1/2 text-ink-4 hover:text-ink" aria-label={show ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}>
           {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>
       </div>
@@ -181,7 +181,7 @@ export function AccountSection() {
           {a.avatar ? (
             <img src={a.avatar} alt="Ảnh đại diện" className="h-16 w-16 rounded-full object-cover" />
           ) : (
-            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-rose-600 text-lg font-semibold text-white">{initials(`${a.lastName} ${a.firstName}`)}</span>
+            <span className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-accent-line bg-accent-soft text-lg font-bold text-accent-ink">{initials(`${a.lastName} ${a.firstName}`)}</span>
           )}
           <ImagePick value={undefined} onChange={(avatar) => setA((x) => ({ ...x, avatar }))} hint="Hỗ trợ định dạng PNG, JPEG dung lượng không quá 10Mb" />
         </div>
@@ -200,13 +200,13 @@ export function AccountSection() {
       <SignFields value={a} onChange={(p) => setA((x) => ({ ...x, ...p }))} />
       <Button onClick={saveAccount}>Cập nhật</Button>
 
-      <div className="border-t border-slate-200 pt-4">
+      <div className="border-t border-line pt-4">
         <SubTitle title="Thay đổi mật khẩu" />
         <div className="space-y-3">
           {pwInput('current', 'Mật khẩu hiện tại', 'Mật khẩu hiện tại')}
           {pwInput('next', 'Mật khẩu mới', 'Mật khẩu mới')}
           {pwInput('confirm', 'Xác nhận mật khẩu mới', 'Xác nhận mật khẩu mới')}
-          {pwErr && <p className="text-xs text-red-600">{pwErr}</p>}
+          {pwErr && <p className="text-xs text-accent-ink">{pwErr}</p>}
           <Button onClick={changePw}>Đổi mật khẩu</Button>
         </div>
       </div>
@@ -219,7 +219,7 @@ function SignFields({ value, onChange }: { value: { signProvider: string; signUs
     <div className="space-y-2.5">
       <SubTitle title="Chữ ký số" desc="Cài đặt chữ ký số để xác thực danh tính trong các văn bản điện tử (bệnh án, toa thuốc...), đảm bảo tính toàn vẹn dữ liệu và giá trị pháp lý." />
       <Field label="Đơn vị cung cấp">
-        <select value={value.signProvider} onChange={(e) => onChange({ signProvider: e.target.value })} className={cn(input, 'w-[180px]')}>
+        <select value={value.signProvider} onChange={(e) => onChange({ signProvider: e.target.value })} className={input.replace('w-full', 'w-[180px]')}>
           {SIGN_PROVIDERS.map((p) => (
             <option key={p}>{p}</option>
           ))}
@@ -257,15 +257,15 @@ export function AppearanceSection() {
       <div className="flex flex-wrap gap-4" role="radiogroup" aria-label="Giao diện">
         {options.map((o) => (
           <button key={o.value} type="button" role="radio" aria-checked={theme === o.value} onClick={() => setUI({ theme: o.value })} className="text-left">
-            <span className={cn('block h-[88px] w-[132px] overflow-hidden rounded-lg border-2 p-1', theme === o.value ? 'border-blue-500' : 'border-slate-200')}>
+            <span className={cn('block h-[88px] w-[132px] overflow-hidden rounded-[12px] border-2 p-1 transition-colors', theme === o.value ? 'border-brand' : 'border-line')}>
               <ThemeThumb mode={o.value} />
             </span>
-            <span className="mt-1 block text-[13px] text-slate-700">{o.label}</span>
+            <span className={cn('mt-1.5 block text-[13px]', theme === o.value ? 'font-semibold text-brand-ink' : 'text-ink-2')}>{o.label}</span>
           </button>
         ))}
       </div>
       <Field label="Ngôn ngữ" hint="Chọn ngôn ngữ hiển thị.">
-        <select value="vi" onChange={() => {}} className={cn(input, 'w-[200px]')}>
+        <select value="vi" onChange={() => {}} className={input.replace('w-full', 'w-[200px]')}>
           <option value="vi">Tiếng Việt</option>
         </select>
       </Field>
@@ -273,17 +273,17 @@ export function AppearanceSection() {
   )
 }
 
+/** Hình thu nhỏ của từng giao diện: màu cố định (không theo token) để luôn xem trước đúng sáng / tối */
 function ThemeThumb({ mode }: { mode: 'system' | 'light' | 'dark' }) {
   const panel = (dark: boolean) => (
-    <span className={cn('flex h-full flex-1 gap-1 p-1', dark ? 'bg-[#0d1526]' : 'bg-[#f1f5f9]')}>
-      <span className={cn('w-4 rounded-sm', dark ? 'bg-[#263349]' : 'bg-white')} />
-      <span className="flex flex-1 flex-col gap-1">
-        <span className={cn('h-2 rounded-sm', dark ? 'bg-[#263349]' : 'bg-white')} />
-        <span className={cn('flex-1 rounded-sm', dark ? 'bg-[#18233a]' : 'bg-white')} />
+    <span className={cn('flex h-full flex-1 flex-col gap-1 p-1', dark ? 'bg-[#121110]' : 'bg-[#faf9f7]')}>
+      <span className={cn('flex h-2 items-center gap-0.5 rounded-sm px-0.5', dark ? 'bg-[#1c1a18]' : 'bg-white')}>
+        <span className={cn('h-1 w-1 rounded-full', dark ? 'bg-[#5dd3c3]' : 'bg-[#0f766e]')} />
       </span>
+      <span className={cn('flex-1 rounded-sm border', dark ? 'border-[#33302b] bg-[#1c1a18]' : 'border-[#e7e5e4] bg-white')} />
     </span>
   )
-  return <span className="flex h-full overflow-hidden rounded">{mode === 'system' ? (<>{panel(false)}{panel(true)}</>) : panel(mode === 'dark')}</span>
+  return <span className="flex h-full overflow-hidden rounded-[8px]">{mode === 'system' ? (<>{panel(false)}{panel(true)}</>) : panel(mode === 'dark')}</span>
 }
 
 /* ------------------------------------------------------------------ */
@@ -311,8 +311,8 @@ export function GeneralSection() {
         <input value={g.accountPrefix} onChange={(e) => setG((x) => ({ ...x, accountPrefix: e.target.value.toLowerCase() }))} className={input} />
       </Field>
       <Field label="Bật/Tắt in phiếu khám" hint="In phiếu khám ngay sau khi bấm Đăng ký khám.">
-        <label className="flex items-center gap-2 text-[13px]">
-          <input type="checkbox" checked={g.printTicketOnCheckIn} onChange={(e) => setG((x) => ({ ...x, printTicketOnCheckIn: e.target.checked }))} className="h-4 w-4 accent-blue-600" />
+        <label className="flex items-center gap-2 text-[13px] text-ink">
+          <input type="checkbox" checked={g.printTicketOnCheckIn} onChange={(e) => setG((x) => ({ ...x, printTicketOnCheckIn: e.target.checked }))} className="h-4 w-4 accent-brand" />
           Bật
         </label>
       </Field>
@@ -325,7 +325,7 @@ export function GeneralSection() {
           ))}
         </select>
       </Field>
-      <div className="border-t border-slate-200 pt-3">
+      <div className="border-t border-line pt-3">
         <SubTitle title="Liên thông đơn thuốc" desc="Quản lý thông tin liên thông đơn thuốc quốc gia (mô phỏng – chưa kết nối)." />
         <div className="space-y-2.5">
           <Field label="Mã bảo hiểm" hint="Mã bảo hiểm của cơ sở.">
@@ -339,18 +339,18 @@ export function GeneralSection() {
           </Field>
         </div>
       </div>
-      <div className="border-t border-slate-200 pt-3">
+      <div className="border-t border-line pt-3">
         <SubTitle title="Tiền tố" desc="Mã tiền tố hỗ trợ việc quản lý và ghi nhớ đơn hàng dễ dàng hơn." />
         <div className="grid grid-cols-2 gap-2">
           <Field label="Tiền tố mặc định" required>
             <input value={g.codePrefix} onChange={(e) => setG((x) => ({ ...x, codePrefix: e.target.value.toUpperCase() }))} className={input} />
           </Field>
           <Field label="Độ dài tối thiểu">
-            <input type="number" min={4} max={11} value={g.codeMinLength} onChange={(e) => setG((x) => ({ ...x, codeMinLength: Math.min(11, Math.max(4, Number(e.target.value) || 8)) }))} className={input} />
+            <input type="number" min={4} max={11} value={g.codeMinLength} onChange={(e) => setG((x) => ({ ...x, codeMinLength: Math.min(11, Math.max(4, Number(e.target.value) || 8)) }))} className={cn(input, 'tabular-nums')} />
           </Field>
         </div>
-        <p className="mt-1 text-[11.5px] text-slate-500">
-          Tiền tố mặc định dùng cho mã khám, mã phiếu thu phát sinh mới. VD: <b>{exampleCode.toUpperCase()}</b>
+        <p className="mt-1 text-[11.5px] text-ink-3">
+          Tiền tố mặc định dùng cho mã khám, mã phiếu thu phát sinh mới. VD: <b className="text-ink tabular-nums">{exampleCode.toUpperCase()}</b>
         </p>
       </div>
       <Button onClick={save}>Lưu thay đổi</Button>
@@ -372,19 +372,19 @@ function SimpleTable({
   empty?: string
 }) {
   return (
-    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+    <div className="overflow-hidden rounded-[14px] border border-line bg-surface">
       <table className="w-full text-[13px]">
-        <thead className="bg-slate-50 text-[12.5px] text-slate-600">
+        <thead className="border-b border-line bg-subtle text-[12.5px] font-semibold text-ink-3">
           <tr>
             {head.map((h) => (
-              <th key={h} className="px-3 py-2 text-left font-medium">
+              <th key={h} className="px-3 py-2.5 text-left font-semibold">
                 {h}
               </th>
             ))}
             <th className="w-10" />
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-line-soft">
           {rows.length === 0 && (
             <tr>
               <td colSpan={head.length + 1}>
@@ -393,13 +393,13 @@ function SimpleTable({
             </tr>
           )}
           {rows.map((r) => (
-            <tr key={r.key} className="border-t border-slate-100">
+            <tr key={r.key} className="transition-colors hover:bg-brand-wash">
               {r.cells.map((c, i) => (
-                <td key={i} className="px-3 py-2">
+                <td key={i} className="px-3 py-2.5 text-ink">
                   {c}
                 </td>
               ))}
-              <td className="px-2 py-2 text-right">{r.actions}</td>
+              <td className="px-2 py-2.5 text-right">{r.actions}</td>
             </tr>
           ))}
         </tbody>
@@ -413,7 +413,7 @@ function RowMenu({ items }: { items: { label: string; icon: ReactNode; onSelect:
     <DropdownMenu
       align="end"
       renderTrigger={({ ref, toggle }) => (
-        <button ref={ref} type="button" onClick={toggle} className="rounded p-1 text-slate-500 hover:bg-slate-100" aria-label="Thao tác">
+        <button ref={ref} type="button" onClick={toggle} className="rounded-[8px] p-1.5 text-ink-2 hover:bg-subtle" aria-label="Thao tác">
           <MoreHorizontal className="h-4 w-4" />
         </button>
       )}
@@ -476,8 +476,8 @@ export function OrgSection() {
             rows={DOCTORS.map((d) => ({
               key: d.id,
               cells: [
-                <span className="flex items-center gap-2 font-medium">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-rose-600 text-[11px] text-white">{initials(d.name)}</span>
+                <span className="flex items-center gap-2 font-medium text-ink">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full border border-brand-line bg-brand-tint text-[11px] font-semibold text-brand-ink">{initials(d.name)}</span>
                   {d.title} {d.name}
                 </span>,
                 '—',
@@ -487,7 +487,7 @@ export function OrgSection() {
               ],
             }))}
           />
-          <p className="text-[12px] text-slate-500">Danh sách bác sĩ lấy từ dữ liệu khám (dùng chung với Lễ tân, Khám bệnh).</p>
+          <p className="text-[12px] text-ink-3">Danh sách bác sĩ lấy từ dữ liệu khám (dùng chung với Lễ tân, Khám bệnh).</p>
         </>
       ) : (
         <SimpleTable
@@ -495,7 +495,7 @@ export function OrgSection() {
           empty="Không có dữ liệu"
           rows={list.map((x) => ({
             key: x.id,
-            cells: [<b>{x.name}</b>, <span className="text-slate-600">{x.description}</span>, x.updatedAt ? formatDateTimeVN(x.updatedAt) : ''],
+            cells: [<b className="text-ink">{x.name}</b>, <span className="text-ink-3">{x.description}</span>, <span className="tabular-nums text-ink-3">{x.updatedAt ? formatDateTimeVN(x.updatedAt) : ''}</span>],
             actions: (
               <RowMenu
                 items={[
@@ -549,7 +549,7 @@ function NameDescModal({ title, item, onClose, onSave }: { title: string; item: 
           <input autoFocus value={it.name} onChange={(e) => setIt((x) => ({ ...x, name: e.target.value }))} className={input} />
         </Field>
         <Field label="Mô tả">
-          <textarea value={it.description} onChange={(e) => setIt((x) => ({ ...x, description: e.target.value }))} rows={3} className={cn(input, 'h-auto py-2')} />
+          <textarea value={it.description} onChange={(e) => setIt((x) => ({ ...x, description: e.target.value }))} rows={3} className={input.replace('h-9', 'h-auto py-2')} />
         </Field>
       </div>
     </Modal>
@@ -578,11 +578,11 @@ export function FeeSection() {
         head={['STT', 'Tên hiển thị', 'Mô tả', 'Phí']}
         rows={list.map((s, i) => ({
           key: s.id,
-          cells: [i + 1, <b>{s.name}</b>, <span className="text-slate-600">{(s as Service & { description?: string }).description ?? s.name}</span>, <span className="tabular-nums">{formatNumber(s.price)}</span>],
+          cells: [<span className="tabular-nums text-ink-3">{i + 1}</span>, <b className="text-ink">{s.name}</b>, <span className="text-ink-3">{(s as Service & { description?: string }).description ?? s.name}</span>, <span className="font-medium text-ink tabular-nums">{formatNumber(s.price)}</span>],
           actions: <RowMenu items={[{ label: 'Điều chỉnh', icon: <Pencil className="h-3.5 w-3.5" />, onSelect: () => setEdit({ s, isNew: false }) }]} />,
         }))}
       />
-      <p className="text-[12px] text-slate-500">Công khám dùng khi tiếp nhận (Lễ tân) và trong màn Khám bệnh; thay đổi giá áp dụng cho lượt khám mới.</p>
+      <p className="text-[12px] text-ink-3">Công khám dùng khi tiếp nhận (Lễ tân) và trong màn Khám bệnh; thay đổi giá áp dụng cho lượt khám mới.</p>
       {edit && (
         <FeeModal
           value={edit.s}
@@ -699,21 +699,21 @@ export function EmrLogSection() {
           onChange={setState}
           className="w-[140px]"
         />
-        <Button leftIcon={<Search className="h-3.5 w-3.5" />} onClick={() => (setApplied({ from, to, action, sign, state }), setPage(1))}>
-          Tìm kiếm
+        <Button className="w-[74px]" onClick={() => (setApplied({ from, to, action, sign, state }), setPage(1))}>
+          Tìm
         </Button>
       </div>
-      <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded-[14px] border border-line bg-surface">
         <table className="w-full text-[13px]">
-          <thead className="bg-slate-50 text-[12.5px] text-slate-600">
+          <thead className="border-b border-line bg-subtle text-[12.5px] font-semibold text-ink-3">
             <tr>
-              <th className="w-28 px-3 py-2 text-left font-medium">Thời gian</th>
-              <th className="px-3 py-2 text-left font-medium">Chi tiết</th>
-              <th className="w-28 px-3 py-2 text-left font-medium">Ký số</th>
-              <th className="w-28 px-3 py-2 text-left font-medium">Trạng thái</th>
+              <th className="w-28 px-3 py-2.5 text-left font-semibold">Thời gian</th>
+              <th className="px-3 py-2.5 text-left font-semibold">Chi tiết</th>
+              <th className="w-28 px-3 py-2.5 text-left font-semibold">Ký số</th>
+              <th className="w-28 px-3 py-2.5 text-left font-semibold">Trạng thái</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-line-soft">
             {pageRows.length === 0 && (
               <tr>
                 <td colSpan={4}>
@@ -722,16 +722,16 @@ export function EmrLogSection() {
               </tr>
             )}
             {pageRows.map((l) => (
-              <tr key={l.id} className="border-t border-slate-100">
-                <td className="px-3 py-2">{formatDateVN(localDate(l.at))}</td>
-                <td className="px-3 py-2">
-                  {l.user} đã <b>{ACTION_LABEL[l.action]}</b> bệnh án {l.emrCode} vào lúc {time(l.at)}.
+              <tr key={l.id} className="transition-colors hover:bg-brand-wash">
+                <td className="px-3 py-2.5 text-ink-2 tabular-nums">{formatDateVN(localDate(l.at))}</td>
+                <td className="px-3 py-2.5 text-ink">
+                  {l.user} đã <b>{ACTION_LABEL[l.action]}</b> bệnh án <span className="font-medium text-info-ink tabular-nums">{l.emrCode}</span> vào lúc <span className="tabular-nums">{time(l.at)}</span>.
                 </td>
-                <td className="px-3 py-2">
-                  <span className="rounded border border-slate-200 px-1.5 py-0.5 text-[11px] font-semibold uppercase">{SIGN_LABEL[l.signStatus]}</span>
+                <td className="px-3 py-2.5">
+                  <span className="rounded-full border border-line bg-canvas px-2 py-0.5 text-[11px] font-semibold text-ink-2 uppercase">{SIGN_LABEL[l.signStatus]}</span>
                 </td>
-                <td className="px-3 py-2">
-                  <span className={cn('rounded px-1.5 py-0.5 text-[11px] font-semibold uppercase', l.state === 'closed' ? 'bg-slate-100 text-slate-600' : 'bg-orange-50 text-orange-700')}>{STATE_LABEL[l.state]}</span>
+                <td className="px-3 py-2.5">
+                  <span className={cn('rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase', l.state === 'closed' ? 'bg-subtle text-ink-3' : 'bg-accent-soft text-accent-strong')}>{STATE_LABEL[l.state]}</span>
                 </td>
               </tr>
             ))}
@@ -765,19 +765,19 @@ export function StaffSection() {
         rows={sys.staff.map((m) => ({
           key: m.id,
           cells: [
-            <span className="flex items-center gap-2">
-              {m.avatar ? <img src={m.avatar} alt="" className="h-7 w-7 rounded-full object-cover" /> : <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-[11px] text-white">{initials(`${m.lastName} ${m.firstName}`)}</span>}
+            <span className="flex items-center gap-2.5">
+              {m.avatar ? <img src={m.avatar} alt="" className="h-8 w-8 rounded-full object-cover" /> : <span className="flex h-8 w-8 items-center justify-center rounded-full border border-brand-line bg-brand-tint text-[11.5px] font-semibold text-brand-ink">{initials(`${m.lastName} ${m.firstName}`)}</span>}
               <span>
-                <b>
+                <b className="text-ink">
                   {m.lastName} {m.firstName}
                 </b>
-                <span className="block text-xs text-slate-500">
+                <span className="block text-xs text-ink-3">
                   {m.email} · {m.role === 'admin' ? 'Quản trị viên' : 'Thành viên'}
                 </span>
               </span>
             </span>,
-            username(m),
-            <span className={cn('rounded-full px-2 py-0.5 text-[11.5px]', m.status === 'active' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600')}>{m.status === 'active' ? 'Hoạt động' : 'Đã khoá'}</span>,
+            <span className="font-mono text-[12.5px] text-ink-2">{username(m)}</span>,
+            <span className={cn('inline-block rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold', m.status === 'active' ? 'bg-brand-soft text-brand-ink' : 'bg-subtle text-ink-3')}>{m.status === 'active' ? 'Hoạt động' : 'Đã khoá'}</span>,
           ],
           actions: (
             <RowMenu
@@ -885,10 +885,10 @@ function StaffModal({ value, onClose, onSave }: { value?: StaffMember; onClose: 
             <input value={m.phone} onChange={(ev) => set({ phone: ev.target.value })} className={input} />
           </Field>
           <Field label="Giới tính">
-            <div className="flex h-9 items-center gap-8 text-[13px]">
+            <div className="flex h-9 items-center gap-8 text-[13px] text-ink">
               {(['male', 'female'] as const).map((g) => (
-                <label key={g} className="flex items-center gap-1.5">
-                  <input type="radio" checked={m.gender === g} onChange={() => set({ gender: g })} className="accent-blue-600" />
+                <label key={g} className="flex cursor-pointer items-center gap-1.5">
+                  <input type="radio" checked={m.gender === g} onChange={() => set({ gender: g })} className="accent-brand" />
                   {g === 'male' ? 'Nam' : 'Nữ'}
                 </label>
               ))}
@@ -897,10 +897,10 @@ function StaffModal({ value, onClose, onSave }: { value?: StaffMember; onClose: 
           <DatePicker label="Ngày sinh" value={m.dob} max={todayISO()} onChange={(dob) => set({ dob })} />
         </div>
         <Field label="Phân quyền" required hint="Chỉ định quyền cho tài khoản">
-          <div className="flex gap-6 rounded-md border border-slate-200 px-3 py-2 text-[13px]">
+          <div className="flex gap-6 rounded-[10px] border border-line bg-canvas px-3 py-2 text-[13px] text-ink">
             {(['member', 'admin'] as const).map((r) => (
-              <label key={r} className="flex items-center gap-1.5">
-                <input type="radio" checked={m.role === r} onChange={() => set({ role: r })} className="accent-blue-600" />
+              <label key={r} className="flex cursor-pointer items-center gap-1.5">
+                <input type="radio" checked={m.role === r} onChange={() => set({ role: r })} className="accent-brand" />
                 {r === 'member' ? 'Thành viên' : 'Quản trị viên'}
               </label>
             ))}

@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { ChevronUp, Pencil } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { Checkbox } from '@/components/ui/Field'
+import { Checkbox, TextField } from '@/components/ui/Field'
 import { DatePicker } from '@/components/ui/DatePicker'
 import { Select } from '@/components/ui/Select'
 import { GENDER_LABEL, SERVICES } from '@/store/catalog'
@@ -15,7 +15,7 @@ import type { Patient } from '@/store/types'
 export type DraftUpdate = (patch: Partial<ExamDraft>) => void
 
 export const boxInput =
-  'w-full rounded-md border border-slate-200 bg-white px-3 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15'
+  'w-full rounded-[10px] border border-line-strong bg-surface px-3 text-[13px] text-ink outline-none transition placeholder:text-ink-3/60 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15'
 
 /* ------------------------------------------------------------------ */
 /* Khung section                                                       */
@@ -38,16 +38,16 @@ export function Section({
 }) {
   const [open, setOpen] = useState(true)
   return (
-    <section id={id} className={cn('scroll-mt-2 border-b-[6px] border-slate-100 bg-white px-4 py-3', className)}>
+    <section id={id} className={cn('scroll-mt-3 rounded-[16px] border border-line bg-surface px-5 py-4', className)}>
       <div className="flex min-h-7 items-center justify-between gap-3">
-        <h2 className="text-[12.5px] font-bold tracking-wide text-blue-700 uppercase">{title}</h2>
+        <h2 className="text-[14.5px] font-bold text-brand-ink">{title}</h2>
         <div className="flex items-center gap-2">
           {right}
           {collapsible && (
             <button
               type="button"
               onClick={() => setOpen((o) => !o)}
-              className="rounded p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+              className="rounded-lg p-1 text-ink-3 hover:bg-subtle hover:text-ink"
               aria-label={open ? 'Thu gọn' : 'Mở rộng'}
               aria-expanded={open}
             >
@@ -56,16 +56,16 @@ export function Section({
           )}
         </div>
       </div>
-      {open && <div className="mt-2">{children}</div>}
+      {open && <div className="mt-2.5">{children}</div>}
     </section>
   )
 }
 
 export function Label({ children, required }: { children: ReactNode; required?: boolean }) {
   return (
-    <span className="mb-1 block text-[13px] font-medium text-slate-800">
+    <span className="mb-1 block text-[13px] font-medium text-ink-2">
       {children}
-      {required && <span className="ml-0.5 text-red-600">*</span>}
+      {required && <span className="ml-0.5 text-accent-ink">*</span>}
     </span>
   )
 }
@@ -112,15 +112,10 @@ export function InfoSection({ draft, update, patient }: { draft: ExamDraft; upda
   ]
   return (
     <>
-      <section id="sec-info" className="scroll-mt-2 border-b-[6px] border-slate-100 bg-white px-4 py-3">
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+      <section id="sec-info" className="scroll-mt-3 rounded-[16px] border border-line bg-surface px-5 pt-5 pb-4">
+        <div className="grid grid-cols-1 gap-x-3 gap-y-4 md:grid-cols-[1fr_1fr_1.4fr]">
           <DatePicker label="Ngày khám" required value={draft.date} onChange={(date) => update({ date })} />
-          <label className="block">
-            <span className="mb-1.5 block text-[12.5px] font-medium text-slate-600">
-              Giờ khám<span className="ml-0.5 text-red-600">*</span>
-            </span>
-            <input type="time" value={draft.time} onChange={(e) => update({ time: e.target.value })} className={cn(boxInput, 'h-9')} />
-          </label>
+          <TextField label="Giờ khám" required type="time" value={draft.time} onChange={(e) => update({ time: e.target.value })} />
           <Select
             label="Công khám"
             required
@@ -151,10 +146,10 @@ export function InfoSection({ draft, update, patient }: { draft: ExamDraft; upda
             <InfoRow label="CCCD" value={patient.cccd || '—'} />
             <InfoRow label="Mã BHYT" value={patient.insuranceNumber || '—'} />
           </dl>
-          <dl className="grid grid-cols-[88px_1fr] content-start gap-y-1.5 lg:border-l lg:border-slate-200 lg:pl-4">
+          <dl className="grid grid-cols-[88px_1fr] content-start gap-y-1.5 lg:border-l lg:border-line lg:pl-4">
             <InfoRow label="Người thân" value={relativeName ? <span className="font-semibold uppercase">{relativeName}</span> : '—'} />
             <InfoRow label="Điện thoại" value={rel?.phone ? formatPhone(rel.phone) : '—'} />
-            {patient.allergies && <InfoRow label="Dị ứng" value={<span className="font-medium text-red-600">{patient.allergies}</span>} />}
+            {patient.allergies && <InfoRow label="Dị ứng" value={<span className="font-medium text-danger-ink">{patient.allergies}</span>} />}
           </dl>
         </div>
         <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
@@ -176,8 +171,8 @@ export function InfoSection({ draft, update, patient }: { draft: ExamDraft; upda
 function InfoRow({ label, value }: { label: string; value: ReactNode }) {
   return (
     <>
-      <dt className="text-slate-500">{label}</dt>
-      <dd className="min-w-0 text-slate-900">{value}</dd>
+      <dt className="text-ink-4">{label}</dt>
+      <dd className="min-w-0 text-ink">{value}</dd>
     </>
   )
 }
@@ -211,7 +206,7 @@ export function ClinicalSections({ draft, update, vitalErrors }: { draft: ExamDr
       placeholder={unit}
       aria-label={unit}
       onChange={(e) => setVital(key, e.target.value)}
-      className={cn(boxInput, 'h-9 border-b-2 tabular-nums', vitalErrors.has(key) && 'border-red-400! bg-red-50/60', extra)}
+      className={cn(boxInput, 'h-9 border-b-2 tabular-nums', vitalErrors.has(key) && 'border-danger! bg-danger-soft/60', extra)}
     />
   )
 
@@ -229,7 +224,7 @@ export function ClinicalSections({ draft, update, vitalErrors }: { draft: ExamDr
             <Label>Huyết áp (mmHg)</Label>
             <div className="flex items-center gap-1">
               {vitalInput('bpSystolic', 'Tâm thu', 'px-2')}
-              <span className="text-slate-400">/</span>
+              <span className="text-ink-5">/</span>
               {vitalInput('bpDiastolic', 'Tâm trương', 'px-2')}
             </div>
           </div>
@@ -241,7 +236,7 @@ export function ClinicalSections({ draft, update, vitalErrors }: { draft: ExamDr
           ))}
           <label className="block">
             <Label>BMI</Label>
-            <input value={draft.vitals.bmi} readOnly placeholder="kg/m²" className={cn(boxInput, 'h-9 bg-slate-50 tabular-nums')} />
+            <input value={draft.vitals.bmi} readOnly placeholder="kg/m²" className={cn(boxInput, 'h-9 bg-canvas tabular-nums')} />
           </label>
         </div>
       </Section>
@@ -297,7 +292,7 @@ function RiskRow({
         onChange={(e) => onNote(e.target.value)}
         placeholder="Ghi chú"
         aria-label={`Ghi chú ${label.toLowerCase()}`}
-        className="h-8 w-full border-b border-slate-200 bg-transparent text-[13px] outline-none placeholder:text-slate-400 focus:border-blue-600"
+        className="h-8 w-full border-b border-line bg-transparent text-[13px] outline-none placeholder:text-ink-5 focus:border-brand"
       />
     </div>
   )
@@ -312,7 +307,7 @@ const daysBetween = (from: string, to: string) => Math.round((parseISODate(to).g
 export function FollowUpSection({ draft, update }: { draft: ExamDraft; update: DraftUpdate }) {
   return (
     <Section id="sec-followup" title="Hẹn khám">
-      <div className="flex flex-wrap items-center gap-2 text-[13px] text-slate-800">
+      <div className="flex flex-wrap items-center gap-2 text-[13px] text-ink">
         <Checkbox checked={draft.followUpEnabled} onChange={(followUpEnabled) => update({ followUpEnabled })} label="Tái khám sau" className="items-center" />
         <input
           type="number"
@@ -323,7 +318,7 @@ export function FollowUpSection({ draft, update }: { draft: ExamDraft; update: D
             const followUpDays = Math.max(1, Math.min(365, Number(e.target.value) || 1))
             update({ followUpDays, followUpDate: addDays(draft.date, followUpDays), followUpEnabled: true })
           }}
-          className="h-8 w-16 rounded-md border border-slate-200 px-2 text-center text-[13px] outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
+          className="h-8 w-16 rounded-md border border-line px-2 text-center text-[13px] outline-none focus:border-brand focus:ring-2 focus:ring-brand/15"
           aria-label="Số ngày tái khám"
         />
         <span>ngày.</span>
@@ -355,19 +350,19 @@ export function NotesSection({ draft, update }: { draft: ExamDraft; update: Draf
   return (
     <Section id="sec-notes" title="Ghi chú">
       {draft.notes.length === 0 ? (
-        <p className="rounded-md border border-dashed border-slate-200 px-4 py-3 text-[13px] text-slate-500">
+        <p className="rounded-md border border-dashed border-line px-4 py-3 text-[13px] text-ink-4">
           Chưa có ghi chú nào. Bạn có thể thêm ghi chú cho người bệnh bằng hộp thoại bên dưới.
         </p>
       ) : (
         <ul className="space-y-2">
           {draft.notes.map((n) => (
-            <li key={n.id} className="group flex items-start gap-3 rounded-md bg-amber-50/60 px-3 py-2 text-[13px]">
-              <span className="flex-1 whitespace-pre-wrap text-slate-800">{n.text}</span>
-              <span className="shrink-0 text-xs text-slate-500">{formatDateTimeVN(n.at)}</span>
+            <li key={n.id} className="group flex items-start gap-3 rounded-md bg-warn-tint/60 px-3 py-2 text-[13px]">
+              <span className="flex-1 whitespace-pre-wrap text-ink">{n.text}</span>
+              <span className="shrink-0 text-xs text-ink-4">{formatDateTimeVN(n.at)}</span>
               <button
                 type="button"
                 onClick={() => update({ notes: draft.notes.filter((x) => x.id !== n.id) })}
-                className="shrink-0 text-xs text-slate-500 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-red-600"
+                className="shrink-0 text-xs text-ink-4 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-danger-ink"
               >
                 Xoá
               </button>

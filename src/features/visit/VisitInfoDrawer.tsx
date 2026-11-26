@@ -36,9 +36,9 @@ function Panel({ visitId, onClose }: { visitId: string; onClose: () => void }) {
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-50 animate-fade-in bg-slate-900/45" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-        <aside role="dialog" aria-modal="true" aria-label="Chi tiết lượt khám" className="absolute top-1.5 right-1.5 bottom-1.5 flex w-[min(660px,96vw)] animate-slide-in-right flex-col overflow-hidden rounded-xl bg-white shadow-2xl">
-          <div className="relative flex shrink-0 items-center justify-center border-b border-slate-100 px-4 py-2">
+      <div className="fixed inset-0 z-50 animate-fade-in bg-overlay/45" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+        <aside role="dialog" aria-modal="true" aria-label="Chi tiết lượt khám" className="absolute top-1.5 right-1.5 bottom-1.5 flex w-[min(660px,96vw)] animate-slide-in-right flex-col overflow-hidden rounded-xl bg-surface shadow-pop">
+          <div className="relative flex shrink-0 items-center justify-center border-b border-line-soft px-4 py-2">
             <Tabs
               variant="pill"
               value={tab}
@@ -50,7 +50,7 @@ function Panel({ visitId, onClose }: { visitId: string; onClose: () => void }) {
                 { value: 'receipts', label: 'Phiếu thu' },
               ]}
             />
-            <button type="button" onClick={onClose} className="absolute right-3 rounded-md p-1 text-slate-500 hover:bg-slate-100" aria-label="Đóng">
+            <button type="button" onClick={onClose} className="absolute right-3 rounded-md p-1 text-ink-4 hover:bg-subtle" aria-label="Đóng">
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -69,16 +69,16 @@ function Panel({ visitId, onClose }: { visitId: string; onClose: () => void }) {
 function Field({ label, children, full }: { label: string; children: ReactNode; full?: boolean }) {
   return (
     <div className={full ? 'col-span-2' : undefined}>
-      <p className="text-slate-500">{label}</p>
-      <div className="text-slate-900">{children || '--'}</div>
+      <p className="text-ink-4">{label}</p>
+      <div className="text-ink">{children || '--'}</div>
     </div>
   )
 }
 
 function Block({ icon, title, children }: { icon: ReactNode; title: string; children: ReactNode }) {
   return (
-    <section className="border-t border-slate-200 pt-3">
-      <h3 className="mb-2.5 flex items-center gap-1.5 font-semibold text-slate-900">
+    <section className="border-t border-line pt-3">
+      <h3 className="mb-2.5 flex items-center gap-1.5 font-semibold text-ink">
         {icon}
         {title}
       </h3>
@@ -124,7 +124,7 @@ function InfoTab({ visit, patient }: { visit: Visit; patient: Patient }) {
         </Field>
         <Field label="Thanh toán">
           <span className="inline-flex items-center gap-1">
-            <span className={cn('h-2 w-2 rounded-full', visit.paymentStatus === 'paid' ? 'bg-emerald-500' : 'bg-orange-500')} />
+            <span className={cn('h-2 w-2 rounded-full', visit.paymentStatus === 'paid' ? 'bg-brand' : 'bg-accent')} />
             {PAYMENT_STATUS[visit.paymentStatus].label}
           </span>
         </Field>
@@ -170,15 +170,15 @@ function RxTab({ visit, patient }: { visit: Visit; patient: Patient }) {
             navigator.clipboard?.writeText(draft.prescription.map((i) => `${i.name} – ${i.quantity} ${i.quantityUnit}`).join('\n')).catch(() => {})
             toast({ title: 'Đã sao chép danh sách thuốc', tone: 'success' })
           }}
-          className="flex items-center gap-1.5 rounded-md bg-blue-50 px-2.5 py-1 text-[12.5px] font-medium text-blue-700 hover:bg-blue-100"
+          className="flex items-center gap-1.5 rounded-md bg-brand-tint px-2.5 py-1 text-[12.5px] font-medium text-brand-ink hover:bg-brand-soft"
         >
           <Copy className="h-3.5 w-3.5" /> Sao chép toa
         </button>
-        <button type="button" onClick={() => setPrintOpen(true)} className="rounded-md p-1.5 text-slate-600 hover:bg-slate-100" aria-label="In đơn thuốc" title="In đơn thuốc">
+        <button type="button" onClick={() => setPrintOpen(true)} className="rounded-md p-1.5 text-ink-3 hover:bg-subtle" aria-label="In đơn thuốc" title="In đơn thuốc">
           <Printer className="h-4 w-4" />
         </button>
       </div>
-      <div className="rounded-md border border-slate-200 bg-white px-6 py-5 font-doc text-[12.5px] leading-6 text-black">
+      <div className="paper rounded-md border border-line bg-surface px-6 py-5 font-doc text-[12.5px] leading-6 text-black">
         <PrescriptionDoc visit={visit} patient={patient} draft={draft} />
       </div>
       <PrintPreviewModal open={printOpen} title="Đơn thuốc" onClose={() => setPrintOpen(false)}>
@@ -197,21 +197,21 @@ function ClsTab({ visit }: { visit: Visit }) {
   const firstSent = orders.map((o) => o.sentAt).filter(Boolean).sort()[0]
   return (
     <>
-      <div className="grid grid-cols-[1fr_130px_110px] border-b border-slate-200 pb-2 text-[12.5px] font-medium text-slate-500">
+      <div className="grid grid-cols-[1fr_130px_110px] border-b border-line pb-2 text-[12.5px] font-medium text-ink-4">
         <span>Tên chỉ định</span>
         <span>Trạng thái</span>
         <span className="text-right">Thao tác</span>
       </div>
-      {firstSent && <p className="bg-blue-50/60 px-2 py-1.5 text-[12.5px] text-blue-700">Ngày chỉ định {formatDateTimeVN(firstSent)}</p>}
+      {firstSent && <p className="bg-brand-tint/60 px-2 py-1.5 text-[12.5px] text-brand-ink">Ngày chỉ định {formatDateTimeVN(firstSent)}</p>}
       {[...groups.entries()].map(([name, items]) => {
         const done = items.filter((o) => o.resultStatus === 'has_result').length
         return (
-          <div key={name} className="border-b border-slate-100 py-1">
+          <div key={name} className="border-b border-line-soft py-1">
             <div className="flex items-center justify-between py-1.5">
               <b>{name}</b>
-              <span className="flex items-center gap-2 text-xs text-slate-500">
-                <span className="h-1.5 w-20 overflow-hidden rounded-full bg-slate-200">
-                  <span className="block h-full bg-blue-500" style={{ width: `${(done / items.length) * 100}%` }} />
+              <span className="flex items-center gap-2 text-xs text-ink-4">
+                <span className="h-1.5 w-20 overflow-hidden rounded-full bg-line">
+                  <span className="block h-full bg-brand" style={{ width: `${(done / items.length) * 100}%` }} />
                 </span>
                 {done}/{items.length} hoàn thành · Tạm tính: {formatMoney(items.reduce((s, o) => s + o.unitPrice * o.quantity, 0))}
               </span>
@@ -222,24 +222,24 @@ function ClsTab({ visit }: { visit: Visit }) {
               return (
                 <div key={o.id} className="grid grid-cols-[1fr_130px_110px] items-center py-1.5">
                   <span className="flex items-center gap-2">
-                    <span className={cn('flex h-7 w-7 items-center justify-center rounded-lg', o.category === 'imaging' ? 'bg-violet-50 text-violet-600' : 'bg-orange-50 text-orange-700')}>
+                    <span className={cn('flex h-7 w-7 items-center justify-center rounded-lg', o.category === 'imaging' ? 'bg-violet-50 text-violet-600' : 'bg-accent-tint text-accent-ink')}>
                       {o.category === 'imaging' ? <ScanLine className="h-3.5 w-3.5" /> : <FlaskConical className="h-3.5 w-3.5" />}
                     </span>
                     <span>
                       {o.name}
-                      <span className="block text-xs text-emerald-700">{formatMoney(o.unitPrice * o.quantity)}</span>
+                      <span className="block text-xs text-brand-ink">{formatMoney(o.unitPrice * o.quantity)}</span>
                     </span>
                   </span>
                   <span className="flex flex-col items-start gap-1 text-[11.5px] font-medium">
-                    <span className={cn('rounded-full px-2 py-0.5', paid ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-orange-700')}>{paid ? 'Đã thanh toán' : 'Chưa thanh toán'}</span>
-                    <span className={cn('rounded-full px-2 py-0.5', has ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-orange-700')}>{has ? 'Có kết quả' : 'Chờ kết quả'}</span>
+                    <span className={cn('rounded-full px-2 py-0.5', paid ? 'bg-brand-soft text-brand-ink' : 'bg-accent-tint text-accent-ink')}>{paid ? 'Đã thanh toán' : 'Chưa thanh toán'}</span>
+                    <span className={cn('rounded-full px-2 py-0.5', has ? 'bg-brand-soft text-brand-ink' : 'bg-accent-tint text-accent-ink')}>{has ? 'Có kết quả' : 'Chờ kết quả'}</span>
                   </span>
                   <span className="text-right">
                     <button
                       type="button"
                       disabled={!has}
                       onClick={() => setViewing(o.id)}
-                      className="inline-flex items-center gap-1 rounded-md border border-slate-200 px-2 py-1 text-[12px] text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                      className="inline-flex items-center gap-1 rounded-md border border-line px-2 py-1 text-[12px] text-ink-2 hover:bg-canvas disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       <Eye className="h-3.5 w-3.5" /> Xem kết quả
                     </button>
@@ -262,8 +262,8 @@ export function ReceiptsTab({ visit }: { visit: Visit }) {
   return (
     <>
       <table className="w-full">
-        <thead className="text-[12.5px] text-slate-500">
-          <tr className="border-b border-slate-200">
+        <thead className="text-[12.5px] text-ink-4">
+          <tr className="border-b border-line">
             <th className="w-6 py-2 text-left font-medium">#</th>
             <th className="py-2 text-left font-medium">Tên phiếu thu</th>
             <th className="py-2 text-left font-medium">Số phiếu</th>
@@ -274,11 +274,11 @@ export function ReceiptsTab({ visit }: { visit: Visit }) {
         </thead>
         <tbody>
           {receipts.map((r, i) => (
-            <tr key={r.id} className="border-b border-slate-100">
+            <tr key={r.id} className="border-b border-line-soft">
               <td className="py-2">{i + 1}</td>
               <td className="py-2">{r.lines?.some((l) => l.kind === 'paraclinical') ? 'Công khám và dịch vụ' : 'Công khám'}</td>
               <td className="py-2">
-                <button type="button" onClick={() => setOpenId(r.id)} className="text-blue-600 hover:underline">
+                <button type="button" onClick={() => setOpenId(r.id)} className="text-brand-ink hover:underline">
                   {r.code ?? r.id.toUpperCase()}
                 </button>
               </td>
@@ -296,8 +296,8 @@ export function ReceiptsTab({ visit }: { visit: Visit }) {
 
 function Empty({ icon, text }: { icon: ReactNode; text: string }) {
   return (
-    <div className="flex flex-col items-center gap-2 py-16 text-center text-slate-500">
-      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">{icon}</span>
+    <div className="flex flex-col items-center gap-2 py-16 text-center text-ink-4">
+      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-subtle text-ink-5">{icon}</span>
       {text}
     </div>
   )

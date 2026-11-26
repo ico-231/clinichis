@@ -127,7 +127,7 @@ export function PatientFields({ value, onChange, errors }: { value: PatientDraft
         onChange={(gender) => onChange({ gender })}
         error={errors.gender}
       />
-      {value.dob && !errors.dob && <p className="col-span-2 -mt-3 text-[11.5px] text-slate-500">Tuổi hiện tại: <span className="font-medium text-slate-700">{ageLabel(value.dob)}</span></p>}
+      {value.dob && !errors.dob && <p className="col-span-2 -mt-3 text-[11.5px] text-ink-4">Tuổi hiện tại: <span className="font-medium text-ink-2">{ageLabel(value.dob)}</span></p>}
       <TextField
         label="Điện thoại"
         required
@@ -281,7 +281,7 @@ export function VisitFields({ value, onChange, errors }: { value: VisitInput; on
         onChange={(e) => onChange({ note: e.target.value })}
       />
 
-      <div className="col-span-2 space-y-3 rounded-lg border border-slate-200 bg-slate-50/70 p-3">
+      <div className="col-span-2 space-y-3 rounded-lg border border-line bg-canvas/70 p-3">
         <Checkbox
           checked={value.checkInNow}
           onChange={(checkInNow) => onChange({ checkInNow })}
@@ -296,11 +296,11 @@ export function VisitFields({ value, onChange, errors }: { value: VisitInput; on
             description={value.fee === 0 ? 'Dịch vụ miễn phí' : 'Ghi nhận thanh toán đủ phí khám'}
           />
           {value.payNow && value.fee > 0 && (
-            <Select value={value.payMethod} options={toOptions(PAYMENT_METHOD_LABEL)} onChange={(payMethod) => onChange({ payMethod })} className="w-[150px]" triggerClassName="h-8 bg-white" />
+            <Select value={value.payMethod} options={toOptions(PAYMENT_METHOD_LABEL)} onChange={(payMethod) => onChange({ payMethod })} className="w-[150px]" triggerClassName="h-8 bg-surface" />
           )}
         </div>
         {isFuture && value.checkInNow && (
-          <p className="flex items-center gap-1.5 text-[11.5px] text-amber-700">
+          <p className="flex items-center gap-1.5 text-[11.5px] text-warn-strong">
             <CircleAlert className="h-3.5 w-3.5" /> Ngày khám ở tương lai – nên bỏ chọn “Tiếp nhận ngay”.
           </p>
         )}
@@ -312,10 +312,10 @@ export function VisitFields({ value, onChange, errors }: { value: VisitInput; on
 export function SectionTitle({ step, title, description }: { step: number; title: string; description?: string }) {
   return (
     <div className="mb-5 flex items-start gap-2.5">
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[11px] font-semibold text-white">{step}</span>
+      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand text-[11px] font-semibold text-white">{step}</span>
       <div>
-        <h3 className="text-[13.5px] leading-5 font-semibold text-slate-900">{title}</h3>
-        {description && <p className="text-xs text-slate-500">{description}</p>}
+        <h3 className="text-[13.5px] leading-5 font-semibold text-ink">{title}</h3>
+        {description && <p className="text-xs text-ink-4">{description}</p>}
       </div>
     </div>
   )

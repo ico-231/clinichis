@@ -16,15 +16,15 @@ export function VisitStatusBadge({ status }: { status: VisitStatus }) {
 export function VisitStatusIcon({ status, className = 'h-3.5 w-3.5' }: { status: VisitStatus; className?: string }) {
   switch (status) {
     case 'registered':
-      return <Sparkles className={cn(className, 'text-amber-500')} />
+      return <Sparkles className={cn(className, 'text-warn-ink')} />
     case 'waiting':
-      return <Clock3 className={cn(className, 'text-orange-700')} />
+      return <Clock3 className={cn(className, 'text-accent-ink')} />
     case 'in_progress':
-      return <Activity className={cn(className, 'text-blue-600')} />
+      return <Activity className={cn(className, 'text-info-ink')} />
     case 'done':
-      return <CheckCircle2 className={cn(className, 'text-emerald-700')} />
+      return <CheckCircle2 className={cn(className, 'text-brand-ink')} />
     case 'cancelled':
-      return <Ban className={cn(className, 'text-slate-400')} />
+      return <Ban className={cn(className, 'text-ink-3')} />
   }
 }
 
@@ -33,21 +33,22 @@ export function PaymentStatusBadge({ status }: { status: PaymentStatus }) {
   return <Badge tone={s.tone}>{s.short}</Badge>
 }
 
-/** Hiển thị trạng thái thanh toán dạng vòng tròn rỗng + chữ (khớp bảng Lễ tân) */
-const PAYMENT_RING: Record<PaymentStatus, string> = {
-  unpaid: 'border-orange-500',
-  paid: 'border-emerald-500',
-  partial: 'border-amber-500',
-  none: 'border-slate-400',
-  cancelled: 'border-slate-400',
-  refunded: 'border-violet-500',
-  failed: 'border-red-500',
+/** Trạng thái thanh toán trong bảng: chấm màu + chữ cùng tông (khớp bảng Lễ tân) */
+const PAYMENT_TONE: Record<PaymentStatus, { dot: string; text: string }> = {
+  unpaid: { dot: 'bg-accent', text: 'text-accent-ink' },
+  paid: { dot: 'bg-brand', text: 'text-brand-ink' },
+  partial: { dot: 'bg-warn', text: 'text-warn-ink' },
+  none: { dot: 'bg-ink-5', text: 'text-ink-3' },
+  cancelled: { dot: 'bg-ink-5', text: 'text-ink-4' },
+  refunded: { dot: 'bg-violet-500', text: 'text-violet-700' },
+  failed: { dot: 'bg-danger', text: 'text-danger-ink' },
 }
 
 export function PaymentStatusInline({ status }: { status: PaymentStatus }) {
+  const tone = PAYMENT_TONE[status]
   return (
-    <span className="inline-flex items-center gap-1.5 text-[13px] whitespace-nowrap text-slate-800">
-      <span className={cn('h-2.5 w-2.5 shrink-0 rounded-full border-[2px]', PAYMENT_RING[status])} />
+    <span className={cn('inline-flex items-center gap-1.5 text-[13px] font-medium whitespace-nowrap', tone.text)}>
+      <span className={cn('h-2 w-2 shrink-0 rounded-full', tone.dot)} />
       <span>{PAYMENT_STATUS[status].label}</span>
     </span>
   )
@@ -55,7 +56,7 @@ export function PaymentStatusInline({ status }: { status: PaymentStatus }) {
 
 export function PatientTypeTag({ type }: { type: PatientType }) {
   return (
-    <span className={type === 'new' ? 'text-[12.5px] font-medium text-sky-600' : 'text-[12.5px] font-medium text-slate-600'}>
+    <span className={type === 'new' ? 'text-[12.5px] font-semibold text-brand-ink' : 'text-[12.5px] font-medium text-ink-3'}>
       {PATIENT_TYPE_LABEL[type]}
     </span>
   )

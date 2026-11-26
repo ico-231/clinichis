@@ -59,9 +59,9 @@ export function ReceiptModal({ visitId, paymentId, onClose }: { visitId: string;
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-50 flex animate-fade-in items-start justify-center overflow-y-auto bg-slate-900/45 p-4 pt-[8vh]" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-        <div role="dialog" aria-modal="true" aria-label="Phiếu thu" className="w-full max-w-[880px] animate-pop-in rounded-xl bg-white shadow-2xl">
-          <div className="relative flex items-center justify-center border-b border-slate-100 px-5 py-2.5">
+      <div className="fixed inset-0 z-50 flex animate-fade-in items-start justify-center overflow-y-auto bg-overlay/45 p-4 pt-[8vh]" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+        <div role="dialog" aria-modal="true" aria-label="Phiếu thu" className="w-full max-w-[880px] animate-pop-in rounded-xl bg-surface shadow-pop">
+          <div className="relative flex items-center justify-center border-b border-line-soft px-5 py-2.5">
             <Tabs
               variant="pill"
               value={tab}
@@ -71,18 +71,18 @@ export function ReceiptModal({ visitId, paymentId, onClose }: { visitId: string;
                 { value: 'drug', label: 'Thuốc' },
               ]}
             />
-            <button type="button" onClick={onClose} className="absolute right-4 rounded-md p-1 text-slate-500 hover:bg-slate-100" aria-label="Đóng">
+            <button type="button" onClick={onClose} className="absolute right-4 rounded-md p-1 text-ink-4 hover:bg-subtle" aria-label="Đóng">
               <X className="h-4 w-4" />
             </button>
           </div>
 
           <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-[1.55fr_1fr]">
-            <div className="overflow-hidden rounded-lg border border-slate-200 self-start">
+            <div className="overflow-hidden rounded-lg border border-line self-start">
               {tab === 'drug' ? (
-                <p className="px-4 py-10 text-center text-[13px] text-slate-500">Phiếu này không có thuốc (phòng khám chỉ kê đơn, không bán thuốc).</p>
+                <p className="px-4 py-10 text-center text-[13px] text-ink-4">Phiếu này không có thuốc (phòng khám chỉ kê đơn, không bán thuốc).</p>
               ) : (
                 <table className="w-full text-[13px]">
-                  <thead className="bg-slate-50 text-[12.5px] text-slate-600">
+                  <thead className="bg-canvas text-[12.5px] text-ink-3">
                     <tr>
                       <th className="w-8 py-2 pl-3 text-left font-medium">#</th>
                       <th className="py-2 text-left font-medium">Tên dịch vụ</th>
@@ -99,11 +99,11 @@ export function ReceiptModal({ visitId, paymentId, onClose }: { visitId: string;
                         {g.items.map((l) => {
                           idx += 1
                           return (
-                            <tr key={`${l.kind}:${l.refId}`} className="border-t border-slate-100">
+                            <tr key={`${l.kind}:${l.refId}`} className="border-t border-line-soft">
                               <td className="py-2 pl-3">{idx}</td>
                               <td className="py-2">
                                 {l.name}
-                                {l.kind === 'consultation' && <span className="block text-xs text-slate-500">{visit.code}</span>}
+                                {l.kind === 'consultation' && <span className="block text-xs text-ink-4">{visit.code}</span>}
                               </td>
                               <td className="py-2 text-center tabular-nums">{l.quantity}</td>
                               <td className="py-2 text-center">{l.unit}</td>
@@ -115,7 +115,7 @@ export function ReceiptModal({ visitId, paymentId, onClose }: { visitId: string;
                         })}
                       </GroupBlock>
                     ))}
-                    <tr className="border-t border-slate-200">
+                    <tr className="border-t border-line">
                       <td colSpan={6} className="py-2.5 pr-2 text-right font-semibold">
                         Tổng tiền
                       </td>
@@ -126,8 +126,8 @@ export function ReceiptModal({ visitId, paymentId, onClose }: { visitId: string;
               )}
             </div>
 
-            <div className="rounded-lg border border-slate-200 p-3.5 text-[13px]">
-              <p className="mb-2.5 text-[14px] font-semibold text-slate-900">Thông tin thanh toán</p>
+            <div className="rounded-lg border border-line p-3.5 text-[13px]">
+              <p className="mb-2.5 text-[14px] font-semibold text-ink">Thông tin thanh toán</p>
               <dl className="space-y-2.5">
                 <Info2 label="Mã phiếu" value={<b>{receipt.code ?? receipt.id.toUpperCase()}</b>} />
                 <Info2 label="Trạng thái" value={<Chip tone={refunded ? 'violet' : 'green'}>{refunded ? 'Đã hoàn tiền' : 'Hoàn thành'}</Chip>} />
@@ -138,18 +138,18 @@ export function ReceiptModal({ visitId, paymentId, onClose }: { visitId: string;
                 <Info2 label="Người bán" value={receipt.cashier ?? '--'} />
                 <Info2 label="Ghi chú" value={receipt.note || '--'} />
               </dl>
-              <div className="my-3 border-t border-dashed border-slate-200" />
+              <div className="my-3 border-t border-dashed border-line" />
               <dl className="space-y-2.5">
                 <Info2 label="Tổng tiền hàng" value={formatNumber(gross)} />
                 <Info2
                   label={
                     <span className="flex items-center gap-1">
-                      Giảm giá dịch vụ <Info className="h-3 w-3 text-slate-400" aria-label="Giảm giá trên toàn phiếu" />
+                      Giảm giá dịch vụ <Info className="h-3 w-3 text-ink-5" aria-label="Giảm giá trên toàn phiếu" />
                     </span>
                   }
                   value={formatNumber(receipt.discount ?? 0)}
                 />
-                <Info2 label={<b className="text-slate-900">Tổng tiền</b>} value={<b>{formatNumber(receipt.amount)}</b>} />
+                <Info2 label={<b className="text-ink">Tổng tiền</b>} value={<b>{formatNumber(receipt.amount)}</b>} />
                 {receipt.customerPaid !== undefined && receipt.customerPaid > receipt.amount && (
                   <Info2 label="Tiền thừa trả khách" value={formatNumber(receipt.customerPaid - receipt.amount)} />
                 )}
@@ -157,7 +157,7 @@ export function ReceiptModal({ visitId, paymentId, onClose }: { visitId: string;
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 border-t border-slate-100 px-4 py-3">
+          <div className="flex justify-end gap-2 border-t border-line-soft px-4 py-3">
             <Button variant="soft" onClick={issue} disabled={issued || refunded} className="min-w-36">
               {issued ? 'Đã phát hành hoá đơn' : 'Phát hành hoá đơn'}
             </Button>
@@ -190,8 +190,8 @@ export function ReceiptModal({ visitId, paymentId, onClose }: { visitId: string;
 function GroupBlock({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <>
-      <tr className="border-t border-slate-100 bg-slate-50/70">
-        <td colSpan={7} className="px-3 py-1.5 font-semibold text-slate-800">
+      <tr className="border-t border-line-soft bg-canvas/70">
+        <td colSpan={7} className="px-3 py-1.5 font-semibold text-ink">
           {title}
         </td>
       </tr>
@@ -203,8 +203,8 @@ function GroupBlock({ title, children }: { title: string; children: React.ReactN
 function Info2({ label, value }: { label: React.ReactNode; value: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <dt className="text-slate-600">{label}</dt>
-      <dd className="text-right text-slate-900">{value}</dd>
+      <dt className="text-ink-3">{label}</dt>
+      <dd className="text-right text-ink">{value}</dd>
     </div>
   )
 }
@@ -214,7 +214,7 @@ function Chip({ tone, children }: { tone: 'green' | 'gray' | 'violet'; children:
     <span
       className={cn(
         'whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium',
-        tone === 'green' ? 'bg-emerald-50 text-emerald-700' : tone === 'violet' ? 'bg-violet-50 text-violet-700' : 'bg-slate-100 text-slate-600',
+        tone === 'green' ? 'bg-brand-soft text-brand-ink' : tone === 'violet' ? 'bg-violet-50 text-violet-700' : 'bg-subtle text-ink-3',
       )}
     >
       {children}

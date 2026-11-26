@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, type ComponentType } from 'react'
 import { Loader2 } from 'lucide-react'
-import { Sidebar } from './Sidebar'
+import { TopNav } from './TopNav'
 import { ErrorBoundary } from './ErrorBoundary'
 import { useToast } from '@/components/ui/Toast'
 import { applyTheme } from '@/lib/theme'
@@ -49,7 +49,7 @@ const SCREENS: Partial<Record<RouteKey, ComponentType>> = {
 
 function Loading() {
   return (
-    <div className="flex h-full items-center justify-center gap-2 text-[13px] text-slate-500" role="status">
+    <div className="flex h-full items-center justify-center gap-2 text-[13px] text-ink-4" role="status">
       <Loader2 className="h-4 w-4 animate-spin" /> Đang tải màn hình...
     </div>
   )
@@ -74,7 +74,7 @@ export function AppShell() {
   }, [toast])
   const Screen = SCREENS[ui.activeRoute]
   return (
-    <div className="flex h-screen overflow-hidden bg-white text-slate-900">
+    <div className="flex h-screen flex-col overflow-hidden bg-canvas text-ink">
       {/* Người dùng bàn phím: Tab đầu tiên cho phép bỏ qua menu */}
       <a
         href="#main-content"
@@ -83,12 +83,12 @@ export function AppShell() {
           e.preventDefault()
           document.getElementById('main-content')?.focus()
         }}
-        className="fixed top-2 left-2 z-[100] -translate-y-[200%] rounded-md bg-blue-600 px-3 py-2 text-[13px] font-semibold text-white shadow-lg transition-transform focus:translate-y-0"
+        className="fixed top-2 left-2 z-[100] -translate-y-[200%] rounded-lg bg-brand px-3 py-2 text-[13px] font-semibold text-white shadow-lg transition-transform focus:translate-y-0"
       >
         Bỏ qua menu, tới nội dung chính
       </a>
-      <Sidebar />
-      <main id="main-content" tabIndex={-1} className="min-w-0 flex-1 outline-none">
+      <TopNav />
+      <main id="main-content" tabIndex={-1} className="min-h-0 flex-1 overflow-hidden outline-none">
         {/* key theo route: chuyển màn khác là thử hiển thị lại từ đầu */}
         <ErrorBoundary key={ui.activeRoute} onResetData={resetDemoData}>
           <Suspense fallback={<Loading />}>{Screen ? <Screen key={ui.activeRoute} /> : <PlaceholderPage key={ui.activeRoute} route={ui.activeRoute} />}</Suspense>

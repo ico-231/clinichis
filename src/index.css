@@ -1,16 +1,88 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 /* Không quét docs/: đường dẫn Windows trong tài liệu (dấu gạch ngược + chữ số hex) bị Tailwind đọc thành mã thoát CSS và làm hỏng build */
 @source not '../docs';
 
+/* Giao diện tối: class .dark trên <html> (xem src/lib/theme.ts) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------ */
+/* Bảng màu ClinicHIS (hướng 6C): nền ấm, xanh ngọc thương hiệu,        */
+/* cam san hô làm điểm nhấn. Mọi màu dùng qua token dưới đây, không    */
+/* viết mã hex trong component: giao diện tối chỉ cần đổi token.       */
+/* -fill dùng làm nền/viền; -ink dùng cho chữ trên nền sáng/tối.       */
+/* ------------------------------------------------------------------ */
 @theme {
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   /* Bản in (đơn thuốc, phiếu, bệnh án): font có đủ dấu tiếng Việt */
   --font-doc: 'Times New Roman', Times, 'Noto Serif', serif;
+
+  /* Nền, bề mặt, đường kẻ */
+  --color-canvas: #faf9f7;
+  --color-surface: #ffffff;
+  --color-subtle: #f5f4f1;
+  --color-line-soft: #f0efea;
+  --color-line: #e7e5e4;
+  --color-line-strong: #d6d3d1;
+  /* Chữ: ink (đậm nhất) → ink-5 (chỉ cho biểu tượng / gợi ý) */
+  --color-ink: #1c1917;
+  --color-ink-2: #44403c;
+  --color-ink-3: #57534e;
+  --color-ink-4: #78716c;
+  --color-ink-5: #a8a29e;
+  /* Khối đảo màu (nút lọc "Tất cả" đang chọn…) và lớp phủ hộp thoại */
+  --color-inverse: #1c1917;
+  --color-on-inverse: #ffffff;
+  --color-overlay: #1c1917;
+
+  /* Thương hiệu: xanh ngọc */
+  --color-brand: #0f766e;
+  --color-brand-strong: #0b5d56;
+  --color-brand-deep: #094d47;
+  --color-brand-ink: #0f766e;
+  --color-brand-soft: #e6f7f5;
+  --color-brand-tint: #f0fdfa;
+  --color-brand-wash: #f5fbf9;
+  --color-brand-line: #ccfbf1;
+
+  /* Điểm nhấn: cam san hô (STT, chưa thanh toán, số đếm) */
+  --color-accent: #c2410c;
+  --color-accent-strong: #9a3412;
+  --color-accent-ink: #c2410c;
+  --color-accent-soft: #fff1ec;
+  --color-accent-tint: #fff7ed;
+  --color-accent-line: #ffedd5;
+
+  /* Thông tin: xanh dương (mã khám, đang khám, liên kết) */
+  --color-info: #1d4ed8;
+  --color-info-strong: #1e40af;
+  --color-info-ink: #1d4ed8;
+  --color-info-soft: #dbeafe;
+  --color-info-tint: #eff6ff;
+  --color-info-line: #bfdbfe;
+
+  /* Cảnh báo: hổ phách */
+  --color-warn: #d97706;
+  --color-warn-strong: #92400e;
+  --color-warn-ink: #b45309;
+  --color-warn-soft: #fef3c7;
+  --color-warn-tint: #fffbeb;
+  --color-warn-line: #fde68a;
+
+  /* Lỗi / xoá: đỏ */
+  --color-danger: #c81e1e;
+  --color-danger-strong: #9b1c1c;
+  --color-danger-ink: #c81e1e;
+  --color-danger-soft: #fef2f2;
+  --color-danger-line: #fecaca;
+
+  --shadow-card: 0 1px 2px rgb(28 25 23 / 0.04);
+  --shadow-pop: 0 12px 32px -8px rgb(28 25 23 / 0.18), 0 2px 6px rgb(28 25 23 / 0.06);
 
   --animate-fade-in: fade-in 140ms ease-out;
   --animate-pop-in: pop-in 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
   --animate-slide-in-right: slide-in-right 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-slide-in-left: slide-in-left 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
 
   @keyframes fade-in {
     from {
@@ -38,6 +110,118 @@
       transform: none;
     }
   }
+  @keyframes slide-in-left {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: none;
+    }
+  }
+}
+
+/* Màu biểu đồ (SVG dùng qua style={{ fill: 'var(--chart-…)' }}) */
+:root {
+  --chart-old: #99f6e4;
+  --chart-new: #0f766e;
+  --chart-visits: #c2410c;
+  --chart-info: #1d4ed8;
+  --chart-warn: #d97706;
+  --chart-violet: #7c3aed;
+  --chart-grid: #eceae6;
+  --chart-axis: #d6d3d1;
+  --chart-track: #f4f3ef;
+  --chart-track-hover: #ecebe6;
+}
+.dark {
+  --chart-old: #2c6b62;
+  --chart-new: #3fd3bf;
+  --chart-visits: #fb8a48;
+  --chart-info: #6b9cf7;
+  --chart-warn: #f2b13a;
+  --chart-violet: #a78bfa;
+  --chart-grid: #2c2a26;
+  --chart-axis: #46423c;
+  --chart-track: #211f1c;
+  --chart-track-hover: #2a2824;
+}
+
+/* ------------------------------------------------------------------ */
+/* Giao diện tối (ảnh 158): cùng bảng màu, nền than ấm                  */
+/* ------------------------------------------------------------------ */
+.dark {
+  color-scheme: dark;
+  --color-canvas: #121110;
+  --color-surface: #1c1a18;
+  --color-subtle: #25231f;
+  --color-line-soft: #292723;
+  --color-line: #33302b;
+  --color-line-strong: #46423c;
+  --color-ink: #f4f2ee;
+  --color-ink-2: #dcd8d1;
+  --color-ink-3: #c1bbb3;
+  --color-ink-4: #9e978e;
+  --color-ink-5: #787168;
+  --color-inverse: #ece9e4;
+  --color-on-inverse: #1c1a18;
+  --color-overlay: #050404;
+
+  --color-brand: #0f857b;
+  --color-brand-strong: #0c7067;
+  --color-brand-deep: #0a5f58;
+  --color-brand-ink: #5dd3c3;
+  --color-brand-soft: #15332f;
+  --color-brand-tint: #152a27;
+  --color-brand-wash: #171f1d;
+  --color-brand-line: #1f4c46;
+
+  --color-accent: #c84a14;
+  --color-accent-strong: #fdba74;
+  --color-accent-ink: #fb9a5a;
+  --color-accent-soft: #3a2217;
+  --color-accent-tint: #2d1f17;
+  --color-accent-line: #5a301b;
+
+  --color-info: #2f6be8;
+  --color-info-strong: #c3dafe;
+  --color-info-ink: #93bbfd;
+  --color-info-soft: #1b2b4d;
+  --color-info-tint: #172238;
+  --color-info-line: #27407a;
+
+  --color-warn: #d98a0b;
+  --color-warn-strong: #fcd34d;
+  --color-warn-ink: #fbbf24;
+  --color-warn-soft: #3a2e10;
+  --color-warn-tint: #2b2413;
+  --color-warn-line: #5c4813;
+
+  --color-danger: #dc3a3a;
+  --color-danger-strong: #fecaca;
+  --color-danger-ink: #fca5a5;
+  --color-danger-soft: #3b1a19;
+  --color-danger-line: #6b2522;
+
+  --shadow-card: 0 0 0 transparent;
+  --shadow-pop: 0 16px 40px -8px rgb(0 0 0 / 0.6), 0 2px 8px rgb(0 0 0 / 0.4);
+
+  /* Màu phụ còn dùng trực tiếp (hoàn tiền, nhãn phụ): nền nhạt ⇒ nền tối */
+  --color-violet-50: #251c3d;
+  --color-violet-200: #3d2f66;
+  --color-violet-600: #c4b5fd;
+  --color-violet-700: #c4b5fd;
+  --color-sky-50: #10283a;
+  --color-sky-600: #7dd3fc;
+  --color-sky-700: #7dd3fc;
+  --color-rose-50: #3a1622;
+  --color-rose-200: #6b2638;
+  --color-rose-700: #fda4af;
+  --color-yellow-50: #2f2a0f;
+  --color-yellow-200: #5c5013;
+  --color-yellow-800: #fde047;
+  --color-indigo-50: #1d1f45;
+  --color-indigo-500: #a5b4fc;
+  --color-green-700: #86efac;
 }
 
 @layer base {
@@ -47,17 +231,25 @@
     height: 100%;
   }
   body {
-    @apply bg-white font-sans text-slate-900 antialiased;
+    @apply bg-canvas font-sans text-ink antialiased;
     font-feature-settings: 'cv11', 'ss01';
+    font-variant-numeric: tabular-nums;
   }
   /* Viền tiêu điểm thống nhất khi dùng bàn phím (ô nhập có ring riêng qua outline-none + focus:ring) */
   :focus-visible {
-    outline: 2px solid var(--color-blue-500);
+    outline: 2px solid var(--color-brand);
     outline-offset: 2px;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-brand) 22%, transparent);
   }
   input[type='time']::-webkit-calendar-picker-indicator {
     opacity: 0.55;
     cursor: pointer;
+  }
+  .dark input[type='time']::-webkit-calendar-picker-indicator,
+  .dark input[type='date']::-webkit-calendar-picker-indicator {
+    filter: invert(0.85);
   }
 }
 
@@ -65,8 +257,53 @@
   .sidebar-scroll,
   .thin-scroll {
     scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
+    scrollbar-color: var(--color-line-strong) transparent;
   }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Ô chọn gốc của trình duyệt: bỏ mũi tên mặc định, dùng mũi tên mảnh cùng kiểu Select tự viết.
+   Để ngoài @layer để thắng padding của class Tailwind (chừa chỗ cho mũi tên). */
+select:not([multiple]):not([size]) {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.55rem center;
+  background-size: 1rem;
+  padding-right: 1.9rem;
+  cursor: pointer;
+}
+.dark select:not([multiple]):not([size]) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239e978e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+select:disabled {
+  cursor: not-allowed;
+}
+
+/* Thanh cuộn mảnh, cùng màu đường kẻ (Chrome/Edge/Safari) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-line-strong);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-ink-5);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 /* In: chỉ in vùng .print-area (đơn thuốc, phiếu chỉ định) */
@@ -99,111 +336,37 @@
   }
   .rich-editor:empty::before {
     content: attr(data-placeholder);
-    color: #94a3b8;
+    color: var(--color-ink-5);
     pointer-events: none;
   }
 }
 
-/* ------------------------------------------------------------------ */
-/* Giao diện tối (ảnh 158): ánh xạ lại thang màu slate + nền nhạt       */
-/* Bật bằng class .dark trên <html> (xem src/lib/theme.ts)             */
-/* ------------------------------------------------------------------ */
-@custom-variant dark (&:where(.dark, .dark *));
-
-.dark {
-  color-scheme: dark;
-  --color-slate-50: #0d1526;
-  --color-slate-100: #18233a;
-  --color-slate-200: #263349;
-  --color-slate-300: #3a4a63;
-  --color-slate-400: #64748b;
-  --color-slate-500: #94a3b8;
-  --color-slate-600: #b4c0cf;
-  --color-slate-700: #cbd5e1;
-  --color-slate-800: #e2e8f0;
-  --color-slate-900: #f1f5f9;
-  --color-slate-950: #f8fafc;
-  --color-blue-50: #14234a;
-  --color-blue-100: #1b2f63;
-  --color-emerald-50: #0b2b26;
-  --color-emerald-100: #0f3b33;
-  --color-green-50: #0b2a17;
-  --color-orange-50: #3a1d0c;
-  --color-orange-100: #4a2610;
-  --color-amber-50: #33270a;
-  --color-red-50: #3a1214;
-  --color-violet-50: #241a47;
-  --color-sky-50: #0b2638;
-  --color-yellow-50: #2f2a0a;
-  --color-rose-50: #3a1220;
-  --color-pink-50: #3a1230;
-}
-.dark body {
-  background-color: #0b1220;
-}
-.dark .bg-white {
-  background-color: #111a2c;
-}
-.dark :is(.bg-white\/90, .bg-white\/70) {
-  background-color: rgb(17 26 44 / 0.9);
-}
-/* Lớp phủ, tooltip: luôn tối */
-.dark [class*='bg-slate-900/'] {
-  background-color: rgb(2 6 23 / 0.7);
-}
-.dark .bg-slate-900 {
-  background-color: #e2e8f0;
-  color: #0f172a;
-}
-/* Chữ màu đậm trên nền nhạt => sáng hơn ở nền tối */
-/* text-blue-600 (link, mã khám) chỉ đạt 3.3:1 trên nền tối */
-.dark .text-blue-600 {
-  color: #60a5fa;
-}
-.dark .text-blue-700,
-.dark .text-blue-800 {
-  color: #93c5fd;
-}
-.dark .text-emerald-700,
-.dark .text-emerald-800 {
-  color: #6ee7b7;
-}
-.dark :is(.text-orange-700, .text-orange-800, .text-amber-700, .text-amber-800, .text-yellow-800) {
-  color: #fdba74;
-}
-.dark :is(.text-red-600, .text-red-700, .text-red-800, .text-rose-700) {
-  color: #fca5a5;
-}
-.dark .text-green-700 {
-  color: #86efac;
-}
-.dark .text-pink-600 {
-  color: #f9a8d4;
-}
-.dark .text-violet-700 {
-  color: #c4b5fd;
-}
-.dark .text-sky-700 {
-  color: #7dd3fc;
-}
-/* Bản in luôn giữ giao diện sáng */
-.dark .print-area {
+/* Bản in và "tờ giấy" xem trước (đơn thuốc, phiếu, bệnh án, phiếu kết quả) luôn giữ giao diện sáng,
+   kể cả khi đang bật giao diện tối. .paper chỉ đổi màu, không ảnh hưởng vùng được in. */
+.print-area,
+.dark .print-area,
+.paper,
+.dark .paper {
   color-scheme: light;
-  --color-slate-50: oklch(98.4% 0.003 247.858);
-  --color-slate-100: oklch(96.8% 0.007 247.896);
-  --color-slate-200: oklch(92.9% 0.013 255.508);
-  --color-slate-300: oklch(86.9% 0.022 252.894);
-  --color-slate-400: oklch(70.4% 0.04 256.788);
-  --color-slate-500: oklch(55.4% 0.046 257.417);
-  --color-slate-600: oklch(44.6% 0.043 257.281);
-  --color-slate-700: oklch(37.2% 0.044 257.287);
-  --color-slate-800: oklch(27.9% 0.041 260.031);
-  --color-slate-900: oklch(20.8% 0.042 265.755);
+  --color-canvas: #faf9f7;
+  --color-surface: #ffffff;
+  --color-subtle: #f5f4f1;
+  --color-line-soft: #f0efea;
+  --color-line: #e7e5e4;
+  --color-line-strong: #d6d3d1;
+  --color-ink: #1c1917;
+  --color-ink-2: #44403c;
+  --color-ink-3: #57534e;
+  --color-ink-4: #78716c;
+  --color-ink-5: #a8a29e;
+  --color-brand: #0f766e;
+  --color-brand-ink: #0f766e;
+  --color-brand-soft: #e6f7f5;
+  --color-accent-ink: #c2410c;
+  --color-info-ink: #1d4ed8;
+  --color-danger-ink: #c81e1e;
   background-color: #fff;
   color: #000;
-}
-.dark .print-area .bg-white {
-  background-color: #fff;
 }
 
 /* Người dùng bật "giảm chuyển động" trong hệ điều hành: tắt hiệu ứng trượt / bật */

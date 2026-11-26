@@ -84,26 +84,26 @@ export function ImagingResultEditor({ visitId, orderId, onClose }: { visitId: st
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-50 flex animate-fade-in bg-slate-900/45 p-2">
-        <div role="dialog" aria-modal="true" aria-label={`Trả kết quả ${order.name}`} className="flex w-full animate-pop-in flex-col rounded-xl bg-white shadow-2xl">
-          <div className="flex items-center gap-3 border-b border-slate-100 px-4 py-2.5">
-            <h2 className="flex-1 text-[15px] font-semibold text-slate-900">{order.result ? 'Cập nhật kết quả' : 'Trả kết quả'}: {order.name}</h2>
-            <span className="text-[12.5px] text-slate-600">
-              Người bệnh: <b className="uppercase">{patient.fullName}</b> · Tuổi: <b>{ageLabel(patient.dob, visit.date)}</b> · Giới tính: <b>{GENDER_LABEL[patient.gender]}</b>
+      <div className="fixed inset-0 z-50 flex animate-fade-in bg-overlay/45 p-3">
+        <div role="dialog" aria-modal="true" aria-label={`Trả kết quả ${order.name}`} className="flex w-full animate-pop-in flex-col rounded-[18px] border border-line bg-surface shadow-pop">
+          <div className="flex items-center gap-3 border-b border-line px-5 py-3">
+            <h2 className="flex-1 text-[15.5px] font-bold text-ink">{order.result ? 'Cập nhật kết quả' : 'Trả kết quả'}: {order.name}</h2>
+            <span className="text-[12.5px] text-ink-3">
+              Người bệnh: <b className="text-ink uppercase">{patient.fullName}</b> · Tuổi: <b className="tabular-nums">{ageLabel(patient.dob, visit.date)}</b> · Giới tính: <b>{GENDER_LABEL[patient.gender]}</b>
             </span>
-            <button type="button" onClick={onClose} className="rounded-md p-1 text-slate-500 hover:bg-slate-100" aria-label="Đóng">
+            <button type="button" onClick={onClose} className="rounded-[8px] p-1 text-ink-3 hover:bg-subtle hover:text-ink" aria-label="Đóng">
               <X className="h-4 w-4" />
             </button>
           </div>
 
-          <div className="flex min-h-0 flex-1 gap-3 p-3">
-            <div className="flex min-w-0 flex-1 flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <span className="shrink-0 text-[13px] font-medium text-slate-800">Mẫu cận lâm sàng</span>
+          <div className="flex min-h-0 flex-1 gap-3.5 p-4">
+            <div className="flex min-w-0 flex-1 flex-col gap-2.5">
+              <div className="flex items-center gap-2.5">
+                <span className="shrink-0 text-[13px] font-semibold text-ink">Mẫu cận lâm sàng</span>
                 <select
                   value={templateId}
                   onChange={(e) => applyTemplate(e.target.value)}
-                  className="h-9 min-w-0 flex-1 rounded-md border border-slate-200 bg-white px-2 text-[13px] outline-none focus:border-blue-500"
+                  className="h-9 min-w-0 flex-1 rounded-[10px] border border-line-strong bg-surface px-2.5 text-[13px] text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/15"
                   aria-label="Chọn mẫu kết quả"
                 >
                   <option value="">Vui lòng chọn mẫu hoặc thêm mới</option>
@@ -119,7 +119,7 @@ export function ImagingResultEditor({ visitId, orderId, onClose }: { visitId: st
               <RichTextArea label="Đề nghị" value={recommendation} onChange={setRecommendation} placeholder="Nhập đề nghị..." className="flex-1" />
             </div>
 
-            <div className="flex w-[300px] shrink-0 flex-col gap-2 rounded-lg border border-slate-200 p-2">
+            <div className="flex w-[300px] shrink-0 flex-col gap-2 rounded-[14px] border border-line bg-canvas p-2.5">
               <CameraPanel onCapture={addImage} disabled={images.length >= MAX_IMAGES} />
               <div className="grid grid-cols-2 gap-1.5">
                 <UploadImagesButton
@@ -138,17 +138,17 @@ export function ImagingResultEditor({ visitId, orderId, onClose }: { visitId: st
                 </Button>
               </div>
               {images.length === 0 ? (
-                <p className="flex flex-1 items-center justify-center rounded-md border border-dashed border-slate-200 px-3 text-center text-[12.5px] text-slate-500">Vui lòng chụp ảnh hoặc tải ảnh lên</p>
+                <p className="flex flex-1 items-center justify-center rounded-[10px] border border-dashed border-line-strong bg-surface/70 px-3 text-center text-[12.5px] text-ink-3">Vui lòng chụp ảnh hoặc tải ảnh lên</p>
               ) : (
                 <>
                   <div className="thin-scroll grid flex-1 grid-cols-2 content-start gap-1.5 overflow-y-auto">
                     {images.map((img) => (
-                      <div key={img.id} className="group relative overflow-hidden rounded-md border-2 border-blue-400">
+                      <div key={img.id} className="group relative overflow-hidden rounded-[10px] border-2 border-brand">
                         <img src={img.dataUrl} alt={img.name} className="aspect-[4/3] w-full object-cover" />
                         <button
                           type="button"
                           onClick={() => setImages((l) => l.filter((x) => x.id !== img.id))}
-                          className="absolute top-1 right-1 rounded bg-white/90 p-0.5 text-red-600 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+                          className="absolute top-1 right-1 rounded bg-surface/95 p-0.5 text-accent-ink opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
                           aria-label="Xoá ảnh"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
@@ -156,7 +156,7 @@ export function ImagingResultEditor({ visitId, orderId, onClose }: { visitId: st
                       </div>
                     ))}
                   </div>
-                  <button type="button" onClick={() => setImages([])} className="flex items-center justify-center gap-1 rounded-md bg-slate-50 py-1.5 text-[12.5px] text-red-600 hover:bg-red-50">
+                  <button type="button" onClick={() => setImages([])} className="flex items-center justify-center gap-1 rounded-[10px] border border-accent-line bg-surface py-1.5 text-[12.5px] font-medium text-accent-ink hover:bg-accent-soft">
                     <Trash2 className="h-3.5 w-3.5" /> Xoá tất cả ảnh
                   </button>
                 </>
@@ -246,7 +246,7 @@ function CameraPanel({ onCapture, disabled }: { onCapture: (dataUrl: string) => 
             start(e.target.value)
           }}
           disabled={!devices.length}
-          className="h-8 min-w-0 flex-1 rounded-md border border-slate-200 bg-white px-1.5 text-[12px] outline-none disabled:text-slate-400"
+          className="h-8 min-w-0 flex-1 rounded-[10px] border border-line-strong bg-surface px-2 text-[12px] text-ink outline-none focus:border-brand disabled:text-ink-4"
           aria-label="Chọn camera"
         >
           {devices.length === 0 && <option value="">Chưa bật camera</option>}
@@ -256,16 +256,16 @@ function CameraPanel({ onCapture, disabled }: { onCapture: (dataUrl: string) => 
             </option>
           ))}
         </select>
-        <select value={ratio} onChange={(e) => setRatio(e.target.value as '4:3' | '16:9')} className="h-8 w-[68px] rounded-md border border-slate-200 bg-white px-1.5 text-[12px]" aria-label="Tỉ lệ khung hình">
+        <select value={ratio} onChange={(e) => setRatio(e.target.value as '4:3' | '16:9')} className="h-8 w-[68px] rounded-[10px] border border-line-strong bg-surface px-1.5 text-[12px] text-ink outline-none focus:border-brand" aria-label="Tỉ lệ khung hình">
           <option>4:3</option>
           <option>16:9</option>
         </select>
       </div>
-      <div className={cn('relative overflow-hidden rounded-md bg-slate-200', ratio === '4:3' ? 'aspect-[4/3]' : 'aspect-video')}>
+      <div className={cn('relative overflow-hidden rounded-[10px] bg-line/80', ratio === '4:3' ? 'aspect-[4/3]' : 'aspect-video')}>
         <video ref={videoRef} autoPlay playsInline muted className={cn('h-full w-full object-cover', state !== 'on' && 'hidden')} />
         {state !== 'on' && (
-          <button type="button" onClick={() => start()} className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-[12.5px] text-slate-600 hover:bg-slate-300/40">
-            {state === 'error' ? <CameraOff className="h-6 w-6" /> : <Camera className="h-6 w-6" />}
+          <button type="button" onClick={() => start()} className="absolute inset-0 flex flex-col items-center justify-center gap-1 px-2 text-center text-[12.5px] font-medium text-ink-2 hover:bg-line-strong/40">
+            {state === 'error' ? <CameraOff className="h-6 w-6 text-accent-ink" /> : <Camera className="h-6 w-6 text-brand-ink" />}
             {state === 'error' ? 'Không truy cập được camera – có thể tải ảnh lên' : 'Bấm để bật camera'}
           </button>
         )}
@@ -331,34 +331,34 @@ function ResultFolderModal({ files, onChange, onClose }: { files: ResultFile[]; 
         />
       </div>
       <table className="w-full text-[13px]">
-        <thead className="bg-slate-50 text-[12.5px] text-slate-600">
+        <thead className="border-b border-line bg-subtle text-[12px] font-semibold text-ink-3">
           <tr>
-            <th className="w-8 py-2 pl-2 text-left font-medium">#</th>
-            <th className="py-2 text-left font-medium">Tên</th>
-            <th className="w-36 py-2 text-left font-medium">Ngày</th>
+            <th className="w-8 py-2 pl-2.5 text-left font-semibold">#</th>
+            <th className="py-2 text-left font-semibold">Tên</th>
+            <th className="w-36 py-2 text-left font-semibold">Ngày</th>
             <th className="w-10" />
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-line-soft">
           {files.length === 0 && (
             <tr>
-              <td colSpan={4} className="py-6 text-center text-slate-500">
+              <td colSpan={4} className="py-6 text-center text-ink-3">
                 Chưa có tệp kết quả
               </td>
             </tr>
           )}
           {files.map((f, i) => (
-            <tr key={f.id} className="border-t border-slate-100">
-              <td className="py-2 pl-2">{i + 1}</td>
+            <tr key={f.id}>
+              <td className="py-2 pl-2.5 text-ink-3 tabular-nums">{i + 1}</td>
               <td className="py-2">
-                <a href={f.dataUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+                <a href={f.dataUrl} target="_blank" rel="noreferrer" className="font-medium text-info-ink hover:underline">
                   {f.name}
                 </a>
-                <span className="ml-1 text-xs text-slate-500">({formatBytes(f.size)})</span>
+                <span className="ml-1.5 text-xs text-ink-3 tabular-nums">({formatBytes(f.size)})</span>
               </td>
-              <td className="py-2">{formatDateTimeVN(f.at)}</td>
+              <td className="py-2 text-ink-2 tabular-nums">{formatDateTimeVN(f.at)}</td>
               <td className="py-2 text-right">
-                <button type="button" onClick={() => onChange(files.filter((x) => x.id !== f.id))} className="rounded p-1 text-red-600 hover:bg-red-50" aria-label={`Xoá ${f.name}`}>
+                <button type="button" onClick={() => onChange(files.filter((x) => x.id !== f.id))} className="rounded-[8px] p-1 text-accent-ink hover:bg-accent-soft" aria-label={`Xoá ${f.name}`}>
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
               </td>

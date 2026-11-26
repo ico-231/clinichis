@@ -4,9 +4,9 @@ import { useControlLabel } from '@/lib/useControlLabel'
 import { formatNumber } from '@/lib/format'
 
 export const inputBase =
-  'h-9 w-full rounded-md border border-slate-200 bg-white px-3 text-[13px] text-slate-900 placeholder:text-slate-400 outline-none transition hover:border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 disabled:bg-slate-50 disabled:text-slate-500'
+  'h-9 w-full rounded-[10px] border border-line-strong bg-surface px-3 text-[13.5px] text-ink placeholder:text-ink-3/60 outline-none transition hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15 disabled:bg-subtle disabled:text-ink-3'
 
-export const inputError = 'border-red-400 hover:border-red-400 focus:border-red-500 focus:ring-red-500/15'
+export const inputError = 'border-danger hover:border-danger focus:border-danger focus:ring-danger/15'
 
 interface FieldShellProps {
   label?: string
@@ -23,16 +23,20 @@ export function FieldShell({ label, required, error, hint, className, children }
   return (
     <div className={cn('relative', className)}>
       {label && (
-        <span ref={ref} id={labelId} className="pointer-events-none absolute -top-[7px] left-2 z-[1] bg-white px-1 text-[11px] leading-[14px] text-slate-600">
+        <span
+          ref={ref}
+          id={labelId}
+          className="pointer-events-none absolute -top-[7px] left-2 z-[1] max-w-[calc(100%-16px)] truncate bg-[linear-gradient(to_bottom,transparent_48%,var(--color-surface)_48%)] px-1 text-[11px] leading-[14px] font-medium text-ink-3"
+        >
           {label}
-          {required && <span className="text-red-600"> *</span>}
+          {required && <span className="text-danger-ink"> *</span>}
         </span>
       )}
       {children}
       {error ? (
-        <p id={errorId} className="mt-1 text-[11px] text-red-600">{error}</p>
+        <p id={errorId} className="mt-1 text-[11.5px] font-medium text-danger-ink">{error}</p>
       ) : hint ? (
-        <p className="mt-1 text-[11px] text-slate-500">{hint}</p>
+        <p className="mt-1 text-[11.5px] text-ink-4">{hint}</p>
       ) : null}
     </div>
   )
@@ -53,7 +57,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
   return (
     <FieldShell label={label} required={required} error={error} hint={hint} className={wrapperClassName}>
       <div className="relative">
-        {leftIcon && <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-slate-400">{leftIcon}</span>}
+        {leftIcon && <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-ink-5">{leftIcon}</span>}
         <input ref={ref} className={cn(inputBase, !!leftIcon && 'pl-9', error && inputError, className)} {...props} />
       </div>
     </FieldShell>
@@ -96,7 +100,7 @@ export function MoneyField({ label, value, onChange, error, hint, className, dis
           onChange={(e) => onChange(Number(e.target.value.replace(/\D/g, '')) || 0)}
           onFocus={(e) => e.target.select()}
         />
-        <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[13px] text-slate-400">đ</span>
+        <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[13px] text-ink-5">đ</span>
       </div>
     </FieldShell>
   )
@@ -115,15 +119,15 @@ interface SegmentedProps<T extends string> {
 export function Segmented<T extends string>({ label, required, value, options, onChange, error, className }: SegmentedProps<T>) {
   return (
     <FieldShell label={label} required={required} error={error} className={className}>
-      <div className={cn('flex h-9 rounded-md border border-slate-200 bg-slate-50 p-0.5', error && 'border-red-400')}>
+      <div className={cn('flex h-9 rounded-[10px] border border-line-strong bg-subtle p-0.5', error && 'border-danger')}>
         {options.map((o) => (
           <button
             key={o.value}
             type="button"
             onClick={() => onChange(o.value)}
             className={cn(
-              'flex flex-1 items-center justify-center gap-1.5 rounded-[5px] text-[13px] font-medium transition',
-              value === o.value ? 'bg-white text-blue-700 shadow-sm ring-1 ring-slate-200' : 'text-slate-500 hover:text-slate-800',
+              'flex flex-1 items-center justify-center gap-1.5 rounded-[7px] text-[13px] font-semibold transition',
+              value === o.value ? 'bg-surface text-brand-ink shadow-sm ring-1 ring-line' : 'text-ink-3 hover:text-ink',
             )}
           >
             {o.icon}
@@ -149,7 +153,7 @@ export function Checkbox({ checked, onChange, label, description, className }: C
       <span
         className={cn(
           'mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border transition',
-          checked ? 'border-blue-600 bg-blue-600' : 'border-slate-300 bg-white',
+          checked ? 'border-brand bg-brand' : 'border-line-strong bg-surface',
         )}
       >
         {checked && (
@@ -160,8 +164,8 @@ export function Checkbox({ checked, onChange, label, description, className }: C
       </span>
       <input type="checkbox" className="sr-only" checked={checked} onChange={(e) => onChange(e.target.checked)} />
       <span className="text-[13px] leading-5">
-        <span className="font-medium text-slate-800">{label}</span>
-        {description && <span className="block text-xs text-slate-500">{description}</span>}
+        <span className="font-medium text-ink">{label}</span>
+        {description && <span className="block text-xs text-ink-3">{description}</span>}
       </span>
     </label>
   )

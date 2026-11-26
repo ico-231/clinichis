@@ -22,23 +22,23 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setTimeout(() => setItems((list) => list.filter((x) => x.id !== id)), 4200)
   }, [])
   const icons = {
-    success: <CircleCheck className="h-4.5 w-4.5 text-emerald-700" />,
-    info: <Info className="h-4.5 w-4.5 text-blue-600" />,
-    warning: <CircleAlert className="h-4.5 w-4.5 text-amber-700" />,
+    success: <CircleCheck className="h-4.5 w-4.5 text-brand-ink" />,
+    info: <Info className="h-4.5 w-4.5 text-info-ink" />,
+    warning: <CircleAlert className="h-4.5 w-4.5 text-warn-ink" />,
   }
   return (
     <ToastContext.Provider value={push}>
       {children}
       <Portal>
-        <div className="pointer-events-none fixed right-4 bottom-4 z-[90] flex w-[340px] flex-col gap-2">
+        <div role="status" aria-live="polite" className="pointer-events-none fixed right-4 bottom-4 z-[90] flex w-[min(340px,calc(100vw-2rem))] flex-col gap-2">
           {items.map((t) => (
-            <div key={t.id} className={cn('pointer-events-auto flex animate-pop-in gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-lg')}>
+            <div key={t.id} className={cn('pointer-events-auto flex animate-pop-in gap-3 rounded-xl border border-line bg-surface p-3 shadow-pop')}>
               <span className="mt-px">{icons[t.tone]}</span>
               <div className="min-w-0 flex-1">
-                <p className="text-[13px] font-semibold text-slate-900">{t.title}</p>
-                {t.description && <div className="mt-0.5 text-xs text-slate-600">{t.description}</div>}
+                <p className="text-[13px] font-semibold text-ink">{t.title}</p>
+                {t.description && <div className="mt-0.5 text-xs text-ink-3">{t.description}</div>}
               </div>
-              <button type="button" onClick={() => dismiss(t.id)} className="h-fit rounded p-0.5 text-slate-400 hover:text-slate-700" aria-label="Đóng">
+              <button type="button" onClick={() => dismiss(t.id)} className="h-fit rounded p-0.5 text-ink-3 hover:text-ink" aria-label="Đóng">
                 <X className="h-3.5 w-3.5" />
               </button>
             </div>

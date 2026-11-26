@@ -57,19 +57,19 @@ export function EmrPage() {
   const printing = printId ? rows.find((r) => r.visit.id === printId) : undefined
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-canvas">
       <PageHeader title="Bệnh án điện tử" />
-      <div className="flex min-h-0 flex-1 flex-col px-2">
-        <div className="flex flex-wrap items-end gap-2 px-2 pt-4 pb-3">
-          <div className="relative w-[240px]">
-            <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 pt-1 pb-4">
+        <div className="flex flex-wrap items-end gap-2">
+          <div className="relative w-full sm:w-[280px]">
+            <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-4" />
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (setQuery(input), setPage(1))}
-              placeholder="Tìm theo tên, số điện thoại"
+              placeholder="Tìm tên, số điện thoại"
               aria-label="Tìm theo tên, số điện thoại"
-              className="h-9 w-full rounded-md bg-slate-100 pr-3 pl-8 text-[13px] outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+              className="h-9 w-full rounded-[10px] border border-line-strong bg-surface pr-8 pl-9 text-[13.5px] text-ink outline-none transition placeholder:text-ink-4 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
             />
           </div>
           <DatePicker label="Từ ngày" value={from} max={to || undefined} onChange={(v) => (setFrom(v), setPage(1))} className="w-[150px]" />
@@ -83,100 +83,120 @@ export function EmrPage() {
               { value: 'closed', label: 'Đã đóng' },
             ]}
             onChange={(v) => (setState(v), setPage(1))}
-            className="w-[140px]"
+            className="w-[150px]"
           />
           <Select
             label="Ký số"
             value={sign}
             options={[{ value: 'all', label: 'Tất cả' }, ...(['signed', 'pending', 'unsigned'] as SignStatus[]).map((s) => ({ value: s, label: SIGN_LABEL[s] }))]}
             onChange={(v) => (setSign(v), setPage(1))}
-            className="w-[140px]"
+            className="w-[150px]"
           />
-          <Button leftIcon={<Search className="h-3.5 w-3.5" />} onClick={() => (setQuery(input), setPage(1))}>
-            Tìm kiếm
+          <Button className="w-[74px]" onClick={() => (setQuery(input), setPage(1))}>
+            Tìm
           </Button>
         </div>
 
-        <div className="thin-scroll min-h-0 flex-1 overflow-auto rounded-lg border border-slate-200 bg-white">
-          <table className="w-full min-w-[1000px] text-[13px]">
-            <thead className="sticky top-0 z-10 bg-slate-50 text-[12.5px] text-slate-600">
-              <tr>
-                <th className="w-12 px-2 py-2.5 text-left font-medium">STT</th>
-                <th className="px-2 py-2.5 text-left font-medium">Mã bệnh án</th>
-                <th className="px-2 py-2.5 text-left font-medium">Họ và tên</th>
-                <th className="px-2 py-2.5 text-left font-medium">Ngày sinh</th>
-                <th className="px-2 py-2.5 text-left font-medium">
-                  <button type="button" onClick={() => setSortAsc((s) => !s)} className="hover:text-slate-900">
-                    Thời gian vào {sortAsc ? '↑' : '↓'}
-                  </button>
-                </th>
-                <th className="px-2 py-2.5 text-left font-medium">Loại bệnh án</th>
-                <th className="px-2 py-2.5 text-left font-medium">Trạng thái</th>
-                <th className="px-2 py-2.5 text-left font-medium">Ký số</th>
-                <th className="w-20" />
-              </tr>
-            </thead>
-            <tbody>
-              {pageRows.length === 0 && (
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[16px] border border-line bg-surface">
+          <div className="thin-scroll min-h-0 flex-1 overflow-auto">
+            <table className="w-full min-w-[1000px] text-[13px]">
+              <thead className="sticky top-0 z-10 border-b border-line bg-subtle text-[12.5px] font-semibold text-ink-3">
                 <tr>
-                  <td colSpan={9}>
-                    <EmptyState />
-                  </td>
-                </tr>
-              )}
-              {pageRows.map(({ visit, patient, emr }, i) => (
-                <tr key={visit.id} className={cn('border-t border-slate-100', i % 2 === 1 && 'bg-slate-50/50')}>
-                  <td className="px-2 py-2">{(safePage - 1) * pageSize + i + 1}</td>
-                  <td className="px-2 py-2">
-                    <button type="button" onClick={() => setUI({ emrVisitId: visit.id })} className="text-blue-600 hover:underline">
-                      {emrCodeOf(visit)}
+                  <th className="w-12 px-3 py-2.5 text-left font-semibold">STT</th>
+                  <th className="px-3 py-2.5 text-left font-semibold">Mã bệnh án</th>
+                  <th className="px-3 py-2.5 text-left font-semibold">Họ và tên</th>
+                  <th className="px-3 py-2.5 text-left font-semibold">Ngày sinh</th>
+                  <th className="px-3 py-2.5 text-left font-semibold">
+                    <button type="button" onClick={() => setSortAsc((s) => !s)} className="inline-flex items-center gap-1 hover:text-ink">
+                      Thời gian vào <span className="text-brand-ink">{sortAsc ? '↑' : '↓'}</span>
                     </button>
-                  </td>
-                  <td className="px-2 py-2 font-semibold uppercase">{patient.fullName}</td>
-                  <td className="px-2 py-2">
-                    {formatDateVN(patient.dob)} - {ageLabel(patient.dob, visit.date)}
-                  </td>
-                  <td className="px-2 py-2">{formatDateTimeVN(emr.createdAt).replace(' ', ' - ').split(' - ').reverse().join(' - ')}</td>
-                  <td className="px-2 py-2">Bệnh án Ngoại trú chung</td>
-                  <td className="px-2 py-2">
-                    <span className={cn('rounded-full border px-2 py-0.5 text-[12px]', emr.closed ? 'border-slate-300 bg-slate-50 text-slate-600' : 'border-orange-300 bg-orange-50 text-orange-700')}>
-                      {emr.closed ? 'Đã đóng' : '◌ Đang điều trị'}
-                    </span>
-                  </td>
-                  <td className="px-2 py-2 text-[12.5px]">
-                    <span className={cn('flex items-center gap-1', emr.signStatus !== 'signed' && 'text-slate-500')}>
-                      <span className={cn('h-2 w-2 rounded-full border', emr.signStatus === 'signed' ? 'border-emerald-500 bg-emerald-500' : 'border-slate-400')} />
-                      {SIGN_LABEL[emr.signStatus]}
-                    </span>
-                  </td>
-                  <td className="px-2 py-2 text-right">
-                    <span className="inline-flex gap-1">
-                      <button type="button" onClick={() => setUI({ emrVisitId: visit.id })} className="rounded p-1 text-slate-600 hover:bg-slate-100" aria-label="Sửa bệnh án" title="Sửa bệnh án">
-                        <Pencil className="h-3.5 w-3.5" />
+                  </th>
+                  <th className="px-3 py-2.5 text-left font-semibold">Loại bệnh án</th>
+                  <th className="px-3 py-2.5 text-left font-semibold">Trạng thái</th>
+                  <th className="px-3 py-2.5 text-left font-semibold">Ký số</th>
+                  <th className="w-20" />
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line-soft">
+                {pageRows.length === 0 && (
+                  <tr>
+                    <td colSpan={9}>
+                      <EmptyState />
+                    </td>
+                  </tr>
+                )}
+                {pageRows.map(({ visit, patient, emr }, i) => (
+                  <tr key={visit.id} className="transition-colors hover:bg-brand-wash">
+                    <td className="px-3 py-2.5 text-ink-3 tabular-nums">{(safePage - 1) * pageSize + i + 1}</td>
+                    <td className="px-3 py-2.5">
+                      <button type="button" onClick={() => setUI({ emrVisitId: visit.id })} className="font-semibold text-info-ink hover:underline tabular-nums">
+                        {emrCodeOf(visit)}
                       </button>
-                      <DropdownMenu
-                        align="end"
-                        renderTrigger={({ ref, toggle }) => (
-                          <button ref={ref} type="button" onClick={toggle} className="rounded p-1 text-slate-600 hover:bg-slate-100" aria-label="Thao tác khác">
-                            <MoreHorizontal className="h-3.5 w-3.5" />
-                          </button>
+                    </td>
+                    <td className="px-3 py-2.5 font-semibold text-ink uppercase">{patient.fullName}</td>
+                    <td className="px-3 py-2.5 text-ink-2 tabular-nums">
+                      {formatDateVN(patient.dob)} - {ageLabel(patient.dob, visit.date)}
+                    </td>
+                    <td className="px-3 py-2.5 text-ink-2 tabular-nums">{formatDateTimeVN(emr.createdAt).replace(' ', ' - ').split(' - ').reverse().join(' - ')}</td>
+                    <td className="px-3 py-2.5 text-ink-2">Bệnh án Ngoại trú chung</td>
+                    <td className="px-3 py-2.5">
+                      <span
+                        className={cn(
+                          'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-semibold whitespace-nowrap',
+                          emr.closed ? 'bg-subtle text-ink-3' : 'bg-info-soft text-info-strong',
                         )}
                       >
-                        <MenuItem icon={<Printer className="h-3.5 w-3.5" />} onSelect={() => setPrintId(visit.id)}>
-                          In bệnh án
-                        </MenuItem>
-                        <MenuItem icon={<Download className="h-3.5 w-3.5" />} disabled={!visit.emr} onSelect={() => setUI({ emrVisitId: visit.id })}>
-                          Tải bệnh án
-                        </MenuItem>
-                      </DropdownMenu>
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                        <span className={cn('h-1.5 w-1.5 rounded-full', emr.closed ? 'bg-ink-5' : 'bg-info')} />
+                        {emr.closed ? 'Đã đóng' : 'Đang điều trị'}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5 text-[12.5px]">
+                      <span
+                        className={cn(
+                          'inline-flex items-center gap-1.5',
+                          emr.signStatus === 'signed' ? 'font-medium text-brand-ink' : emr.signStatus === 'pending' ? 'font-medium text-accent-strong' : 'text-ink-3',
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            'h-2 w-2 rounded-full',
+                            emr.signStatus === 'signed' ? 'bg-brand' : emr.signStatus === 'pending' ? 'bg-accent' : 'bg-ink-5',
+                          )}
+                        />
+                        {SIGN_LABEL[emr.signStatus]}
+                      </span>
+                    </td>
+                    <td className="px-3 py-2.5 text-right">
+                      <span className="inline-flex gap-1">
+                        <button type="button" onClick={() => setUI({ emrVisitId: visit.id })} className="rounded-[8px] p-1.5 text-ink-2 hover:bg-subtle" aria-label="Sửa bệnh án" title="Sửa bệnh án">
+                          <Pencil className="h-3.5 w-3.5" />
+                        </button>
+                        <DropdownMenu
+                          align="end"
+                          renderTrigger={({ ref, toggle }) => (
+                            <button ref={ref} type="button" onClick={toggle} className="rounded-[8px] p-1.5 text-ink-2 hover:bg-subtle" aria-label="Thao tác khác">
+                              <MoreHorizontal className="h-3.5 w-3.5" />
+                            </button>
+                          )}
+                        >
+                          <MenuItem icon={<Printer className="h-3.5 w-3.5" />} onSelect={() => setPrintId(visit.id)}>
+                            In bệnh án
+                          </MenuItem>
+                          <MenuItem icon={<Download className="h-3.5 w-3.5" />} disabled={!visit.emr} onSelect={() => setUI({ emrVisitId: visit.id })}>
+                            Tải bệnh án
+                          </MenuItem>
+                        </DropdownMenu>
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="border-t border-line px-4">
+            <Pagination page={safePage} pageCount={pageCount} pageSize={pageSize} total={filtered.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
+          </div>
         </div>
-        <Pagination page={safePage} pageCount={pageCount} pageSize={pageSize} total={filtered.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
       </div>
 
       <PrintPreviewModal open={!!printing} title="Bệnh án ngoại trú" onClose={() => setPrintId(null)}>

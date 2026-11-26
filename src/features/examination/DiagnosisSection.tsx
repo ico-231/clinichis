@@ -66,7 +66,7 @@ export function DiagnosisInput({
       )}
     >
       <div ref={anchorRef} className="relative">
-        <Search className="pointer-events-none absolute top-1/2 left-1 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+        <Search className="pointer-events-none absolute top-1/2 left-1 h-3.5 w-3.5 -translate-y-1/2 text-ink-5" />
         <input
           aria-label={placeholder}
           value={query}
@@ -94,7 +94,7 @@ export function DiagnosisInput({
             }
           }}
           placeholder={placeholder}
-          className="h-9 w-full border-b border-slate-200 bg-transparent pl-6 text-[13px] outline-none placeholder:text-slate-400 focus:border-blue-600"
+          className="h-9 w-full border-b border-line bg-transparent pl-6 text-[13px] outline-none placeholder:text-ink-5 focus:border-brand"
         />
         <Popover
           open={open}
@@ -116,30 +116,30 @@ export function DiagnosisInput({
                     onClick={() => toggle(d)}
                     className={cn(
                       "flex w-full items-start gap-2 px-3 py-1.5 text-left text-[13px]",
-                      i === active && "bg-slate-100",
+                      i === active && "bg-subtle",
                     )}
                   >
                     <span
                       className={cn(
                         "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border",
-                        isSel ? "border-blue-600 bg-blue-600 text-white" : "border-slate-300",
+                        isSel ? "border-brand bg-brand text-white" : "border-line-strong",
                       )}
                     >
                       {isSel && <Check className="h-3 w-3" />}
                     </span>
                     <span>
-                      <b className="font-semibold text-slate-900">{d.code}</b> – {d.name}
+                      <b className="font-semibold text-ink">{d.code}</b> – {d.name}
                     </span>
                   </button>
                 </li>
               );
             })}
             {query.trim() && (
-              <li className="border-t border-slate-100">
+              <li className="border-t border-line-soft">
                 <button
                   type="button"
                   onClick={addFreeText}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-blue-700 hover:bg-blue-50"
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-brand-ink hover:bg-brand-tint"
                 >
                   <PlusCircle className="h-4 w-4" />
                   Thêm chẩn đoán “{query.trim()}” (không mã ICD)
@@ -153,14 +153,14 @@ export function DiagnosisInput({
       <div
         className={cn(
           "flex min-h-9 flex-wrap items-center gap-1.5 rounded-md border border-dashed px-2 py-1.5",
-          selected.length ? "border-slate-200" : "border-slate-300",
+          selected.length ? "border-line" : "border-line-strong",
         )}
       >
         {selected.length === 0 ? (
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="flex w-full items-center justify-center gap-1.5 text-[13px] text-slate-400"
+            className="flex w-full items-center justify-center gap-1.5 text-[13px] text-ink-5"
           >
             <PlusCircle className="h-3.5 w-3.5" />
             Thêm chẩn đoán
@@ -172,12 +172,12 @@ export function DiagnosisInput({
               className={cn(
                 "inline-flex max-w-full items-center gap-1.5 rounded-md px-2 py-1 text-[12.5px]",
                 i === 0
-                  ? "bg-blue-50 text-blue-800 ring-1 ring-blue-200"
-                  : "bg-slate-100 text-slate-800",
+                  ? "bg-brand-tint text-brand-ink ring-1 ring-brand-line"
+                  : "bg-subtle text-ink",
               )}
             >
               {i === 0 && (
-                <span className="rounded bg-blue-600 px-1 text-[10px] font-semibold text-white uppercase">
+                <span className="rounded bg-brand px-1 text-[10px] font-semibold text-white uppercase">
                   Chính
                 </span>
               )}
@@ -187,7 +187,7 @@ export function DiagnosisInput({
               <button
                 type="button"
                 onClick={() => toggle(d)}
-                className="text-slate-400 hover:text-red-600"
+                className="text-ink-5 hover:text-danger-ink"
                 aria-label={`Bỏ ${d.name}`}
               >
                 <X className="h-3.5 w-3.5" />

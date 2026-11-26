@@ -81,14 +81,14 @@ export function DateRangePicker({
           setDraft(value)
           setOpen((o) => !o)
         }}
-        className={cn('inline-flex h-9 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-[13px] text-slate-800 hover:bg-slate-50', open && 'border-blue-500', className)}
+        className={cn('inline-flex h-9 items-center gap-2 rounded-[10px] border border-line-strong bg-surface px-3 text-[13px] text-ink hover:bg-subtle', open && 'border-brand ring-2 ring-brand/15', className)}
       >
-        <CalendarDays className="h-4 w-4 text-slate-500" />
+        <CalendarDays className="h-4 w-4 text-ink-3" />
         <span className="whitespace-nowrap">{rangeLabel(value)}</span>
-        <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+        <ChevronDown className="h-3.5 w-3.5 text-ink-3" />
       </button>
       <Popover open={open} onClose={() => setOpen(false)} anchorRef={ref} className="flex w-[480px] max-w-[94vw]">
-        <ul className="w-36 shrink-0 border-r border-slate-100 py-1.5">
+        <ul className="w-36 shrink-0 border-r border-line py-1.5">
           {[...presets, 'custom' as const].map((p) => (
             <li key={p}>
               <button
@@ -98,7 +98,7 @@ export function DateRangePicker({
                   onChange(presetRange(p))
                   setOpen(false)
                 }}
-                className={cn('w-full px-3 py-1.5 text-left text-[13px] hover:bg-slate-50', draft.preset === p && 'bg-blue-50 font-medium text-blue-700')}
+                className={cn('w-full px-3 py-1.5 text-left text-[13px] text-ink-2 hover:bg-subtle', draft.preset === p && 'bg-brand-soft font-semibold text-brand-ink')}
               >
                 {PRESET_LABEL[p]}
               </button>
@@ -108,7 +108,7 @@ export function DateRangePicker({
         <div className="flex flex-1 flex-col gap-3 p-3">
           <DatePicker label="Từ ngày" value={draft.from} max={draft.to} onChange={(from) => setDraft((d) => ({ ...d, from, preset: 'custom' }))} />
           <DatePicker label="Đến ngày" value={draft.to} min={draft.from} onChange={(to) => setDraft((d) => ({ ...d, to, preset: 'custom' }))} />
-          <p className="text-xs text-slate-500">Kỳ báo cáo: {rangeLabel(draft)}</p>
+          <p className="text-xs text-ink-4">Kỳ báo cáo: {rangeLabel(draft)}</p>
           <div className="mt-auto flex justify-end gap-2">
             <Button size="sm" variant="outline" onClick={() => setOpen(false)}>
               Đóng

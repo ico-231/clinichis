@@ -36,11 +36,11 @@ import { DOCTORS, PAYMENT_METHOD_LABEL, RELATION_LABEL, SERVICES, serviceById, t
 import { addMinutesToTime, formatDateVN, nowTime, pad, todayISO } from '@/lib/date'
 import { formatMoney, formatNumber, formatPhone, normalizeText } from '@/lib/format'
 import { cn } from '@/lib/cn'
+import { CostSummary } from '@/components/clinic/CostSummary'
 import { ParaclinicalOrderModal } from './ParaclinicalOrderModal'
 import {
   CardSectionHeader,
   FieldLabel,
-  formatSummaryCounter,
   underlineBase,
   UnderlineDateField,
   UnderlineInput,
@@ -474,7 +474,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
   }
 
   return (
-    <div className="flex h-full flex-col bg-slate-100/75">
+    <div className="flex h-full flex-col bg-subtle/75">
       <PageHeader
         title="Lễ tân"
         subtitle={
@@ -488,7 +488,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
               <button
                 type="button"
                 onClick={() => setPForm((f) => ({ ...f, existingPatientId: null }))}
-                className="rounded-md bg-blue-50 px-2.5 py-1 text-[12px] font-medium text-blue-700 hover:bg-blue-100"
+                className="rounded-md bg-brand-tint px-2.5 py-1 text-[12px] font-medium text-brand-ink hover:bg-brand-soft"
               >
                 Tách thành hồ sơ mới
               </button>
@@ -510,7 +510,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
         {/* HÀNG 1: THÔNG TIN (2/3) + THÔNG TIN NGƯỜI THÂN (1/3) */}
         <div className="grid grid-cols-1 gap-3 xl:grid-cols-[2fr_1fr]">
           {/* THÔNG TIN */}
-          <section className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-2xs">
+          <section className="rounded-xl border border-line/80 bg-surface p-4 shadow-2xs">
             <CardSectionHeader title="Thông tin" accent="blue" />
             <div className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-12">
               {/* Họ và tên + gợi ý tìm kiếm */}
@@ -540,7 +540,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                   matchWidth
                   className="py-1"
                 >
-                  <p className="px-3 py-1 text-[11px] font-medium text-slate-500">
+                  <p className="px-3 py-1 text-[11px] font-medium text-ink-4">
                     Hồ sơ người bệnh đã tồn tại — chọn để tự động điền:
                   </p>
                   {matchingPatients.map((p) => (
@@ -548,10 +548,10 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                       key={p.id}
                       type="button"
                       onClick={() => applyExistingPatient(p)}
-                      className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-[12.5px] hover:bg-slate-50"
+                      className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-[12.5px] hover:bg-canvas"
                     >
-                      <span className="font-semibold text-slate-900 uppercase">{p.fullName}</span>
-                      <span className="text-slate-500 tabular-nums">
+                      <span className="font-semibold text-ink uppercase">{p.fullName}</span>
+                      <span className="text-ink-4 tabular-nums">
                         {formatPhone(p.phone)} · {formatDateVN(p.dob)}
                       </span>
                     </button>
@@ -690,7 +690,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
           </section>
 
           {/* THÔNG TIN NGƯỜI THÂN */}
-          <section className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-2xs">
+          <section className="rounded-xl border border-line/80 bg-surface p-4 shadow-2xs">
             <CardSectionHeader title="Thông tin người thân" accent="orange" />
             <div className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
               <div ref={relativeNameWrapRef} className="sm:col-span-2">
@@ -717,7 +717,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                         }))
                         toast({ title: 'Đã sao chép liên hệ sang Người thân', tone: 'info' })
                       }}
-                      className="flex h-6 w-6 items-center justify-center rounded border border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100"
+                      className="flex h-6 w-6 items-center justify-center rounded border border-line bg-canvas text-ink-3 hover:bg-subtle"
                     >
                       <IdCard className="h-3.5 w-3.5" />
                     </button>
@@ -745,10 +745,10 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                         }))
                         setRelativeLookupOpen(false)
                       }}
-                      className="flex w-full items-center justify-between gap-2 px-3 py-1.5 text-left text-[12.5px] hover:bg-slate-50"
+                      className="flex w-full items-center justify-between gap-2 px-3 py-1.5 text-left text-[12.5px] hover:bg-canvas"
                     >
-                      <span className="font-medium text-slate-900 uppercase">{p.fullName}</span>
-                      <span className="text-slate-500 tabular-nums">{formatPhone(p.phone)}</span>
+                      <span className="font-medium text-ink uppercase">{p.fullName}</span>
+                      <span className="text-ink-4 tabular-nums">{formatPhone(p.phone)}</span>
                     </button>
                   ))}
                 </Popover>
@@ -797,7 +797,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
         {/* HÀNG 2: THÔNG TIN NHẬN BỆNH (2/3) + CHỈ SỐ SINH HIỆU (1/3) */}
         <div className="grid grid-cols-1 gap-3 xl:grid-cols-[2fr_1fr]">
           {/* THÔNG TIN NHẬN BỆNH */}
-          <section className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-2xs">
+          <section className="rounded-xl border border-line/80 bg-surface p-4 shadow-2xs">
             <CardSectionHeader title="Thông tin nhận bệnh" accent="blue" />
             <div className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-12">
               <UnderlineDateField
@@ -815,9 +815,9 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                   type="time"
                   value={vForm.time}
                   onChange={(e) => setVForm((f) => ({ ...f, time: e.target.value }))}
-                  className={cn(underlineBase, 'mt-0.5 tabular-nums', errors.visitTime && 'border-red-400')}
+                  className={cn(underlineBase, 'mt-0.5 tabular-nums', errors.visitTime && 'border-danger')}
                 />
-                {errors.visitTime && <p className="mt-1 text-[11px] text-red-600">{errors.visitTime}</p>}
+                {errors.visitTime && <p className="mt-1 text-[11px] text-danger-ink">{errors.visitTime}</p>}
               </div>
 
               <UnderlineSelect
@@ -860,7 +860,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
           </section>
 
           {/* CHỈ SỐ SINH HIỆU */}
-          <section className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-2xs">
+          <section className="rounded-xl border border-line/80 bg-surface p-4 shadow-2xs">
             <CardSectionHeader title="Chỉ số sinh hiệu" accent="orange" />
             <div className="grid grid-cols-2 gap-x-4 gap-y-3.5">
               <VitalUnderlineInput
@@ -893,19 +893,19 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                       inputMode="numeric"
                       placeholder=""
                       onChange={(e) => updateVitals({ bpSystolic: e.target.value.replace(/\D/g, '').slice(0, 3) })}
-                      className="w-9 bg-transparent text-slate-900 outline-none"
+                      className="w-9 bg-transparent text-ink outline-none"
                     />
-                    {(vitals.bpSystolic || vitals.bpDiastolic) && <span className="text-slate-400">/</span>}
+                    {(vitals.bpSystolic || vitals.bpDiastolic) && <span className="text-ink-5">/</span>}
                     <input
                       value={vitals.bpDiastolic ?? ''}
                       aria-label="Huyết áp tâm trương"
                       inputMode="numeric"
                       placeholder=""
                       onChange={(e) => updateVitals({ bpDiastolic: e.target.value.replace(/\D/g, '').slice(0, 3) })}
-                      className="w-9 bg-transparent text-slate-900 outline-none"
+                      className="w-9 bg-transparent text-ink outline-none"
                     />
                   </div>
-                  <span className="shrink-0 text-[11.5px] text-slate-500">mmHg / mmHg</span>
+                  <span className="shrink-0 text-[11.5px] text-ink-4">mmHg / mmHg</span>
                 </div>
               </div>
 
@@ -933,7 +933,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
         </div>
 
         {/* HÀNG 3: CẬN LÂM SÀNG */}
-        <section className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-2xs">
+        <section className="rounded-xl border border-line/80 bg-surface p-4 shadow-2xs">
           <CardSectionHeader
             title="Cận lâm sàng"
             accent="orange"
@@ -942,7 +942,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                 <button
                   type="button"
                   onClick={() => setClsModalOpen(true)}
-                  className="inline-flex h-8 items-center gap-2 rounded-lg bg-blue-50 px-3 text-[12.5px] font-semibold text-blue-600 transition hover:bg-blue-100"
+                  className="inline-flex h-8 items-center gap-2 rounded-lg bg-brand-tint px-3 text-[12.5px] font-semibold text-brand-ink transition hover:bg-brand-soft"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   <span>Thêm chỉ định</span>
@@ -952,25 +952,25 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
           />
 
           {orders.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-xl border border-slate-100 bg-slate-50/30 px-4 py-9 text-center">
+            <div className="flex flex-col items-center justify-center rounded-xl border border-line-soft bg-canvas/30 px-4 py-9 text-center">
               <DocumentsEmptyIllustration />
-              <p className="mt-2 text-[13px] font-medium text-slate-700">
+              <p className="mt-2 text-[13px] font-medium text-ink-2">
                 Chưa có chỉ định cận lâm sàng. Thêm chỉ định để bắt đầu.
               </p>
               <button
                 type="button"
                 onClick={() => setClsModalOpen(true)}
-                className="mt-3.5 inline-flex h-8.5 items-center gap-2 rounded-lg bg-blue-50 px-3.5 text-[12.5px] font-semibold text-blue-600 transition hover:bg-blue-100"
+                className="mt-3.5 inline-flex h-8.5 items-center gap-2 rounded-lg bg-brand-tint px-3.5 text-[12.5px] font-semibold text-brand-ink transition hover:bg-brand-soft"
               >
                 <Plus className="h-3.5 w-3.5" />
                 <span>Thêm chỉ định</span>
               </button>
             </div>
           ) : (
-            <div className="overflow-hidden rounded-lg border border-slate-200">
+            <div className="overflow-hidden rounded-lg border border-line">
               <table className="w-full text-left text-[13px]">
-                <thead className="bg-slate-50 text-[12px] text-slate-600">
-                  <tr className="border-b border-slate-200">
+                <thead className="bg-canvas text-[12px] text-ink-3">
+                  <tr className="border-b border-line">
                     <th className="px-3 py-2 font-semibold">Chỉ định</th>
                     <th className="px-3 py-2 font-semibold">Nơi thực hiện</th>
                     <th className="px-3 py-2 font-semibold">Hướng dẫn người bệnh</th>
@@ -979,9 +979,9 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                     <th className="w-10 px-2 py-2" />
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-line-soft">
                   {orders.map((item) => (
-                    <tr key={item.id} className="hover:bg-slate-50/60">
+                    <tr key={item.id} className="hover:bg-canvas/60">
                       <td className="px-3 py-2.5">
                         <div className="flex items-center gap-2.5">
                           <span
@@ -989,7 +989,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                               'flex h-7 w-7 shrink-0 items-center justify-center rounded-md',
                               item.category === 'imaging'
                                 ? 'bg-sky-50 text-sky-600'
-                                : 'bg-orange-50 text-orange-700',
+                                : 'bg-accent-tint text-accent-ink',
                             )}
                           >
                             {item.category === 'imaging' ? (
@@ -999,12 +999,12 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                             )}
                           </span>
                           <div>
-                            <p className="font-semibold text-slate-900">{item.name}</p>
-                            <p className="text-[11px] text-slate-500">{item.groupLabel}</p>
+                            <p className="font-semibold text-ink">{item.name}</p>
+                            <p className="text-[11px] text-ink-4">{item.groupLabel}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-3 py-2.5 text-[12.5px] text-slate-600">{item.providerName}</td>
+                      <td className="px-3 py-2.5 text-[12.5px] text-ink-3">{item.providerName}</td>
                       <td className="px-3 py-2.5">
                         <input
                           value={item.instruction}
@@ -1014,17 +1014,17 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                             )
                           }
                           placeholder="Thêm hướng dẫn..."
-                          className="h-7 w-full rounded border border-transparent bg-transparent px-2 text-[12.5px] text-slate-700 outline-none placeholder:text-slate-400 hover:border-slate-200 focus:border-blue-500 focus:bg-white"
+                          className="h-7 w-full rounded border border-transparent bg-transparent px-2 text-[12.5px] text-ink-2 outline-none placeholder:text-ink-5 hover:border-line focus:border-brand focus:bg-surface"
                         />
                       </td>
                       <td className="px-3 py-2.5 text-center">
-                        <div className="inline-flex h-7 items-center rounded-md border border-slate-200 bg-white">
+                        <div className="inline-flex h-7 items-center rounded-md border border-line bg-surface">
                           <button
                             type="button"
                             disabled={item.quantity <= 1}
                             onClick={() => updateOrderQty(item.id, -1)}
                             aria-label="Giảm số lượng"
-                            className="flex h-full w-6 items-center justify-center text-slate-500 hover:text-slate-900 disabled:opacity-35"
+                            className="flex h-full w-6 items-center justify-center text-ink-4 hover:text-ink disabled:opacity-35"
                           >
                             <Minus className="h-3 w-3" />
                           </button>
@@ -1035,20 +1035,20 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
                             type="button"
                             onClick={() => updateOrderQty(item.id, 1)}
                             aria-label="Tăng số lượng"
-                            className="flex h-full w-6 items-center justify-center text-slate-500 hover:text-slate-900"
+                            className="flex h-full w-6 items-center justify-center text-ink-4 hover:text-ink"
                           >
                             <Plus className="h-3 w-3" />
                           </button>
                         </div>
                       </td>
-                      <td className="px-3 py-2.5 text-right font-semibold text-emerald-700 tabular-nums">
+                      <td className="px-3 py-2.5 text-right font-semibold text-brand-ink tabular-nums">
                         {formatMoney(item.unitPrice * item.quantity)}
                       </td>
                       <td className="px-2 py-2.5 text-center">
                         <button
                           type="button"
                           onClick={() => setOrders((list) => list.filter((o) => o.id !== item.id))}
-                          className="rounded p-1 text-red-400 hover:bg-red-50 hover:text-red-600"
+                          className="rounded p-1 text-danger-ink hover:bg-danger-soft hover:text-danger-ink"
                           aria-label="Xoá"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
@@ -1064,14 +1064,9 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
       </div>
 
       {/* THANH CỐ ĐỊNH BÊN DƯỚI: Th / CLS / CK / TT + Thu tiền | In phiếu | Khám bệnh | Đăng ký khám */}
-      <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-white px-4 py-2.5">
+      <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-line bg-surface px-4 py-2.5">
         <div className="flex flex-wrap items-center gap-4">
-          <div className="flex flex-wrap items-center gap-4 text-[13.5px] font-semibold text-slate-900 tabular-nums">
-            <span>Th: {formatSummaryCounter(medicationTotal)}</span>
-            <span>CLS: {formatSummaryCounter(clsTotal)}</span>
-            <span>CK: {formatSummaryCounter(ckTotal)}</span>
-            <span>TT: {formatSummaryCounter(grandTotal)}</span>
-          </div>
+          <CostSummary medication={medicationTotal} cls={clsTotal} consultation={ckTotal} total={grandTotal} />
 
           <button
             type="button"
@@ -1079,10 +1074,10 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
             className={cn(
               'inline-flex h-9 items-center gap-2 rounded-lg border px-3 text-[13px] font-semibold transition',
               prepayMismatch
-                ? 'border-amber-300 bg-amber-50 text-amber-700'
+                ? 'border-warn-line bg-warn-tint text-warn-strong'
                 : prepay.paid
-                  ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
-                  : 'border-blue-300 bg-white text-blue-600 hover:bg-blue-50/50',
+                  ? 'border-brand-line bg-brand-soft text-brand-ink'
+                  : 'border-brand-line bg-surface text-brand-ink hover:bg-brand-tint/50',
             )}
             title={prepayMismatch ? 'Tổng chi phí đã thay đổi sau khi xác nhận thu. Mở lại để thu theo tổng mới.' : undefined}
           >
@@ -1102,7 +1097,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
             type="button"
             onClick={() => handleSubmit('registered', { print: true })}
             title="Đăng ký khám và in phiếu tiếp nhận"
-            className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 text-[13px] font-semibold text-slate-700 hover:bg-slate-50"
+            className="inline-flex h-9 items-center gap-2 rounded-lg border border-line bg-surface px-3.5 text-[13px] font-semibold text-ink-2 hover:bg-canvas"
           >
             <Printer className="h-3.5 w-3.5" />
             <span>In phiếu tiếp nhận</span>
@@ -1111,7 +1106,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
           <button
             type="button"
             onClick={() => handleSubmit('in_progress')}
-            className="inline-flex h-9 items-center gap-2 rounded-lg bg-blue-600 px-3.5 text-[13px] font-semibold text-white shadow-xs transition hover:bg-blue-700"
+            className="inline-flex h-9 items-center gap-2 rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-white shadow-xs transition hover:bg-brand-strong"
           >
             <span>Khám bệnh</span>
           </button>
@@ -1119,7 +1114,7 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
           <button
             type="button"
             onClick={() => handleSubmit('registered')}
-            className="inline-flex h-9 items-center gap-2 rounded-lg bg-emerald-500 px-3.5 text-[13px] font-semibold text-white shadow-xs transition hover:bg-emerald-600"
+            className="inline-flex h-9 items-center gap-2 rounded-lg bg-brand px-3.5 text-[13px] font-semibold text-white shadow-xs transition hover:bg-brand-strong"
           >
             <span>Đăng ký khám</span>
           </button>
@@ -1176,23 +1171,23 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
           </>
         }
       >
-        <dl className="divide-y divide-slate-100 rounded-lg border border-slate-200 text-[13px]">
+        <dl className="divide-y divide-line-soft rounded-lg border border-line text-[13px]">
           <div className="flex justify-between px-3 py-2">
-            <dt className="text-slate-500">Công khám (CK)</dt>
-            <dd className="font-medium text-slate-800 tabular-nums">{formatMoney(ckTotal)}</dd>
+            <dt className="text-ink-4">Công khám (CK)</dt>
+            <dd className="font-medium text-ink tabular-nums">{formatMoney(ckTotal)}</dd>
           </div>
           <div className="flex justify-between px-3 py-2">
-            <dt className="text-slate-500">Cận lâm sàng (CLS · {orders.length} chỉ định)</dt>
-            <dd className="font-medium text-slate-800 tabular-nums">{formatMoney(clsTotal)}</dd>
+            <dt className="text-ink-4">Cận lâm sàng (CLS · {orders.length} chỉ định)</dt>
+            <dd className="font-medium text-ink tabular-nums">{formatMoney(clsTotal)}</dd>
           </div>
-          <div className="flex justify-between bg-slate-50 px-3 py-2.5">
-            <dt className="font-semibold text-slate-800">Tổng phải thu (TT)</dt>
-            <dd className="text-[15px] font-bold text-emerald-700 tabular-nums">{formatMoney(grandTotal)}</dd>
+          <div className="flex justify-between bg-canvas px-3 py-2.5">
+            <dt className="font-semibold text-ink">Tổng phải thu (TT)</dt>
+            <dd className="text-[15px] font-bold text-brand-ink tabular-nums">{formatMoney(grandTotal)}</dd>
           </div>
         </dl>
 
         {prepayMismatch && (
-          <div className="mt-3 flex gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12.5px] text-amber-800">
+          <div className="mt-3 flex gap-2 rounded-lg border border-warn-line bg-warn-tint px-3 py-2 text-[12.5px] text-warn-strong">
             <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             <span>
               Đã xác nhận thu {formatMoney(prepay.amount)} trước khi tổng chi phí thay đổi. Bấm “Xác nhận thu” để thu theo tổng mới;
@@ -1250,13 +1245,13 @@ export function ReceptionIntakeView({ init, onCancel, onSaved }: ReceptionIntake
       >
         {dupPrompt && (
           <div className="space-y-2 text-[13px]">
-            <div className="rounded-lg border border-slate-200 p-3">
-              <p className="font-semibold text-slate-900 uppercase">{dupPrompt.patient.fullName}</p>
-              <p className="mt-0.5 text-slate-600">
+            <div className="rounded-lg border border-line p-3">
+              <p className="font-semibold text-ink uppercase">{dupPrompt.patient.fullName}</p>
+              <p className="mt-0.5 text-ink-3">
                 {dupPrompt.patient.code} · {formatDateVN(dupPrompt.patient.dob)} · {formatPhone(dupPrompt.patient.phone)}
               </p>
             </div>
-            <p className="text-slate-600">Dùng hồ sơ cũ để lịch sử khám, dị ứng và bệnh án của bé nằm liền một mạch. Kiểm tra lại thông tin rồi bấm lưu lần nữa.</p>
+            <p className="text-ink-3">Dùng hồ sơ cũ để lịch sử khám, dị ứng và bệnh án của bé nằm liền một mạch. Kiểm tra lại thông tin rồi bấm lưu lần nữa.</p>
           </div>
         )}
       </Modal>

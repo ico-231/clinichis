@@ -250,23 +250,23 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
     <>
       <Portal>
         <div
-          className="fixed inset-0 z-50 flex animate-fade-in items-center justify-center bg-slate-900/50 p-4"
+          className="fixed inset-0 z-50 flex animate-fade-in items-center justify-center bg-overlay/50 p-4"
           onMouseDown={(e) => e.target === e.currentTarget && requestClose()}
         >
           <div
             role="dialog"
             aria-modal="true"
             aria-label="Thêm chỉ định cận lâm sàng"
-            className="flex h-[84vh] max-h-[760px] w-full max-w-[1080px] animate-pop-in flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+            className="flex h-[84vh] max-h-[760px] w-full max-w-[1080px] animate-pop-in flex-col overflow-hidden rounded-2xl bg-surface shadow-pop"
           >
             {/* Header */}
-            <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-5 py-3.5">
-              <h2 className="text-[15.5px] font-semibold text-slate-900">Thêm chỉ định cận lâm sàng</h2>
+            <div className="flex shrink-0 items-center justify-between border-b border-line-soft px-5 py-3.5">
+              <h2 className="text-[15.5px] font-semibold text-ink">Thêm chỉ định cận lâm sàng</h2>
               <button
                 type="button"
                 onClick={requestClose}
                 aria-label="Đóng"
-                className="rounded-md p-1 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                className="rounded-md p-1 text-ink-4 transition hover:bg-subtle hover:text-ink"
               >
                 <X className="h-4.5 w-4.5" />
               </button>
@@ -275,10 +275,10 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
             {/* Body 2 cột */}
             <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
               {/* CỘT TRÁI: Danh mục chỉ định */}
-              <div className="flex min-h-0 flex-col border-slate-200 lg:border-r">
+              <div className="flex min-h-0 flex-col border-line lg:border-r">
                 {/* Chọn nơi thực hiện */}
                 <div className="flex flex-wrap items-center gap-2.5 px-4 pt-3.5 pb-2.5">
-                  <span className="text-[13px] font-medium text-slate-700">Nơi thực hiện</span>
+                  <span className="text-[13px] font-medium text-ink-2">Nơi thực hiện</span>
                   <button
                     ref={providerTriggerRef}
                     type="button"
@@ -287,15 +287,15 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                       setProviderMenuOpen((o) => !o)
                     }}
                     className={cn(
-                      'flex h-9 min-w-0 flex-1 items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-left text-[13px] transition hover:border-slate-300',
-                      providerMenuOpen && 'border-blue-500 ring-2 ring-blue-500/15',
+                      'flex h-9 min-w-0 flex-1 items-center justify-between gap-2 rounded-lg border border-line bg-surface px-3 text-left text-[13px] transition hover:border-line-strong',
+                      providerMenuOpen && 'border-brand ring-2 ring-brand/15',
                     )}
                   >
                     <span className="truncate">
-                      <span className="font-semibold text-slate-900">{activeProvider.name}</span>{' '}
-                      <span className="text-slate-400">({activeProvider.address})</span>
+                      <span className="font-semibold text-ink">{activeProvider.name}</span>{' '}
+                      <span className="text-ink-5">({activeProvider.address})</span>
                     </span>
-                    <ChevronDown className="h-4 w-4 shrink-0 text-slate-400" />
+                    <ChevronDown className="h-4 w-4 shrink-0 text-ink-5" />
                   </button>
 
                   <button
@@ -307,14 +307,14 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                     className={cn(
                       'inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border px-2.5 text-[12.5px] font-medium transition',
                       isDefaultProvider
-                        ? 'border-slate-200 bg-slate-50 text-slate-800'
-                        : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50',
+                        ? 'border-line bg-canvas text-ink'
+                        : 'border-line bg-surface text-ink-3 hover:bg-canvas',
                     )}
                   >
                     <span
                       className={cn(
                         'flex h-4 w-4 items-center justify-center rounded-full border',
-                        isDefaultProvider ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white',
+                        isDefaultProvider ? 'border-brand bg-brand text-white' : 'border-line-strong bg-surface',
                       )}
                     >
                       {isDefaultProvider && <Check className="h-2.5 w-2.5" strokeWidth={3} />}
@@ -329,15 +329,15 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                     matchWidth
                     className="max-w-[460px] overflow-hidden p-1.5"
                   >
-                    <div className="flex items-center gap-2 border-b border-slate-100 px-2.5 py-2">
-                      <Search className="h-3.5 w-3.5 text-slate-400" />
+                    <div className="flex items-center gap-2 border-b border-line-soft px-2.5 py-2">
+                      <Search className="h-3.5 w-3.5 text-ink-5" />
                       <input
                         autoFocus
                         value={providerQuery}
                         onChange={(e) => setProviderQuery(e.target.value)}
                         placeholder="Tìm theo tên lab, địa chỉ..."
                         aria-label="Tìm theo tên lab, địa chỉ"
-                        className="w-full bg-transparent text-[13px] text-slate-900 outline-none placeholder:text-slate-400"
+                        className="w-full bg-transparent text-[13px] text-ink outline-none placeholder:text-ink-5"
                       />
                     </div>
                     <div className="thin-scroll mt-1 max-h-64 space-y-1 overflow-y-auto">
@@ -354,39 +354,39 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                             className={cn(
                               'block w-full rounded-lg px-3 py-2 text-left transition',
                               active
-                                ? 'border border-blue-500 bg-blue-50/40'
-                                : 'border border-transparent hover:bg-slate-50',
+                                ? 'border border-brand bg-brand-tint/40'
+                                : 'border border-transparent hover:bg-canvas',
                             )}
                           >
-                            <p className="truncate text-[13px] font-semibold text-slate-900">{prov.name}</p>
-                            <p className="truncate text-[12px] text-slate-500">{prov.address}</p>
+                            <p className="truncate text-[13px] font-semibold text-ink">{prov.name}</p>
+                            <p className="truncate text-[12px] text-ink-4">{prov.address}</p>
                           </button>
                         )
                       })}
                       {filteredProviders.length === 0 && (
-                        <p className="py-4 text-center text-xs text-slate-500">Không tìm thấy đơn vị phù hợp.</p>
+                        <p className="py-4 text-center text-xs text-ink-4">Không tìm thấy đơn vị phù hợp.</p>
                       )}
                     </div>
                   </Popover>
                 </div>
 
                 {/* Tìm kiếm dịch vụ */}
-                <div className="border-y border-slate-100 px-4 py-2">
+                <div className="border-y border-line-soft px-4 py-2">
                   <div className="flex items-center gap-2">
-                    <Search className="h-4 w-4 text-slate-400" />
+                    <Search className="h-4 w-4 text-ink-5" />
                     <input
                       value={serviceQuery}
                       onChange={(e) => setServiceQuery(e.target.value)}
                       placeholder="Tìm theo tên cận lâm sàng, combo..."
                       aria-label="Tìm theo tên cận lâm sàng, combo"
-                      className="h-7 w-full bg-transparent text-[13px] text-slate-900 outline-none placeholder:text-slate-400"
+                      className="h-7 w-full bg-transparent text-[13px] text-ink outline-none placeholder:text-ink-5"
                     />
                     {serviceQuery && (
                       <button
                         type="button"
                         aria-label="Xoá từ khoá"
                         onClick={() => setServiceQuery('')}
-                        className="rounded p-0.5 text-slate-400 hover:text-slate-600"
+                        className="rounded p-0.5 text-ink-5 hover:text-ink-3"
                       >
                         <X className="h-3.5 w-3.5" />
                       </button>
@@ -395,7 +395,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                 </div>
 
                 {/* Tabs nhóm dịch vụ */}
-                <div className="flex flex-wrap items-center gap-1.5 border-b border-slate-100 bg-slate-50/60 px-4 py-2">
+                <div className="flex flex-wrap items-center gap-1.5 border-b border-line-soft bg-canvas/60 px-4 py-2">
                   {tabs.map((t) => {
                     const active = activeTab === t.key
                     return (
@@ -406,12 +406,12 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                         className={cn(
                           'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[12.5px] transition',
                           active
-                            ? 'bg-white font-semibold text-slate-900 shadow-2xs ring-1 ring-slate-200'
-                            : 'font-medium text-slate-600 hover:text-slate-900',
+                            ? 'bg-surface font-semibold text-ink shadow-2xs ring-1 ring-line'
+                            : 'font-medium text-ink-3 hover:text-ink',
                         )}
                       >
                         <span>{t.label}</span>
-                        <span className="rounded-full bg-slate-100 px-1.5 text-[11px] font-semibold text-slate-500 tabular-nums">
+                        <span className="rounded-full bg-subtle px-1.5 text-[11px] font-semibold text-ink-4 tabular-nums">
                           {t.count}
                         </span>
                       </button>
@@ -420,7 +420,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                 </div>
 
                 {/* Danh sách dịch vụ / combo */}
-                <div className="thin-scroll flex-1 divide-y divide-slate-100 overflow-y-auto">
+                <div className="thin-scroll flex-1 divide-y divide-line-soft overflow-y-auto">
                   {activeTab !== 'combo' &&
                     visibleServices.map((svc) => {
                       const selected = selectedByServiceId.has(svc.id)
@@ -430,7 +430,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                           onClick={() => toggleService(svc)}
                           className={cn(
                             'flex cursor-pointer items-center justify-between gap-3 px-4 py-3 transition-colors',
-                            selected ? 'bg-indigo-50/55' : 'hover:bg-slate-50',
+                            selected ? 'bg-indigo-50/55' : 'hover:bg-canvas',
                           )}
                         >
                           <div className="flex min-w-0 items-center gap-3">
@@ -439,7 +439,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                                 'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
                                 svc.category === 'imaging'
                                   ? 'bg-sky-50 text-sky-600'
-                                  : 'bg-orange-50 text-orange-700',
+                                  : 'bg-accent-tint text-accent-ink',
                               )}
                             >
                               {svc.category === 'imaging' ? (
@@ -449,12 +449,12 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                               )}
                             </span>
                             <div className="min-w-0">
-                              <p className="truncate text-[13.5px] font-semibold text-slate-900">{svc.name}</p>
-                              <p className="truncate text-[11.5px] text-slate-500">{svc.groupLabel}</p>
+                              <p className="truncate text-[13.5px] font-semibold text-ink">{svc.name}</p>
+                              <p className="truncate text-[11.5px] text-ink-4">{svc.groupLabel}</p>
                             </div>
                           </div>
                           <div className="flex shrink-0 items-center gap-3">
-                            <span className="text-[13.5px] font-semibold text-emerald-700 tabular-nums">
+                            <span className="text-[13.5px] font-semibold text-brand-ink tabular-nums">
                               {formatMoney(svc.price)}
                             </span>
                             <button
@@ -467,8 +467,8 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                               className={cn(
                                 'flex h-8 w-8 items-center justify-center rounded-full transition',
                                 selected
-                                  ? 'bg-emerald-500 text-white shadow-xs'
-                                  : 'bg-blue-50 text-blue-600 hover:bg-blue-100',
+                                  ? 'bg-brand text-white shadow-xs'
+                                  : 'bg-brand-tint text-brand-ink hover:bg-brand-soft',
                               )}
                             >
                               {selected ? <Check className="h-4 w-4" strokeWidth={2.6} /> : <Plus className="h-4 w-4" />}
@@ -491,24 +491,24 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                         <div
                           key={combo.id}
                           onClick={() => applyCombo(combo)}
-                          className="flex cursor-pointer items-center justify-between gap-3 px-4 py-3 transition hover:bg-slate-50"
+                          className="flex cursor-pointer items-center justify-between gap-3 px-4 py-3 transition hover:bg-canvas"
                         >
                           <div className="flex min-w-0 items-center gap-3">
-                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-700">
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-warn-tint text-warn-strong">
                               <Layers className="h-4 w-4" />
                             </span>
                             <div className="min-w-0">
-                              <p className="truncate text-[13.5px] font-semibold text-slate-900">{combo.name}</p>
-                              <p className="truncate text-[11.5px] text-slate-500">
+                              <p className="truncate text-[13.5px] font-semibold text-ink">{combo.name}</p>
+                              <p className="truncate text-[11.5px] text-ink-4">
                                 {comboServices.map((s) => s.name).join(' · ')}
                               </p>
                             </div>
                           </div>
                           <div className="flex shrink-0 items-center gap-3">
-                            <span className="text-[13.5px] font-semibold text-emerald-700 tabular-nums">
+                            <span className="text-[13.5px] font-semibold text-brand-ink tabular-nums">
                               {formatMoney(total)}
                             </span>
-                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-tint text-brand-ink">
                               <Plus className="h-4 w-4" />
                             </span>
                           </div>
@@ -519,12 +519,12 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                   {((activeTab !== 'combo' && visibleServices.length === 0) ||
                     (activeTab === 'combo' && visibleCombos.length === 0)) && (
                     <div className="flex h-full min-h-[260px] flex-col items-center justify-center gap-2 px-6 text-center">
-                      <p className="text-[13px] text-slate-500">Không tìm thấy chỉ định phù hợp.</p>
+                      <p className="text-[13px] text-ink-4">Không tìm thấy chỉ định phù hợp.</p>
                       {providerServices.length === 0 && !serviceQuery && providerId !== SAMPLE_PROVIDER_ID && (
                         <button
                           type="button"
                           onClick={() => setProviderId(SAMPLE_PROVIDER_ID)}
-                          className="mt-1 rounded-lg border border-blue-200 bg-blue-50/70 px-3 py-1.5 text-[12px] font-medium text-blue-700 transition hover:bg-blue-100/70"
+                          className="mt-1 rounded-lg border border-brand-line bg-brand-tint/70 px-3 py-1.5 text-[12px] font-medium text-brand-ink transition hover:bg-brand-soft/70"
                         >
                           Chuyển sang {providerById(SAMPLE_PROVIDER_ID)?.name} (có sẵn danh mục xét nghiệm & CĐHA)
                         </button>
@@ -535,11 +535,11 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
               </div>
 
               {/* CỘT PHẢI: Danh sách chỉ định đang chọn */}
-              <div className="flex min-h-0 flex-col bg-slate-50/50">
+              <div className="flex min-h-0 flex-col bg-canvas/50">
                 <div className="flex shrink-0 items-center justify-between px-4 pt-3.5 pb-2.5">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-[14px] font-semibold text-slate-900">Số chỉ định đang chọn</h3>
-                    <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-50 px-1.5 text-[11.5px] font-semibold text-blue-600 tabular-nums">
+                    <h3 className="text-[14px] font-semibold text-ink">Số chỉ định đang chọn</h3>
+                    <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-tint px-1.5 text-[11.5px] font-semibold text-brand-ink tabular-nums">
                       {draftOrders.length}
                     </span>
                   </div>
@@ -547,7 +547,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                     <button
                       type="button"
                       onClick={() => setDraftOrders((list) => list.filter((o) => locked.has(o.id)))}
-                      className="inline-flex items-center gap-1 text-[12.5px] font-medium text-red-600 transition hover:text-red-600"
+                      className="inline-flex items-center gap-1 text-[12.5px] font-medium text-danger-ink transition hover:text-danger-ink"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                       Xoá tất cả
@@ -560,26 +560,26 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                   {groupedOrders.length === 0 ? (
                     <div className="flex h-full min-h-[260px] flex-col items-center justify-center px-6 text-center">
                       <DocumentsEmptyIllustration />
-                      <p className="mt-2 text-[13.5px] font-semibold text-slate-800">Chưa có chỉ định nào</p>
-                      <p className="mt-1 max-w-[260px] text-[12.5px] leading-relaxed text-slate-500">
+                      <p className="mt-2 text-[13.5px] font-semibold text-ink">Chưa có chỉ định nào</p>
+                      <p className="mt-1 max-w-[260px] text-[12.5px] leading-relaxed text-ink-4">
                         Tích chọn chỉ định hoặc combo từ danh sách bên trái để thêm vào đây.
                       </p>
                     </div>
                   ) : (
                     groupedOrders.map((group) => (
-                      <div key={group.providerId} className="rounded-xl border border-slate-200/80 bg-white p-3 shadow-2xs">
-                        <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-2.5">
+                      <div key={group.providerId} className="rounded-xl border border-line/80 bg-surface p-3 shadow-2xs">
+                        <div className="flex items-start justify-between gap-2 border-b border-line-soft pb-2.5">
                           <div className="min-w-0">
-                            <p className="text-[13.5px] leading-snug font-semibold text-slate-900">
+                            <p className="text-[13.5px] leading-snug font-semibold text-ink">
                               {group.providerName}
                             </p>
-                            <p className="mt-0.5 truncate text-[11.5px] text-slate-500">{group.providerAddress}</p>
+                            <p className="mt-0.5 truncate text-[11.5px] text-ink-4">{group.providerAddress}</p>
                           </div>
                           <div className="flex shrink-0 items-center gap-1.5">
-                            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600 tabular-nums">
+                            <span className="rounded-full bg-subtle px-2 py-0.5 text-[11px] font-semibold text-ink-3 tabular-nums">
                               {group.items.length}
                             </span>
-                            <span className="text-[13px] font-semibold text-slate-800 tabular-nums">
+                            <span className="text-[13px] font-semibold text-ink tabular-nums">
                               {formatMoney(group.subtotal)}
                             </span>
                           </div>
@@ -589,7 +589,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                           {group.items.map((item) => {
                             const showInst = expandedInstruction[item.id] || item.instruction.length > 0
                             return (
-                              <div key={item.id} className="rounded-lg border border-slate-100 bg-slate-50/40 p-2.5">
+                              <div key={item.id} className="rounded-lg border border-line-soft bg-canvas/40 p-2.5">
                                 <div className="flex items-center justify-between gap-2">
                                   <div className="flex min-w-0 items-center gap-2.5">
                                     <span
@@ -597,7 +597,7 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                                         'flex h-7 w-7 shrink-0 items-center justify-center rounded-md',
                                         item.category === 'imaging'
                                           ? 'bg-sky-50 text-sky-600'
-                                          : 'bg-orange-50 text-orange-700',
+                                          : 'bg-accent-tint text-accent-ink',
                                       )}
                                     >
                                       {item.category === 'imaging' ? (
@@ -607,49 +607,49 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                                       )}
                                     </span>
                                     <div className="min-w-0">
-                                      <p className="truncate text-[13px] font-semibold text-slate-900">{item.name}</p>
+                                      <p className="truncate text-[13px] font-semibold text-ink">{item.name}</p>
                                       <p className="text-[12px] tabular-nums">
-                                        <span className="font-semibold text-emerald-700">
+                                        <span className="font-semibold text-brand-ink">
                                           {formatMoney(item.unitPrice)}
                                         </span>{' '}
-                                        <span className="text-slate-500">x{item.quantity}</span>
+                                        <span className="text-ink-4">x{item.quantity}</span>
                                       </p>
                                     </div>
                                   </div>
 
                                   <div className="flex shrink-0 items-center gap-2">
-                                    <div className="inline-flex h-7 items-center rounded-md border border-slate-200 bg-white">
+                                    <div className="inline-flex h-7 items-center rounded-md border border-line bg-surface">
                                       <button
                                         type="button"
                                         onClick={() => updateQuantity(item.id, -1)}
                                         disabled={item.quantity <= 1 || locked.has(item.id)}
-                                        className="flex h-full w-6 items-center justify-center text-slate-500 hover:text-slate-900 disabled:opacity-35"
+                                        className="flex h-full w-6 items-center justify-center text-ink-4 hover:text-ink disabled:opacity-35"
                                         aria-label="Giảm số lượng"
                                       >
                                         <Minus className="h-3 w-3" />
                                       </button>
-                                      <span className="min-w-5 text-center text-[12.5px] font-semibold text-slate-900 tabular-nums">
+                                      <span className="min-w-5 text-center text-[12.5px] font-semibold text-ink tabular-nums">
                                         {item.quantity}
                                       </span>
                                       <button
                                         type="button"
                                         onClick={() => updateQuantity(item.id, 1)}
                                         disabled={locked.has(item.id)}
-                                        className="flex h-full w-6 items-center justify-center text-slate-500 hover:text-slate-900 disabled:opacity-35"
+                                        className="flex h-full w-6 items-center justify-center text-ink-4 hover:text-ink disabled:opacity-35"
                                         aria-label="Tăng số lượng"
                                       >
                                         <Plus className="h-3 w-3" />
                                       </button>
                                     </div>
                                     {locked.has(item.id) ? (
-                                      <span className="rounded p-1 text-slate-400" title={locked.get(item.id)} aria-label={`Không xoá được: ${locked.get(item.id)}`}>
+                                      <span className="rounded p-1 text-ink-5" title={locked.get(item.id)} aria-label={`Không xoá được: ${locked.get(item.id)}`}>
                                         <Lock className="h-3.5 w-3.5" />
                                       </span>
                                     ) : (
                                       <button
                                         type="button"
                                         onClick={() => removeOrder(item.id)}
-                                        className="rounded p-1 text-red-400 transition hover:bg-red-50 hover:text-red-600"
+                                        className="rounded p-1 text-danger-ink transition hover:bg-danger-soft hover:text-danger-ink"
                                         aria-label="Xoá chỉ định"
                                       >
                                         <Trash2 className="h-3.5 w-3.5" />
@@ -663,13 +663,13 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                                     value={item.instruction}
                                     onChange={(e) => updateInstruction(item.id, e.target.value)}
                                     placeholder="Hướng dẫn người bệnh (VD: Nhịn ăn sáng 8 giờ trước lấy máu)..."
-                                    className="mt-2 h-7 w-full rounded-md border border-slate-200 bg-white px-2.5 text-[12px] text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500"
+                                    className="mt-2 h-7 w-full rounded-md border border-line bg-surface px-2.5 text-[12px] text-ink outline-none placeholder:text-ink-5 focus:border-brand"
                                   />
                                 ) : (
                                   <button
                                     type="button"
                                     onClick={() => setExpandedInstruction((m) => ({ ...m, [item.id]: true }))}
-                                    className="mt-2 flex h-7 w-full items-center justify-center gap-1 rounded-md border border-slate-200/70 bg-white text-[12px] text-slate-500 transition hover:border-slate-300 hover:text-slate-600"
+                                    className="mt-2 flex h-7 w-full items-center justify-center gap-1 rounded-md border border-line/70 bg-surface text-[12px] text-ink-4 transition hover:border-line-strong hover:text-ink-3"
                                   >
                                     <Plus className="h-3 w-3" />
                                     Hướng dẫn người bệnh
@@ -685,35 +685,35 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                 </div>
 
                 {/* Footer tổng dự kiến + lưu combo + tạo chỉ định */}
-                <div className="shrink-0 space-y-3 border-t border-slate-200 bg-white p-4">
-                  <div className="rounded-lg border border-amber-100 bg-amber-50/70 px-3 py-2">
+                <div className="shrink-0 space-y-3 border-t border-line bg-surface p-4">
+                  <div className="rounded-lg border border-warn-line bg-warn-tint/70 px-3 py-2">
                     <label className="flex cursor-pointer items-center gap-2 select-none">
                       <input
                         type="checkbox"
                         checked={saveCombo}
                         onChange={(e) => setSaveCombo(e.target.checked)}
                         disabled={draftOrders.length === 0}
-                        className="h-4 w-4 rounded border-slate-300 accent-amber-500"
+                        className="h-4 w-4 rounded border-line-strong accent-warn"
                       />
-                      <span className="flex h-4.5 w-4.5 items-center justify-center rounded-full bg-amber-400 text-white">
+                      <span className="flex h-4.5 w-4.5 items-center justify-center rounded-full bg-warn text-white">
                         <Sparkles className="h-2.5 w-2.5" />
                       </span>
-                      <span className="text-[12.5px] font-medium text-slate-800">Lưu thành combo thường dùng</span>
+                      <span className="text-[12.5px] font-medium text-ink">Lưu thành combo thường dùng</span>
                     </label>
                     {saveCombo && (
                       <input
                         value={comboName}
                         onChange={(e) => setComboName(e.target.value)}
                         placeholder="Nhập tên combo (VD: Combo tầm soát sốt nhi)..."
-                        className="mt-2 h-8 w-full rounded-md border border-amber-200 bg-white px-2.5 text-[12.5px] text-slate-900 outline-none focus:border-amber-400"
+                        className="mt-2 h-8 w-full rounded-md border border-warn-line bg-surface px-2.5 text-[12.5px] text-ink outline-none focus:border-warn"
                       />
                     )}
                   </div>
 
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-[12px] text-slate-500">Tổng dự kiến</p>
-                      <p className="text-[17px] font-bold text-emerald-700 tabular-nums">
+                      <p className="text-[12px] text-ink-4">Tổng dự kiến</p>
+                      <p className="text-[17px] font-bold text-brand-ink tabular-nums">
                         {formatMoney(estimatedTotal)}
                       </p>
                     </div>
@@ -724,8 +724,8 @@ function ParaclinicalModalContent({ initialOrders, onClose, onConfirm, locked = 
                       className={cn(
                         'inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-lg px-5 text-[13.5px] font-semibold transition',
                         draftOrders.length > 0 || initialOrders.length > 0
-                          ? 'bg-blue-600 text-white shadow-sm hover:bg-blue-700'
-                          : 'cursor-not-allowed bg-slate-100 text-slate-400',
+                          ? 'bg-brand text-white shadow-sm hover:bg-brand-strong'
+                          : 'cursor-not-allowed bg-subtle text-ink-5',
                       )}
                     >
                       <span>Tạo chỉ định</span>

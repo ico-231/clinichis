@@ -158,3 +158,23 @@ Kế hoạch và cách chạy: [docs/BACKEND.md](BACKEND.md). App 1.0 vẫn dùn
 - [x] O6f. Vận hành (25/11): `/api/health` + lịch gọi mỗi sáng để Supabase gói miễn phí không tự tạm dừng; CI GitHub (kiểu, test, build); README viết lại (bản thật, kiến trúc, ảnh chụp app)
 - [ ] O7. Đăng nhập (để sau).
 
+## Giai đoạn P — Giao diện 6C (25–26/11/2026)
+
+Hướng thiết kế người dùng chọn: **6C** (nền ấm, xanh ngọc `#0F766E`, cam san hô `#C2410C`, Be Vietnam Pro, menu ngang).
+Giữ nguyên nghiệp vụ, trường và luồng của 1.0; chỉ thay lớp nhìn.
+
+- [x] P1. `[AG]` Áp dụng 6C cho đủ 14 màn: `TopNav` thay Sidebar dọc, Tổng quan dạng bento, Lễ tân thêm chế độ
+  "Bảng điều phối" (4 cột theo trạng thái), làm lại toàn bộ màn danh sách, CLS, báo cáo, hệ thống.
+- [x] P2. `[CC]` Hệ màu token: ~2.400 mã màu viết cứng (hex 6C, slate, blue…) đổi sang token ngữ nghĩa trong
+  `src/index.css` (`canvas`, `surface`, `subtle`, `line`, `ink`…`ink-5`, `brand`, `accent`, `info`, `warn`, `danger`,
+  `*-ink` cho chữ). Giao diện tối viết lại trên cùng token (nền than ấm) nên chạy đúng trên mọi màn, hộp thoại, biểu đồ;
+  "tờ giấy" xem trước bản in luôn sáng (`.paper`, `.print-area`). Biểu đồ dùng biến `--chart-*`.
+- [x] P3. `[CC]` Menu: nhóm "Đặt khám thông minh" đổi tên thành **"Lịch"**; biểu tượng nhóm khai trong `navigation.ts`;
+  dưới 1024px menu thành ngăn kéo (giữ Tab trong ngăn, Esc đóng); bỏ `Sidebar.tsx` không còn dùng.
+- [x] P4. `[CC]` Đồng bộ màn danh sách: tiêu đề cột chữ thường, ô tìm cùng kiểu có kính lúp, nút "Tìm", thanh lọc nằm thẳng
+  trên nền, phân trang nằm trong khung bảng; bảng Lễ tân ghim cột Trạng thái + Mã KB khi cuộn ngang, nhãn "Đã đăng ký" không
+  bị cắt; trạng thái thanh toán dạng chấm màu; tiêu đề trang CLS rõ nghĩa; bỏ chữ kiểu ghi chú nội bộ trên trang chờ.
+- [x] P5. `[CC]` Tổng quan giãn kín màn hình (biểu đồ cao theo khung, thông báo cuộn được); thanh tổng tiền dùng chung
+  `CostSummary` (Thuốc · CLS · Công khám · Tổng) ở Tiếp nhận và Khám bệnh; hàng Ngày/Giờ/Công khám ở màn khám thẳng hàng.
+- [x] P6. `[CC]` Sửa logic: "Lịch sử bệnh" ở màn khám không còn hiện lịch hẹn tương lai / lượt chưa đến; tìm "Thêm bệnh cũ"
+  xếp người trùng tên lên trước người chỉ trùng địa chỉ; ô chọn gốc của trình duyệt cùng kiểu với ô chọn tự viết.

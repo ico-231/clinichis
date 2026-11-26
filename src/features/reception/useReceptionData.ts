@@ -77,6 +77,7 @@ export function useReceptionData() {
     const scoped = rows.filter((r) => matches(r, filters, true))
     const filtered = filters.status === 'all' ? scoped : scoped.filter((r) => r.visit.status === filters.status)
 
+    const scopedSorted = sortVisitRows(scoped, sort)
     const sorted = sortVisitRows(filtered, sort)
 
     const pageCount = Math.ceil(sorted.length / pageSize)
@@ -95,6 +96,6 @@ export function useReceptionData() {
     const collected = filtered.reduce((s, r) => s + paidAmount(r.visit), 0)
     const outstanding = active.reduce((s, r) => s + remainingAmount(r.visit), 0)
 
-    return { scopedTotal: scoped.length, sorted, pageRows, page, pageCount, statusCounts, collected, outstanding }
+    return { scopedTotal: scoped.length, scopedSorted, sorted, pageRows, page, pageCount, statusCounts, collected, outstanding }
   }, [rows, filters, sort, pageSize, view.page])
 }

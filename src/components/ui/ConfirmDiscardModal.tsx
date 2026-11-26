@@ -33,17 +33,17 @@ export function ConfirmDiscardModal({
   return (
     <Portal>
       <div
-        className="fixed inset-0 z-[75] flex animate-fade-in items-center justify-center bg-slate-900/50 p-4"
+        className="fixed inset-0 z-[75] flex animate-fade-in items-center justify-center bg-overlay/40 p-4"
         onMouseDown={(e) => e.target === e.currentTarget && onCancel()}
       >
-        <div role="alertdialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={descId} className="w-full max-w-[380px] animate-pop-in rounded-2xl bg-white p-5 shadow-2xl">
-          <h3 id={titleId} className="text-[15.5px] font-semibold text-slate-900">{title}</h3>
-          <p id={descId} className="mt-1.5 text-[13px] leading-relaxed text-slate-600">{description}</p>
+        <div role="alertdialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={descId} className="w-full max-w-[380px] animate-pop-in rounded-[18px] border border-line bg-surface p-5 shadow-pop">
+          <h3 id={titleId} className="text-[15.5px] font-bold text-ink">{title}</h3>
+          <p id={descId} className="mt-1.5 text-[13px] leading-relaxed text-ink-3">{description}</p>
           <div className="mt-5 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onCancel}
-              className="inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-[13px] font-medium text-slate-700 transition hover:bg-slate-50"
+              className="inline-flex h-9 items-center justify-center rounded-[10px] border border-line-strong bg-surface px-4 text-[13px] font-semibold text-ink transition hover:bg-subtle"
             >
               {cancelLabel}
             </button>
@@ -51,7 +51,7 @@ export function ConfirmDiscardModal({
               type="button"
               autoFocus
               onClick={onConfirm}
-              className={`inline-flex h-9 items-center justify-center rounded-lg px-5 text-[13px] font-semibold text-white shadow-xs transition ${danger ? 'bg-rose-600 hover:bg-rose-700' : 'bg-blue-600 hover:bg-blue-700'}`}
+              className={`inline-flex h-9 items-center justify-center rounded-[10px] px-5 text-[13px] font-semibold text-white shadow-xs transition ${danger ? 'bg-danger hover:bg-danger-strong' : 'bg-brand hover:bg-brand-strong'}`}
             >
               {confirmLabel}
             </button>

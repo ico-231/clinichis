@@ -6,13 +6,7 @@ import { Select } from '@/components/ui/Select'
 import { DropdownMenu, MenuCheckItem, MenuSeparator } from '@/components/ui/DropdownMenu'
 import { Drawer } from '@/components/ui/Modal'
 import { useClinicActions, useClinicState } from '@/store/ClinicStore'
-import {
-  CATEGORY_LABEL,
-  PAYMENT_STATUS,
-  PAYMENT_STATUS_ORDER,
-  VISIT_STATUS_FILTER,
-  toOptions,
-} from '@/store/catalog'
+import { CATEGORY_LABEL, PAYMENT_STATUS, PAYMENT_STATUS_ORDER, toOptions } from '@/store/catalog'
 import { DEFAULT_COLUMNS } from '@/store/seed'
 import { cn } from '@/lib/cn'
 import { RECEPTION_COLUMNS } from './columns'
@@ -20,7 +14,7 @@ import type { ReceptionFilters } from '@/store/types'
 
 const ALL = { value: 'all' as const, label: 'Tất cả' }
 
-export function ReceptionToolbar() {
+export function ReceptionToolbar({ mode = 'list' }: { mode?: 'list' | 'board' }) {
   const { ui } = useClinicState()
   const { setReceptionView } = useClinicActions()
   const view = ui.reception
@@ -37,16 +31,16 @@ export function ReceptionToolbar() {
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-3 px-2 pt-4 pb-3">
-        <div className="relative w-[236px]">
-          <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+      <div className="flex flex-wrap items-center gap-2 pb-2.5">
+        <div className="relative w-full sm:w-[300px]">
+          <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-4" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && applySearch()}
-            placeholder="Tìm theo tên, số điện thoại..."
-            aria-label="Tìm theo tên, số điện thoại"
-            className="h-9 w-full rounded-md bg-slate-100 pr-8 pl-8 text-[13px] text-slate-900 outline-none placeholder:text-slate-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20"
+            placeholder="Tìm tên, số điện thoại, mã KB"
+            aria-label="Tìm theo tên, số điện thoại, mã khám"
+            className="h-9 w-full rounded-[10px] border border-line-strong bg-surface pr-8 pl-9 text-[13.5px] text-ink outline-none transition placeholder:text-ink-4 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
           />
           {query && (
             <button
@@ -55,7 +49,7 @@ export function ReceptionToolbar() {
                 setQuery('')
                 setReceptionView({ searchInput: '', filters: { ...filters, search: '' }, page: 1 })
               }}
-              className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-0.5 text-slate-400 hover:text-slate-700"
+              className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-0.5 text-ink-3 hover:text-ink"
               aria-label="Xóa tìm kiếm"
             >
               <X className="h-3.5 w-3.5" />
@@ -63,78 +57,74 @@ export function ReceptionToolbar() {
           )}
         </div>
 
-        <DatePicker
-          label="Từ"
-          value={filters.dateFrom}
-          max={filters.dateTo}
-          onChange={(dateFrom) => setFilters({ dateFrom })}
-          className="w-[155px]"
-        />
+        <DatePicker label="Từ" value={filters.dateFrom} max={filters.dateTo} onChange={(dateFrom) => setFilters({ dateFrom })} className="w-[155px]" />
         <DatePicker label="Đến" value={filters.dateTo} min={filters.dateFrom} onChange={(dateTo) => setFilters({ dateTo })} className="w-[155px]" />
-        <Select
-          label="Trạng thái"
-          value={filters.status}
-          options={[ALL, ...VISIT_STATUS_FILTER]}
-          onChange={(status) => setFilters({ status })}
-          className="w-[155px]"
-        />
         <Select
           label="Thanh toán"
           value={filters.payment}
           options={[ALL, ...PAYMENT_STATUS_ORDER.map((p) => ({ value: p, label: PAYMENT_STATUS[p].label }))]}
           onChange={(payment) => setFilters({ payment })}
-          className="w-[155px]"
+          className="w-[165px]"
         />
 
-        <Button onClick={applySearch} className="w-[72px]">
+        <Button onClick={applySearch} className="w-[74px]">
           Tìm
         </Button>
         <Button
           variant="outline"
           leftIcon={<ListFilter className="h-3.5 w-3.5" />}
           onClick={() => setAdvancedOpen(true)}
-          className={cn('px-3', advancedCount > 0 && 'border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-50')}
+          className={cn('px-3', advancedCount > 0 && 'border-brand-line bg-brand-soft text-brand-ink hover:bg-brand-soft')}
         >
           Nâng cao
-          {advancedCount > 0 && <span className="rounded-full bg-blue-600 px-1.5 text-[10.5px] leading-4 text-white">{advancedCount}</span>}
+          {advancedCount > 0 && <span className="rounded-full bg-brand px-1.5 text-[10.5px] leading-4 text-white">{advancedCount}</span>}
         </Button>
 
-        <DropdownMenu
-          align="end"
-          className="w-[148px]"
-          renderTrigger={({ ref, toggle, open }) => (
-            <Button ref={ref} variant="outline" size="icon" onClick={toggle} className={cn(open && 'bg-slate-100')} aria-label="Ẩn/hiện cột" title="Ẩn/hiện cột">
-              <SlidersHorizontal className="h-4 w-4" />
-            </Button>
-          )}
-        >
-          <div className="max-h-[70vh] overflow-y-auto">
-            {RECEPTION_COLUMNS.map((c) => {
-              const checked = view.visibleColumns.includes(c.key)
-              return (
-                <MenuCheckItem
-                  key={c.key}
-                  checked={checked}
-                  onToggle={() =>
-                    setReceptionView({
-                      visibleColumns: checked ? view.visibleColumns.filter((k) => k !== c.key) : [...view.visibleColumns, c.key],
-                    })
-                  }
-                >
-                  {c.menuLabel}
-                </MenuCheckItem>
-              )
-            })}
-          </div>
-          <MenuSeparator />
-          <button
-            type="button"
-            onClick={() => setReceptionView({ visibleColumns: DEFAULT_COLUMNS })}
-            className="flex w-full items-center gap-2 px-3 py-1.5 text-[12.5px] font-medium text-blue-600 hover:bg-slate-50"
+        {mode === 'list' && (
+          <DropdownMenu
+            align="end"
+            className="w-[164px]"
+            renderTrigger={({ ref, toggle, open }) => (
+              <Button
+                ref={ref}
+                variant="outline"
+                leftIcon={<SlidersHorizontal className="h-3.5 w-3.5" />}
+                onClick={toggle}
+                className={cn('ml-auto px-3', open && 'bg-subtle')}
+                aria-label="Ẩn/hiện cột"
+              >
+                Ẩn/hiện cột
+              </Button>
+            )}
           >
-            <RotateCcw className="h-3.5 w-3.5" /> Mặc định
-          </button>
-        </DropdownMenu>
+            <div className="max-h-[70vh] overflow-y-auto">
+              {RECEPTION_COLUMNS.map((c) => {
+                const checked = view.visibleColumns.includes(c.key)
+                return (
+                  <MenuCheckItem
+                    key={c.key}
+                    checked={checked}
+                    onToggle={() =>
+                      setReceptionView({
+                        visibleColumns: checked ? view.visibleColumns.filter((k) => k !== c.key) : [...view.visibleColumns, c.key],
+                      })
+                    }
+                  >
+                    {c.menuLabel}
+                  </MenuCheckItem>
+                )
+              })}
+            </div>
+            <MenuSeparator />
+            <button
+              type="button"
+              onClick={() => setReceptionView({ visibleColumns: DEFAULT_COLUMNS })}
+              className="flex w-full items-center gap-2 rounded-[8px] px-3 py-1.5 text-[12.5px] font-semibold text-brand-ink hover:bg-subtle"
+            >
+              <RotateCcw className="h-3.5 w-3.5" /> Mặc định
+            </button>
+          </DropdownMenu>
+        )}
       </div>
 
       <AdvancedSearchDrawer open={advancedOpen} onClose={() => setAdvancedOpen(false)} filters={filters} onApply={setFilters} />

@@ -33,20 +33,20 @@ export class ErrorBoundary extends Component<Props, State> {
     const btn = 'inline-flex h-9 items-center gap-2 rounded-lg px-3.5 text-[13px] font-medium transition'
     return (
       <div className="flex h-full items-center justify-center p-6" role="alert">
-        <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
-          <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-amber-50 text-amber-700">
+        <div className="w-full max-w-md rounded-xl border border-line bg-surface p-6 text-center shadow-sm">
+          <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-warn-tint text-warn-strong">
             <AlertTriangle className="h-5 w-5" />
           </span>
-          <h2 className="mt-3 text-[16px] font-semibold text-slate-900">Màn hình này gặp lỗi</h2>
-          <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">
+          <h2 className="mt-3 text-[16px] font-semibold text-ink">Màn hình này gặp lỗi</h2>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-ink-3">
             Dữ liệu đã lưu không bị thay đổi. Bạn có thể tải lại trang; nếu lỗi lặp lại, dữ liệu lưu trên trình duyệt có thể đã hỏng.
           </p>
-          <details className="mt-3 text-left text-[12px] text-slate-500">
+          <details className="mt-3 text-left text-[12px] text-ink-4">
             <summary className="cursor-pointer select-none">Chi tiết kỹ thuật</summary>
-            <pre className="thin-scroll mt-1.5 max-h-32 overflow-auto rounded-md bg-slate-50 p-2 whitespace-pre-wrap">{error.message}</pre>
+            <pre className="thin-scroll mt-1.5 max-h-32 overflow-auto rounded-md bg-canvas p-2 whitespace-pre-wrap">{error.message}</pre>
           </details>
           <div className="mt-5 flex flex-wrap justify-center gap-2">
-            <button type="button" onClick={() => window.location.reload()} className={`${btn} bg-blue-600 text-white hover:bg-blue-700`}>
+            <button type="button" onClick={() => window.location.reload()} className={`${btn} bg-brand text-white hover:bg-brand-strong`}>
               <RefreshCw className="h-4 w-4" /> Tải lại trang
             </button>
             {confirmReset ? (
@@ -61,7 +61,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 <RotateCcw className="h-4 w-4" /> Xác nhận xoá & dùng dữ liệu mẫu
               </button>
             ) : (
-              <button type="button" onClick={() => this.setState({ confirmReset: true })} className={`${btn} border border-slate-200 text-slate-700 hover:bg-slate-50`}>
+              <button type="button" onClick={() => this.setState({ confirmReset: true })} className={`${btn} border border-line text-ink-2 hover:bg-canvas`}>
                 <RotateCcw className="h-4 w-4" /> Khôi phục dữ liệu mẫu
               </button>
             )}

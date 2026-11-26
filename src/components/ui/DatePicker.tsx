@@ -39,20 +39,20 @@ export function DatePicker({ label, required, value, onChange, min, max, error, 
         ref={anchorRef}
         type="button"
         onClick={() => (open ? setOpen(false) : show())}
-        className={cn(inputBase, 'flex items-center justify-between gap-2 tabular-nums', open && 'border-blue-500 ring-2 ring-blue-500/15', error && inputError)}
+        className={cn(inputBase, 'flex items-center justify-between gap-2 tabular-nums', open && 'border-brand ring-2 ring-brand/15', error && inputError)}
       >
         {value ? (
-          <span className="tracking-wide text-slate-900">
+          <span className="tracking-wide text-ink">
             {d}
-            <span className="mx-1 text-slate-300">/</span>
+            <span className="mx-1 text-ink-5">/</span>
             {m}
-            <span className="mx-1 text-slate-300">/</span>
+            <span className="mx-1 text-ink-5">/</span>
             {y}
           </span>
         ) : (
-          <span className="text-slate-500">{placeholder}</span>
+          <span className="text-ink-3">{placeholder}</span>
         )}
-        <CalendarDays className="h-4 w-4 shrink-0 text-slate-500" />
+        <CalendarDays className="h-4 w-4 shrink-0 text-ink-3" />
       </button>
       <Popover open={open} onClose={() => setOpen(false)} anchorRef={anchorRef} className="w-[252px] p-3">
         <Calendar
@@ -89,7 +89,7 @@ function Calendar({ value, min, max, view, setView, cursor, setCursor, onSelect 
   const year = cursor.getFullYear()
   const month = cursor.getMonth()
 
-  const navBtn = 'flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50'
+  const navBtn = 'flex h-7 w-7 items-center justify-center rounded-md border border-line text-ink-2 hover:bg-canvas'
 
   const step = (dir: 1 | -1) => {
     if (view === 'days') setCursor(new Date(year, month + dir, 1))
@@ -121,7 +121,7 @@ function Calendar({ value, min, max, view, setView, cursor, setCursor, onSelect 
         <button
           type="button"
           onClick={() => setView(view === 'days' ? 'months' : 'years')}
-          className="rounded px-2 py-1 text-[13px] font-semibold text-slate-900 hover:bg-slate-100"
+          className="rounded px-2 py-1 text-[13px] font-semibold text-ink hover:bg-subtle"
         >
           {title}
         </button>
@@ -132,7 +132,7 @@ function Calendar({ value, min, max, view, setView, cursor, setCursor, onSelect 
 
       {view === 'days' && (
         <>
-          <div className="grid grid-cols-7 text-center text-[11px] text-slate-500">
+          <div className="grid grid-cols-7 text-center text-[11px] text-ink-4">
             {WEEKDAYS_VN.map((w) => (
               <div key={w} className="py-1.5">
                 {w}
@@ -148,9 +148,9 @@ function Calendar({ value, min, max, view, setView, cursor, setCursor, onSelect 
                   disabled={!!outOfRange(iso)}
                   onClick={() => onSelect(iso)}
                   className={cn(
-                    'mx-auto flex h-8 w-8 items-center justify-center rounded-md text-[13px] text-slate-800 transition hover:bg-slate-100 disabled:pointer-events-none disabled:text-slate-300',
-                    iso === today && iso !== value && 'font-semibold text-blue-600 ring-1 ring-blue-200',
-                    iso === value && 'bg-blue-600 font-semibold text-white hover:bg-blue-600',
+                    'mx-auto flex h-8 w-8 items-center justify-center rounded-lg text-[13px] text-ink transition hover:bg-subtle disabled:pointer-events-none disabled:text-ink-5',
+                    iso === today && iso !== value && 'font-semibold text-brand-ink ring-1 ring-brand-line',
+                    iso === value && 'bg-brand font-semibold text-white hover:bg-brand-strong',
                   )}
                 >
                   {Number(iso.slice(8))}
@@ -160,11 +160,11 @@ function Calendar({ value, min, max, view, setView, cursor, setCursor, onSelect 
               ),
             )}
           </div>
-          <div className="mt-2 flex justify-between border-t border-slate-100 pt-2">
-            <button type="button" className="text-xs font-medium text-blue-600 hover:underline disabled:text-slate-300" disabled={!!outOfRange(today)} onClick={() => onSelect(today)}>
+          <div className="mt-2 flex justify-between border-t border-line pt-2">
+            <button type="button" className="text-xs font-semibold text-brand-ink hover:underline disabled:text-ink-5" disabled={!!outOfRange(today)} onClick={() => onSelect(today)}>
               Hôm nay
             </button>
-            <span className="text-[11px] text-slate-500">Bấm tiêu đề để chọn tháng/năm</span>
+            <span className="text-[11px] text-ink-3">Bấm tiêu đề để chọn tháng/năm</span>
           </div>
         </>
       )}
@@ -179,7 +179,7 @@ function Calendar({ value, min, max, view, setView, cursor, setCursor, onSelect 
                 setCursor(new Date(year, i, 1))
                 setView('days')
               }}
-              className={cn('h-9 rounded-md text-[13px] hover:bg-slate-100', i === month && 'bg-blue-50 font-semibold text-blue-700')}
+              className={cn('h-9 rounded-lg text-[13px] hover:bg-subtle', i === month && 'bg-brand-soft font-semibold text-brand-ink')}
             >
               Th {i + 1}
             </button>
@@ -197,7 +197,7 @@ function Calendar({ value, min, max, view, setView, cursor, setCursor, onSelect 
                 setCursor(new Date(yy, month, 1))
                 setView('months')
               }}
-              className={cn('h-9 rounded-md text-[13px] hover:bg-slate-100', yy === year && 'bg-blue-50 font-semibold text-blue-700')}
+              className={cn('h-9 rounded-lg text-[13px] hover:bg-subtle', yy === year && 'bg-brand-soft font-semibold text-brand-ink')}
             >
               {yy}
             </button>

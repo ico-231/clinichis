@@ -112,18 +112,18 @@ export function ParaclinicalListPage({ category }: { category: 'imaging' | 'lab'
   const colCount = 3 + overview.length
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-canvas">
       <PageHeader title={title} />
-      <div className="flex min-h-0 flex-1 flex-col px-2">
-        <div className="flex flex-wrap items-end gap-2 px-2 pt-4 pb-3">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1440px] flex-1 flex-col gap-3 overflow-hidden px-4 sm:px-6 pt-1 pb-4">
+        <div className="flex flex-wrap items-end gap-2">
           <div className="relative min-w-[240px] flex-1">
-            <Search className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+            <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-ink-4" />
             <input
               value={query}
               onChange={(e) => (setQuery(e.target.value), setPage(1))}
               placeholder="Tìm kiếm mã phiếu khám, mã phiếu chỉ định, người bệnh"
               aria-label="Tìm kiếm mã phiếu khám, mã phiếu chỉ định, người bệnh"
-              className="h-9 w-full rounded-md border border-slate-200 pr-3 pl-8 text-[13px] outline-none focus:border-blue-500"
+              className="h-9 w-full rounded-[10px] border border-line-strong bg-surface pr-8 pl-9 text-[13.5px] text-ink outline-none transition placeholder:text-ink-4 hover:border-ink-5 focus:border-brand focus:ring-2 focus:ring-brand/15"
             />
           </div>
           <DateRangePicker value={range} onChange={(r) => (setRange(r), setPage(1))} presets={['today', 'yesterday', '7d', '30d', 'month']} />
@@ -139,16 +139,16 @@ export function ParaclinicalListPage({ category }: { category: 'imaging' | 'lab'
             value={perform}
             options={[ALL, ...(Object.keys(PERFORM_STATUS) as PerformStatus[]).filter((k) => k !== 'no_show').map((k) => ({ value: k, label: PERFORM_STATUS[k].label }))]}
             onChange={(v) => (setPerform(v), setPage(1))}
-            className="w-[150px]"
+            className="w-[155px]"
           />
           <Select
             label="Trạng thái trả kết quả"
             value={result}
             options={[ALL, ...(Object.keys(RESULT_FILTER_LABEL) as ResultFilter[]).map((k) => ({ value: k, label: RESULT_FILTER_LABEL[k] }))]}
             onChange={(v) => (setResult(v), setPage(1))}
-            className="w-[150px]"
+            className="w-[160px]"
           />
-          <Button variant="outline" leftIcon={<ListFilter className="h-3.5 w-3.5" />} onClick={() => setAdvOpen(true)} className={cn(advCount > 0 && 'border-blue-300 bg-blue-50 text-blue-700')}>
+          <Button variant="outline" leftIcon={<ListFilter className="h-3.5 w-3.5" />} onClick={() => setAdvOpen(true)} className={cn(advCount > 0 && 'border-brand bg-brand-tint text-brand-ink')}>
             Nâng cao{advCount > 0 && ` (${advCount})`}
           </Button>
           <DropdownMenu
@@ -175,98 +175,101 @@ export function ParaclinicalListPage({ category }: { category: 'imaging' | 'lab'
           </DropdownMenu>
         </div>
 
-        <div className="thin-scroll min-h-0 flex-1 overflow-auto rounded-lg border border-slate-200 bg-white">
-          <table className="w-full min-w-[960px] text-[13px]">
-            <thead className="sticky top-0 z-10 bg-slate-50 text-[12.5px] text-slate-600">
-              <tr>
-                <th className="w-8" />
-                <th className="px-2 py-2.5 text-left font-medium">Mã chỉ định</th>
-                <th className="px-2 py-2.5 text-left font-medium">Trạng thái thực hiện</th>
-                {show('patient') && <th className="px-2 py-2.5 text-left font-medium">Người bệnh</th>}
-                {show('orderedAt') && <th className="px-2 py-2.5 text-left font-medium">Nơi chỉ định</th>}
-                {show('performedAt') && <th className="px-2 py-2.5 text-left font-medium">Nơi thực hiện</th>}
-                {(show('total') || show('payment')) && <th className="px-2 py-2.5 text-right font-medium">Tổng tiền</th>}
-                <th className="w-[84px] px-2 py-2.5 text-right font-medium">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pageRows.length === 0 && (
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[16px] border border-line bg-surface">
+          <div className="thin-scroll min-h-0 flex-1 overflow-auto">
+            <table className="w-full min-w-[960px] text-[13px]">
+              <thead className="sticky top-0 z-10 border-b border-line bg-subtle text-[12.5px] font-semibold text-ink-3">
                 <tr>
-                  <td colSpan={colCount + 1}>
-                    <EmptyState />
-                  </td>
+                  <th className="w-9" />
+                  <th className="px-3 py-2.5 text-left font-semibold">Mã chỉ định</th>
+                  <th className="px-3 py-2.5 text-left font-semibold">Trạng thái thực hiện</th>
+                  {show('patient') && <th className="px-3 py-2.5 text-left font-semibold">Người bệnh</th>}
+                  {show('orderedAt') && <th className="px-3 py-2.5 text-left font-semibold">Nơi chỉ định</th>}
+                  {show('performedAt') && <th className="px-3 py-2.5 text-left font-semibold">Nơi thực hiện</th>}
+                  {(show('total') || show('payment')) && <th className="px-3 py-2.5 text-right font-semibold">Tổng tiền</th>}
+                  <th className="w-[92px] px-3 py-2.5 text-right font-semibold">Thao tác</th>
                 </tr>
-              )}
-              {pageRows.map((g) => {
-                const open = expanded === g.key
-                return (
-                  <Fragment key={g.key}>
-                    <tr onClick={() => setExpanded(open ? null : g.key)} className={cn('cursor-pointer border-t border-slate-100 hover:bg-slate-50/70', open && 'bg-blue-50/50 hover:bg-blue-50/50')}>
-                      <td className="pl-2">
-                        <ChevronDown className={cn('h-4 w-4 text-slate-500 transition-transform', !open && '-rotate-90')} />
-                      </td>
-                      <td className="px-2 py-2.5 font-medium text-slate-900">{g.code}</td>
-                      <td className="px-2 py-2.5" onClick={(e) => e.stopPropagation()}>
-                        <PerformMenu value={g.perform} onChange={(to) => setGroupPerform(g, to)} />
-                      </td>
-                      {show('patient') && (
-                        <td className="px-2 py-2.5">
-                          <span className="block font-semibold uppercase">{g.patient.fullName}</span>
-                          <span className="text-xs text-slate-500">
-                            {formatPhone(g.patient.phone)} · {GENDER_LABEL[g.patient.gender]} · {ageLabel(g.patient.dob, g.visit.date)}
+              </thead>
+              <tbody className="divide-y divide-line-soft">
+                {pageRows.length === 0 && (
+                  <tr>
+                    <td colSpan={colCount + 1}>
+                      <EmptyState />
+                    </td>
+                  </tr>
+                )}
+                {pageRows.map((g) => {
+                  const open = expanded === g.key
+                  return (
+                    <Fragment key={g.key}>
+                      <tr onClick={() => setExpanded(open ? null : g.key)} className={cn('cursor-pointer transition-colors hover:bg-brand-wash', open && 'bg-brand-tint/70 hover:bg-brand-tint/70')}>
+                        <td className="pl-3">
+                          <ChevronDown className={cn('h-4 w-4 text-ink-3 transition-transform', !open && '-rotate-90')} />
+                        </td>
+                        <td className="px-3 py-2.5 font-semibold text-info-ink tabular-nums">{g.code}</td>
+                        <td className="px-3 py-2.5" onClick={(e) => e.stopPropagation()}>
+                          <PerformMenu value={g.perform} onChange={(to) => setGroupPerform(g, to)} />
+                        </td>
+                        {show('patient') && (
+                          <td className="px-3 py-2.5">
+                            <span className="block font-semibold text-ink uppercase">{g.patient.fullName}</span>
+                            <span className="text-xs text-ink-3 tabular-nums">
+                              {formatPhone(g.patient.phone)} · {GENDER_LABEL[g.patient.gender]} · {ageLabel(g.patient.dob, g.visit.date)}
+                            </span>
+                          </td>
+                        )}
+                        {show('orderedAt') && (
+                          <td className="max-w-[200px] px-3 py-2.5">
+                            <span className="block truncate font-medium text-ink">{CLINIC.name}</span>
+                            <span className="block truncate text-xs text-ink-3" title={CLINIC.address}>{CLINIC.address}</span>
+                          </td>
+                        )}
+                        {show('performedAt') && (
+                          <td className="max-w-[220px] px-3 py-2.5">
+                            <span className="block truncate font-medium text-ink">{g.providerName}</span>
+                            <span className="block truncate text-xs text-ink-3" title={g.providerAddress}>{g.providerAddress}</span>
+                          </td>
+                        )}
+                        {(show('total') || show('payment')) && (
+                          <td className="px-3 py-2.5 text-right">
+                            {show('total') && <span className="block font-semibold text-ink tabular-nums">{formatNumber(g.total)}</span>}
+                            {show('payment') && <PayChip paid={g.paid} />}
+                          </td>
+                        )}
+                        <td className="px-3 py-2.5 text-right" onClick={(e) => e.stopPropagation()}>
+                          <span className="inline-flex gap-1.5">
+                            <IconBtn label="Xem phiếu thu" onClick={() => setReceiptsFor(g)}>
+                              <ReceiptText className="h-3.5 w-3.5" />
+                            </IconBtn>
+                            <IconBtn label="In phiếu chỉ định" onClick={() => setPrintFor(g)}>
+                              <Printer className="h-3.5 w-3.5" />
+                            </IconBtn>
                           </span>
                         </td>
-                      )}
-                      {show('orderedAt') && (
-                        <td className="max-w-[200px] px-2 py-2.5">
-                          <span className="block truncate">{CLINIC.name}</span>
-                          <span className="block truncate text-xs text-slate-500" title={CLINIC.address}>{CLINIC.address}</span>
-                        </td>
-                      )}
-                      {show('performedAt') && (
-                        <td className="max-w-[220px] px-2 py-2.5">
-                          <span className="block truncate">{g.providerName}</span>
-                          <span className="block truncate text-xs text-slate-500" title={g.providerAddress}>{g.providerAddress}</span>
-                        </td>
-                      )}
-                      {(show('total') || show('payment')) && (
-                        <td className="px-2 py-2.5 text-right">
-                          {show('total') && <span className="block font-medium tabular-nums">{formatNumber(g.total)}</span>}
-                          {show('payment') && <PayChip paid={g.paid} />}
-                        </td>
-                      )}
-                      <td className="px-2 py-2.5 text-right" onClick={(e) => e.stopPropagation()}>
-                        <span className="inline-flex gap-1">
-                          <IconBtn label="Xem phiếu thu" onClick={() => setReceiptsFor(g)}>
-                            <ReceiptText className="h-3.5 w-3.5" />
-                          </IconBtn>
-                          <IconBtn label="In phiếu chỉ định" onClick={() => setPrintFor(g)}>
-                            <Printer className="h-3.5 w-3.5" />
-                          </IconBtn>
-                        </span>
-                      </td>
-                    </tr>
-                    {open && (
-                      <tr className="bg-blue-50/30">
-                        <td colSpan={colCount + 1} className="px-3 pb-3">
-                          <GroupDetail
-                            group={g}
-                            showD={showD}
-                            onPerform={(o, to) => setItemPerform(g, o, to)}
-                            onEdit={(o) => setEditing({ visitId: g.visit.id, orderId: o.id })}
-                            onView={(o) => setViewing({ visitId: g.visit.id, orderId: o.id })}
-                          />
-                        </td>
                       </tr>
-                    )}
-                  </Fragment>
-                )
-              })}
-            </tbody>
-          </table>
+                      {open && (
+                        <tr className="bg-canvas">
+                          <td colSpan={colCount + 1} className="px-4 py-3">
+                            <GroupDetail
+                              group={g}
+                              showD={showD}
+                              onPerform={(o, to) => setItemPerform(g, o, to)}
+                              onEdit={(o) => setEditing({ visitId: g.visit.id, orderId: o.id })}
+                              onView={(o) => setViewing({ visitId: g.visit.id, orderId: o.id })}
+                            />
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div className="border-t border-line px-4">
+            <Pagination page={safePage} pageCount={pageCount} pageSize={pageSize} total={filtered.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
+          </div>
         </div>
-
-        <Pagination page={safePage} pageCount={pageCount} pageSize={pageSize} total={filtered.length} onPageChange={setPage} onPageSizeChange={(n) => (setPageSize(n), setPage(1))} />
       </div>
 
       {advOpen && <AdvancedDrawer value={adv} onClose={() => setAdvOpen(false)} onApply={(v) => (setAdv(v), setPage(1), setAdvOpen(false))} />}
@@ -303,8 +306,8 @@ function GroupDetail({
   const [tab, setTab] = useState<'services' | 'patient' | 'sheet'>('services')
   const p = g.patient
   return (
-    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
-      <div className="border-b border-slate-100 px-3 pt-2">
+    <div className="overflow-hidden rounded-[14px] border border-line bg-surface shadow-xs">
+      <div className="border-b border-line px-3.5 pt-2">
         <Tabs
           value={tab}
           onChange={setTab}
@@ -317,53 +320,53 @@ function GroupDetail({
       </div>
       {tab === 'services' && (
         <table className="w-full text-[13px]">
-          <thead className="text-[12.5px] text-slate-500">
+          <thead className="border-b border-line bg-subtle/70 text-[12.5px] font-semibold text-ink-3">
             <tr>
-              <th className="w-8 py-2 pl-3 text-left font-medium" />
-              <th className="py-2 text-left font-medium">Dịch vụ</th>
-              {showD('unit') && <th className="py-2 text-center font-medium">Đơn vị</th>}
-              {showD('unitPrice') && <th className="py-2 text-right font-medium">Đơn giá</th>}
-              {showD('quantity') && <th className="py-2 text-center font-medium">SL</th>}
-              {showD('amount') && <th className="py-2 text-right font-medium">Thành tiền</th>}
-              {showD('perform') && <th className="py-2 pl-4 text-left font-medium">Trạng thái thực hiện</th>}
-              <th className="py-2 text-left font-medium">Trạng thái trả kết quả</th>
-              <th className="py-2 pr-3 text-right font-medium">Thao tác</th>
+              <th className="w-9 py-2.5 pl-3.5 text-left font-semibold" />
+              <th className="py-2.5 text-left font-semibold">Dịch vụ</th>
+              {showD('unit') && <th className="py-2.5 text-center font-semibold">Đơn vị</th>}
+              {showD('unitPrice') && <th className="py-2.5 text-right font-semibold">Đơn giá</th>}
+              {showD('quantity') && <th className="py-2.5 text-center font-semibold">SL</th>}
+              {showD('amount') && <th className="py-2.5 text-right font-semibold">Thành tiền</th>}
+              {showD('perform') && <th className="py-2.5 pl-4 text-left font-semibold">Trạng thái thực hiện</th>}
+              <th className="py-2.5 text-left font-semibold">Trạng thái trả kết quả</th>
+              <th className="py-2.5 pr-3.5 text-right font-semibold">Thao tác</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-line-soft">
             {g.items.map((o, i) => {
               const paid = isLinePaid(g.visit, { kind: 'paraclinical', refId: o.id })
               const has = o.resultStatus === 'has_result'
               const st = performOf(o)
               const locked = st === 'cancelled' || st === 'no_show'
               return (
-                <tr key={o.id} className="border-t border-slate-100">
-                  <td className="py-2 pl-3 text-slate-500">{i + 1}</td>
-                  <td className="py-2">
-                    <span className="font-medium text-slate-900">{o.name}</span>
-                    <span className="block text-xs text-slate-500">
+                <tr key={o.id} className="transition-colors hover:bg-canvas">
+                  <td className="py-2.5 pl-3.5 text-ink-3 tabular-nums">{i + 1}</td>
+                  <td className="py-2.5">
+                    <span className="font-semibold text-ink">{o.name}</span>
+                    <span className="block text-xs text-ink-3">
                       Phòng thực hiện: {o.providerName}
-                      {showD('payment') && <span className={paid ? 'text-emerald-700' : 'text-orange-700'}> · {paid ? 'Đã thanh toán' : 'Chưa thanh toán'}</span>}
+                      {showD('payment') && <span className={paid ? 'font-medium text-brand-ink' : 'font-medium text-accent-ink'}> · {paid ? 'Đã thanh toán' : 'Chưa thanh toán'}</span>}
                     </span>
-                    {o.instruction && <span className="block text-xs text-slate-500 italic">HD: {o.instruction}</span>}
+                    {o.instruction && <span className="block text-xs text-ink-3 italic">HD: {o.instruction}</span>}
                   </td>
-                  {showD('unit') && <td className="py-2 text-center">Lượt</td>}
-                  {showD('unitPrice') && <td className="py-2 text-right tabular-nums">{formatNumber(o.unitPrice)}</td>}
-                  {showD('quantity') && <td className="py-2 text-center">{o.quantity}</td>}
-                  {showD('amount') && <td className="py-2 text-right tabular-nums">{formatNumber(o.unitPrice * o.quantity)}</td>}
+                  {showD('unit') && <td className="py-2.5 text-center text-ink-2">Lượt</td>}
+                  {showD('unitPrice') && <td className="py-2.5 text-right text-ink-2 tabular-nums">{formatNumber(o.unitPrice)}</td>}
+                  {showD('quantity') && <td className="py-2.5 text-center text-ink-2 tabular-nums">{o.quantity}</td>}
+                  {showD('amount') && <td className="py-2.5 text-right font-medium text-ink tabular-nums">{formatNumber(o.unitPrice * o.quantity)}</td>}
                   {showD('perform') && (
-                    <td className="py-2 pl-4">
+                    <td className="py-2.5 pl-4">
                       <PerformMenu value={st} onChange={(to) => onPerform(o, to)} />
                     </td>
                   )}
-                  <td className="py-2">
-                    <span className={cn('inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11.5px] font-medium', has ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-orange-700')}>
+                  <td className="py-2.5">
+                    <span className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold', has ? 'bg-brand-soft text-brand-ink' : 'bg-accent-soft text-accent-strong')}>
                       {has ? <ClipboardCheck className="h-3 w-3" /> : <Hourglass className="h-3 w-3" />}
                       {has ? 'Có kết quả' : 'Chờ kết quả'}
                     </span>
                   </td>
-                  <td className="py-2 pr-3 text-right">
-                    <span className="inline-flex gap-1">
+                  <td className="py-2.5 pr-3.5 text-right">
+                    <span className="inline-flex gap-1.5">
                       {has && (
                         <Button size="sm" variant="ghost" onClick={() => onView(o)}>
                           Xem
@@ -381,28 +384,28 @@ function GroupDetail({
         </table>
       )}
       {tab === 'patient' && (
-        <dl className="grid grid-cols-2 gap-x-8 gap-y-2 px-4 py-3 text-[13px] md:grid-cols-3">
+        <dl className="grid grid-cols-2 gap-x-8 gap-y-2.5 px-4 py-3.5 text-[13px] md:grid-cols-3">
           {[
             ['Họ và tên', <b className="uppercase">{p.fullName}</b>],
-            ['Mã người bệnh', p.code],
-            ['Ngày sinh', `${formatDateVN(p.dob)} (${ageInYears(p.dob, g.visit.date)} tuổi)`],
+            ['Mã người bệnh', <span className="font-semibold text-info-ink tabular-nums">{p.code}</span>],
+            ['Ngày sinh', <span className="tabular-nums">{`${formatDateVN(p.dob)} (${ageInYears(p.dob, g.visit.date)} tuổi)`}</span>],
             ['Giới tính', GENDER_LABEL[p.gender]],
-            ['Điện thoại', formatPhone(p.phone)],
+            ['Điện thoại', <span className="tabular-nums">{formatPhone(p.phone)}</span>],
             ['Địa chỉ', p.address],
-            ['Mã khám', g.visit.code],
+            ['Mã khám', <span className="font-semibold text-info-ink tabular-nums">{g.visit.code}</span>],
             ['Chẩn đoán', g.visit.exam?.diagnoses.map((d) => d.code || d.name).join(', ') || '--'],
-            ['Ngày chỉ định', formatDateTimeVN(g.sentAt)],
+            ['Ngày chỉ định', <span className="tabular-nums">{formatDateTimeVN(g.sentAt)}</span>],
           ].map(([k, v]) => (
             <div key={k as string}>
-              <dt className="text-slate-500">{k}</dt>
-              <dd className="text-slate-900">{v}</dd>
+              <dt className="text-ink-3">{k}</dt>
+              <dd className="font-medium text-ink">{v}</dd>
             </div>
           ))}
         </dl>
       )}
       {tab === 'sheet' && (
-        <div className="bg-slate-100 p-3">
-          <div className="mx-auto max-w-[680px] bg-white px-8 py-6 font-doc text-[13px] leading-6 text-black">
+        <div className="bg-subtle p-4">
+          <div className="paper mx-auto max-w-[680px] rounded-[8px] bg-surface px-8 py-6 font-doc text-[13px] leading-6 text-black shadow-sm">
             <OrderSheetDoc visit={g.visit} patient={g.patient} draft={{ ...draftFromVisit(g.visit), orders: g.items }} />
           </div>
         </div>
@@ -423,11 +426,11 @@ function PerformMenu({ value, onChange }: { value: PerformStatus; onChange: (to:
           type="button"
           onClick={toggle}
           className={cn(
-            'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-medium whitespace-nowrap',
-            tone === 'orange' && 'bg-orange-50 text-orange-700',
-            tone === 'blue' && 'bg-blue-50 text-blue-700',
-            tone === 'green' && 'bg-emerald-50 text-emerald-700',
-            tone === 'gray' && 'bg-slate-100 text-slate-600',
+            'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-semibold whitespace-nowrap transition-opacity hover:opacity-90',
+            tone === 'orange' && 'bg-accent-soft text-accent-strong',
+            tone === 'blue' && 'bg-info-tint text-info-ink',
+            tone === 'green' && 'bg-brand-soft text-brand-ink',
+            tone === 'gray' && 'bg-subtle text-ink-3',
           )}
         >
           {value === 'done' ? <Check className="h-3 w-3" /> : <Hourglass className="h-3 w-3" />}
@@ -437,7 +440,7 @@ function PerformMenu({ value, onChange }: { value: PerformStatus; onChange: (to:
       )}
     >
       {(Object.keys(PERFORM_STATUS) as PerformStatus[]).map((k) => (
-        <MenuItem key={k} danger={k === 'cancelled'} onSelect={() => k !== value && onChange(k)} shortcut={k === value ? <Check className="h-3.5 w-3.5 text-blue-600" /> : undefined}>
+        <MenuItem key={k} danger={k === 'cancelled'} onSelect={() => k !== value && onChange(k)} shortcut={k === value ? <Check className="h-3.5 w-3.5 text-brand-ink" /> : undefined}>
           {PERFORM_STATUS[k].label}
         </MenuItem>
       ))}
@@ -446,12 +449,12 @@ function PerformMenu({ value, onChange }: { value: PerformStatus; onChange: (to:
 }
 
 function PayChip({ paid }: { paid: boolean }) {
-  return <span className={cn('mt-0.5 inline-block rounded-full px-2 py-0.5 text-[11.5px] font-medium', paid ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-orange-700')}>{paid ? 'Đã thanh toán' : 'Chưa thanh toán'}</span>
+  return <span className={cn('mt-0.5 inline-block rounded-full px-2 py-0.5 text-[11.5px] font-semibold', paid ? 'bg-brand-soft text-brand-ink' : 'bg-accent-soft text-accent-strong')}>{paid ? 'Đã thanh toán' : 'Chưa thanh toán'}</span>
 }
 
 function IconBtn({ label, onClick, children }: { label: string; onClick: () => void; children: React.ReactNode }) {
   return (
-    <button type="button" onClick={onClick} title={label} aria-label={label} className="flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 text-slate-600 hover:bg-slate-100">
+    <button type="button" onClick={onClick} title={label} aria-label={label} className="flex h-7 w-7 items-center justify-center rounded-[8px] border border-line text-ink-2 transition-colors hover:bg-subtle hover:text-ink">
       {children}
     </button>
   )
@@ -461,11 +464,11 @@ function AdvancedDrawer({ value, onClose, onApply }: { value: Advanced; onClose:
   const [draft, setDraft] = useState(value)
   const radio = <K extends keyof Advanced>(key: K, label: string, options: { value: Advanced[K]; label: string }[]) => (
     <fieldset>
-      <legend className="mb-1.5 text-[13px] font-semibold text-slate-800">{label}</legend>
+      <legend className="mb-1.5 text-[13px] font-semibold text-ink">{label}</legend>
       <div className="space-y-1">
         {options.map((o) => (
-          <label key={o.value} className="flex cursor-pointer items-center gap-2 text-[13px] text-slate-700">
-            <input type="radio" name={key} checked={draft[key] === o.value} onChange={() => setDraft((d) => ({ ...d, [key]: o.value }))} className="accent-blue-600" />
+          <label key={o.value} className="flex cursor-pointer items-center gap-2 text-[13px] text-ink-2">
+            <input type="radio" name={key} checked={draft[key] === o.value} onChange={() => setDraft((d) => ({ ...d, [key]: o.value }))} className="accent-brand" />
             {o.label}
           </label>
         ))}
